@@ -1,0 +1,320 @@
+.xrd-page {
+  min-height: 100vh;
+  background: #f2f5fa;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+  padding: 32rpx;
+  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+  border-radius: 24rpx;
+}
+
+.header-icon {
+  font-size: 56rpx;
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 24rpx;
+  flex-shrink: 0;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.header-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #be123c;
+  margin-bottom: 8rpx;
+}
+
+.header-desc {
+  font-size: 26rpx;
+  color: #6c757d;
+}
+
+.section-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(190, 18, 60, 0.08);
+}
+
+.tool-tabs {
+  display: flex;
+  gap: 16rpx;
+  padding: 8rpx;
+  background: #f7f9fc;
+  border-radius: 20rpx;
+}
+
+.tool-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  padding: 20rpx 16rpx;
+  background: transparent;
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.tool-tab.active {
+  background: #ffffff;
+  box-shadow: 0 4rpx 12rpx rgba(190, 18, 60, 0.15);
+}
+
+.tab-icon {
+  font-size: 40rpx;
+}
+
+.tab-name {
+  font-size: 26rpx;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.tool-tab.active .tab-name {
+  color: #be123c;
+  font-weight: 600;
+}
+
+.tool-content {
+  margin-top: 24rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2d3142;
+  margin-bottom: 12rpx;
+}
+
+.section-description {
+  font-size: 26rpx;
+  color: #6c757d;
+  margin-bottom: 24rpx;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #6c757d;
+}
+
+.picker-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+  background: #f7f9fc;
+  border: 2rpx solid #d7dce5;
+  border-radius: 20rpx;
+  font-size: 32rpx;
+  color: #2d3142;
+}
+
+.picker-arrow {
+  color: #6c757d;
+  font-size: 24rpx;
+}
+
+.convert-mode {
+  margin: 24rpx 0;
+}
+
+.mode-selector {
+  display: flex;
+  gap: 16rpx;
+  padding: 8rpx;
+  background: #f7f9fc;
+  border-radius: 20rpx;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 20rpx;
+  background: transparent;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.mode-btn::after {
+  border: none;
+}
+
+.mode-btn.active {
+  background: #be123c;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.miller-indices {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.miller-label {
+  font-size: 28rpx;
+  color: #6c757d;
+}
+
+.miller-inputs {
+  display: flex;
+  gap: 16rpx;
+}
+
+.miller-input {
+  flex: 1;
+  padding: 24rpx 28rpx;
+  background: #f7f9fc;
+  border: 2rpx solid #d7dce5;
+  border-radius: 20rpx;
+  font-size: 32rpx;
+  text-align: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 28rpx;
+  border-radius: 20rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-primary {
+  background: #be123c;
+  color: #ffffff;
+}
+
+.btn-primary::after,
+.btn-secondary::after {
+  border: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2rpx solid #be123c;
+  color: #be123c;
+}
+
+.result-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #be123c;
+  text-align: center;
+}
+
+.info-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-top: 24rpx;
+  border: 2rpx solid #e6ebf3;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2d3142;
+}
+
+.info-icon {
+  font-size: 28rpx;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.formula-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  padding: 16rpx;
+  background: #f7f9fc;
+  border-radius: 12rpx;
+}
+
+.formula-label {
+  font-size: 26rpx;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.formula {
+  font-size: 28rpx;
+  color: #2d3142;
+  font-family: 'Courier New', monospace;
+}
+
+.tip-card {
+  background: rgba(190, 18, 60, 0.06);
+  border-radius: 20rpx;
+  padding: 24rpx;
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2d3142;
+}
+
+.tip-icon {
+  font-size: 28rpx;
+}
+
+.tip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  font-size: 26rpx;
+  color: #6c757d;
+  line-height: 1.6;
+}
+

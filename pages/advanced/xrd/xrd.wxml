@@ -1,0 +1,250 @@
+<view class="xrd-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="header-icon">📐</text>
+    <view class="header-content">
+      <view class="header-title">XRD 计算工具</view>
+      <view class="header-desc">d–2θ互算、晶系d(hkl)计算</view>
+    </view>
+  </view>
+
+  <!-- 工具选择 -->
+  <view class="section-card">
+    <view class="tool-tabs">
+      <view 
+        wx:for="{{tools}}" 
+        wx:key="id"
+        class="tool-tab {{currentTool === item.id ? 'active' : ''}}"
+        data-tool="{{item.id}}"
+        bindtap="switchTool"
+      >
+        <text class="tab-icon">{{item.icon}}</text>
+        <text class="tab-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 工具1: d-2θ互算 -->
+  <view wx:if="{{currentTool === 'bragg'}}" class="tool-content">
+    <view class="section-card">
+      <view class="section-title">💎 Bragg定律：d-2θ互算</view>
+      <view class="section-description">根据 nλ = 2d sinθ 进行计算（n=1）</view>
+
+      <!-- X射线源选择 -->
+      <view class="form-section">
+        <view class="form-row">
+          <view class="form-label">X射线源</view>
+          <picker mode="selector" range="{{xrayTargets}}" value="{{xrayIndex}}" bindchange="handleXrayChange">
+            <view class="picker-display">
+              <text>{{xrayTargets[xrayIndex]}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+
+        <calculator-input
+          label="波长 λ (Å)"
+          type="digit"
+          value="{{lambda}}"
+          placeholder="{{lambdaPlaceholder}}"
+          hint="X射线波长"
+          bindinput="handleLambdaInput"
+        />
+      </view>
+
+      <!-- 转换模式 -->
+      <view class="convert-mode">
+        <view class="mode-selector">
+          <button 
+            class="mode-btn {{braggMode === 'theta-to-d' ? 'active' : ''}}"
+            data-mode="theta-to-d"
+            bindtap="switchBraggMode"
+          >
+            2θ → d
+          </button>
+          <button 
+            class="mode-btn {{braggMode === 'd-to-theta' ? 'active' : ''}}"
+            data-mode="d-to-theta"
+            bindtap="switchBraggMode"
+          >
+            d → 2θ
+          </button>
+        </view>
+      </view>
+
+      <view class="form-section">
+        <calculator-input
+          wx:if="{{braggMode === 'theta-to-d'}}"
+          label="衍射角 2θ (°)"
+          type="digit"
+          value="{{theta2}}"
+          placeholder="例如：30"
+          hint="输入衍射峰位置"
+          bindinput="handleTheta2Input"
+        />
+        <calculator-input
+          wx:else
+          label="晶面间距 d (Å)"
+          type="digit"
+          value="{{dValue}}"
+          placeholder="例如：3.5"
+          hint="输入晶面间距"
+          bindinput="handleDInput"
+        />
+
+        <view class="action-buttons">
+          <button class="btn-primary" bindtap="calculateBragg">计算</button>
+          <button class="btn-secondary" bindtap="resetBragg">清空</button>
+        </view>
+      </view>
+
+      <result-card
+        wx:if="{{braggResult}}"
+        title="计算结果"
+        result="{{braggResultText}}"
+        hint="{{braggHint}}"
+        show-copy="{{true}}"
+        show-export="{{true}}"
+        show-history="{{true}}"
+        history-type="xrd"
+        history-input="{{braggHistoryInput}}"
+        unit="{{braggUnit}}"
+        precision="小数点后4位"
+        formula="nλ = 2d sinθ (n=1)"
+        data-source="Bragg定律"
+        show-metadata="{{true}}"
+        metadata-expanded="{{false}}"
+      >
+        <view class="result-value">{{braggResult}}</view>
+      </result-card>
+    </view>
+  </view>
+
+  <!-- 工具2: 晶系d(hkl)计算 -->
+  <view wx:if="{{currentTool === 'crystal'}}" class="tool-content">
+    <view class="section-card">
+      <view class="section-title">🔷 晶系d(hkl)计算</view>
+      <view class="section-description">根据晶格参数和米勒指数计算晶面间距</view>
+
+      <!-- 晶系选择 -->
+      <view class="form-section">
+        <view class="form-row">
+          <view class="form-label">晶系类型</view>
+          <picker mode="selector" range="{{crystalSystems}}" value="{{crystalIndex}}" bindchange="handleCrystalChange">
+            <view class="picker-display">
+              <text>{{crystalSystems[crystalIndex]}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+
+        <!-- 晶格参数输入 -->
+        <calculator-input
+          label="晶格常数 a (Å)"
+          type="digit"
+          value="{{latticeA}}"
+          placeholder="例如：5.43"
+          hint="晶胞参数 a"
+          bindinput="handleLatticeAInput"
+        />
+
+        <calculator-input
+          wx:if="{{crystalIndex === 1 || crystalIndex === 2 || crystalIndex === 3}}"
+          label="{{crystalIndex === 2 ? '晶格常数 b (Å)' : '晶格常数 c (Å)'}}"
+          type="digit"
+          value="{{crystalIndex === 2 ? latticeB : latticeC}}"
+          placeholder="例如：5.43"
+          hint="{{crystalIndex === 2 ? '晶胞参数 b' : '晶胞参数 c'}}"
+          bindinput="{{crystalIndex === 2 ? 'handleLatticeBInput' : 'handleLatticeCInput'}}"
+        />
+
+        <calculator-input
+          wx:if="{{crystalIndex === 2}}"
+          label="晶格常数 c (Å)"
+          type="digit"
+          value="{{latticeC}}"
+          placeholder="例如：5.43"
+          hint="晶胞参数 c"
+          bindinput="handleLatticeCInput"
+        />
+
+        <!-- 米勒指数 -->
+        <view class="miller-indices">
+          <view class="miller-label">米勒指数 (hkl)</view>
+          <view class="miller-inputs">
+            <input class="miller-input" type="digit" value="{{millerH}}" placeholder="h" bindinput="handleMillerHInput" />
+            <input class="miller-input" type="digit" value="{{millerK}}" placeholder="k" bindinput="handleMillerKInput" />
+            <input class="miller-input" type="digit" value="{{millerL}}" placeholder="l" bindinput="handleMillerLInput" />
+          </view>
+        </view>
+
+        <view class="action-buttons">
+          <button class="btn-primary" bindtap="calculateCrystal">计算</button>
+          <button class="btn-secondary" bindtap="resetCrystal">清空</button>
+        </view>
+      </view>
+
+      <result-card
+        wx:if="{{crystalResult}}"
+        title="计算结果"
+        result="{{crystalResultText}}"
+        hint="{{crystalHint}}"
+        show-copy="{{true}}"
+        show-export="{{true}}"
+        show-history="{{true}}"
+        history-type="xrd"
+        history-input="{{crystalHistoryInput}}"
+        unit="Å"
+        precision="小数点后4位"
+        formula="{{crystalFormula}}"
+        data-source="晶体学公式"
+        show-metadata="{{true}}"
+        metadata-expanded="{{false}}"
+      >
+        <view class="result-value">{{crystalResult}}</view>
+      </result-card>
+
+      <!-- 晶系公式说明 -->
+      <view class="info-card">
+        <view class="info-header">
+          <text class="info-icon">📖</text>
+          <text>晶系公式</text>
+        </view>
+        <view class="info-content">
+          <view class="formula-item">
+            <text class="formula-label">立方晶系：</text>
+            <text class="formula">d = a / √(h² + k² + l²)</text>
+          </view>
+          <view class="formula-item">
+            <text class="formula-label">四方晶系：</text>
+            <text class="formula">1/d² = (h² + k²)/a² + l²/c²</text>
+          </view>
+          <view class="formula-item">
+            <text class="formula-label">正交晶系：</text>
+            <text class="formula">1/d² = h²/a² + k²/b² + l²/c²</text>
+          </view>
+          <view class="formula-item">
+            <text class="formula-label">六方晶系：</text>
+            <text class="formula">1/d² = 4(h² + hk + k²)/(3a²) + l²/c²</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提示卡片 -->
+  <view class="tip-card">
+    <view class="tip-header">
+      <text class="tip-icon">💡</text>
+      <text>使用提示</text>
+    </view>
+    <view class="tip-content">
+      <text>• Bragg定律：nλ = 2d sinθ（本工具使用 n=1）</text>
+      <text>• Cu Kα 是最常用的X射线源</text>
+      <text>• 晶面间距 d 值越小，2θ 角越大</text>
+      <text>• 米勒指数 (hkl) 描述晶面方向</text>
+      <text>• 实际XRD图谱需考虑系统消光规律</text>
+    </view>
+  </view>
+</view>
+

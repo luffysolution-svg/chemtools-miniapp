@@ -1,0 +1,21 @@
+<view class="calculator-input">
+  <view class="input-label" wx:if="{{label}}">{{label}}</view>
+  <view class="input-wrapper {{error ? 'error' : ''}}">
+    <input 
+      class="input-field" 
+      type="{{type}}"
+      value="{{value}}"
+      placeholder="{{placeholder}}"
+      bindinput="handleInput"
+      bindblur="handleBlur"
+      bindfocus="handleFocus"
+      disabled="{{disabled}}"
+      maxlength="{{maxlength}}"
+    />
+    <view class="input-unit" wx:if="{{unit}}">{{unit}}</view>
+    <view class="input-icon" wx:if="{{icon}}" bindtap="handleIconTap">{{icon}}</view>
+  </view>
+  <view class="input-error" wx:if="{{error}}">{{error}}</view>
+  <view class="input-hint" wx:if="{{hint && !error}}">{{hint}}</view>
+</view>
+

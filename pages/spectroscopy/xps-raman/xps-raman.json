@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "谱学参考表",
+  "usingComponents": {
+    "calculator-input": "/components/calculator-input/calculator-input",
+    "result-card": "/components/result-card/result-card",
+    "skeleton": "/components/skeleton/skeleton"
+  }
+}
+

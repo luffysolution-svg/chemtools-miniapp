@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "半导体小工具",
+  "usingComponents": {
+    "calculator-input": "/components/calculator-input/calculator-input",
+    "result-card": "/components/result-card/result-card"
+  }
+}
+

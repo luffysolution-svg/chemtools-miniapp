@@ -1,0 +1,138 @@
+<view class="molar-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="header-icon">🧬</text>
+    <view class="header-content">
+      <view class="header-title">分子质量计算</view>
+      <view class="header-desc">计算化学式的摩尔质量，支持质量物质的量互算</view>
+    </view>
+  </view>
+
+  <!-- 化学式输入 -->
+  <view class="section-card">
+    <view class="section-title">化学式</view>
+    
+    <calculator-input
+      label="化学式"
+      type="text"
+      value="{{formula}}"
+      placeholder="例如：H2O、Al2(SO4)3·18H2O"
+      hint="支持括号和水合物（用·或.）"
+      bindinput="handleFormulaInput"
+    />
+
+    <view class="action-buttons">
+      <button class="btn-primary" bindtap="calculateMolar">计算摩尔质量</button>
+      <button class="btn-secondary" bindtap="resetFormula">清空</button>
+    </view>
+  </view>
+
+  <!-- 摩尔质量结果 -->
+  <result-card
+    wx:if="{{molarMass}}"
+    title="摩尔质量"
+    result="{{molarResultText}}"
+    show-copy="{{true}}"
+    show-export="{{true}}"
+    show-history="{{true}}"
+    history-type="molar"
+    history-input="{{formula}}"
+    unit="g·mol⁻¹"
+    precision="原子质量精度"
+    formula="Mr = Σ(Ar × n)"
+    data-source="IUPAC原子量表"
+    show-metadata="{{true}}"
+    metadata-expanded="{{false}}"
+  >
+    <view class="molar-result">
+      <view class="molar-value">Mr = {{molarMass}} g·mol⁻¹</view>
+      <view class="molar-breakdown" wx:if="{{breakdown}}">
+        <view class="breakdown-title">组成元素：</view>
+        <view class="breakdown-list">
+          <text wx:for="{{breakdown}}" wx:key="symbol" class="breakdown-item">
+            {{item.symbol}}{{item.count > 1 ? '×' + item.count : ''}}: {{item.mass}} g·mol⁻¹
+          </text>
+        </view>
+      </view>
+    </view>
+  </result-card>
+
+  <!-- 质量与物质的量转换 -->
+  <view class="section-card" wx:if="{{molarMass}}">
+    <view class="section-title">质量 ↔ 物质的量</view>
+    
+    <view class="convert-group">
+      <calculator-input
+        label="质量 (g)"
+        type="digit"
+        value="{{mass}}"
+        placeholder="例如：18"
+        validator="positive"
+        bindinput="handleMassInput"
+      />
+      <button class="convert-btn" bindtap="massToMoles">→ 转为物质的量</button>
+    </view>
+
+    <view class="convert-group">
+      <calculator-input
+        label="物质的量 (mol)"
+        type="digit"
+        value="{{moles}}"
+        placeholder="例如：1"
+        validator="positive"
+        bindinput="handleMolesInput"
+      />
+      <button class="convert-btn" bindtap="molesToMass">→ 转为质量</button>
+    </view>
+
+    <result-card
+      wx:if="{{convertResult}}"
+      title="转换结果"
+      result="{{convertResultText}}"
+      show-copy="{{true}}"
+      show-export="{{true}}"
+      unit="{{convertUnit}}"
+      formula="n = m / Mr"
+      data-source="物质的量关系式"
+      show-metadata="{{true}}"
+      metadata-expanded="{{false}}"
+    >
+      <view class="convert-result">{{convertResult}}</view>
+    </result-card>
+  </view>
+
+  <!-- 说明卡片 -->
+  <view class="info-card">
+    <view class="info-header">
+      <text class="info-icon">📖</text>
+      <text>公式说明</text>
+    </view>
+    <view class="info-content">
+      <view class="formula-item">
+        <text class="formula-label">摩尔质量：</text>
+        <text class="formula">Mr = Σ(元素相对原子质量 × 原子个数)</text>
+      </view>
+      <view class="formula-item">
+        <text class="formula-label">质量与物质的量：</text>
+        <text class="formula">m = n × Mr</text>
+        <text class="formula">n = m / Mr</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提示卡片 -->
+  <view class="tip-card">
+    <view class="tip-header">
+      <text class="tip-icon">💡</text>
+      <text>输入示例</text>
+    </view>
+    <view class="tip-content">
+      <text>• 简单分子：H2O、CO2、NaCl</text>
+      <text>• 括号：Al2(SO4)3、Ca(OH)2</text>
+      <text>• 水合物：CuSO4·5H2O（用·或.连接）</text>
+      <text>• 复杂式：Al2(SO4)3·18H2O</text>
+      <text>• 支持下标数字（₂）或普通数字（2）</text>
+    </view>
+  </view>
+</view>
+

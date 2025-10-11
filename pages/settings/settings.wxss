@@ -1,0 +1,148 @@
+.container {
+  padding: 30rpx;
+  background: #f5f7fa;
+  min-height: 100vh;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.page-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* 区块 */
+.section {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 25rpx;
+  padding-bottom: 15rpx;
+  border-bottom: 2rpx solid #ecf0f1;
+}
+
+/* 设置项 */
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 30rpx;
+  color: #2c3e50;
+}
+
+.value {
+  font-size: 28rpx;
+  color: #7f8c8d;
+}
+
+/* 选择器 */
+.picker {
+  padding: 15rpx 30rpx;
+  background: #ecf0f1;
+  border-radius: 8rpx;
+  color: #2c3e50;
+  font-size: 28rpx;
+  min-width: 150rpx;
+  text-align: center;
+}
+
+/* 单位输入 */
+.unit-input {
+  padding: 15rpx 30rpx;
+  background: #ecf0f1;
+  border-radius: 8rpx;
+  width: 150rpx;
+  text-align: center;
+  font-size: 28rpx;
+}
+
+/* 统计信息 */
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 0;
+}
+
+.stat-label {
+  font-size: 28rpx;
+  color: #7f8c8d;
+}
+
+.stat-value {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #3498db;
+}
+
+/* 按钮组 */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.action-btn {
+  height: 80rpx;
+  background: white;
+  color: #3498db;
+  border: 2rpx solid #3498db;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  line-height: 80rpx;
+  font-weight: 600;
+}
+
+.action-btn:active {
+  opacity: 0.8;
+}
+
+.action-btn.warning {
+  color: #f39c12;
+  border-color: #f39c12;
+}
+
+.action-btn.danger {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+/* 页脚 */
+.footer {
+  text-align: center;
+  padding: 60rpx 0 40rpx;
+}
+
+.version {
+  display: block;
+  font-size: 26rpx;
+  color: #7f8c8d;
+  margin-bottom: 10rpx;
+}
+
+.copyright {
+  display: block;
+  font-size: 24rpx;
+  color: #bdc3c7;
+}
+

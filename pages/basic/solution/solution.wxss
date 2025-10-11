@@ -1,0 +1,230 @@
+.solution-page {
+  min-height: 100vh;
+  background: #f2f5fa;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 页面头部 */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+  padding: 32rpx;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 24rpx;
+}
+
+.header-icon {
+  font-size: 56rpx;
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 24rpx;
+  flex-shrink: 0;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.header-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #0284c7;
+  margin-bottom: 8rpx;
+}
+
+.header-desc {
+  font-size: 26rpx;
+  color: #6c757d;
+}
+
+/* 卡片区域 */
+.section-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(2, 132, 199, 0.08);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2d3142;
+  margin-bottom: 24rpx;
+}
+
+/* 选择器 */
+.picker-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+  background: #f7f9fc;
+  border: 2rpx solid #d7dce5;
+  border-radius: 20rpx;
+  font-size: 32rpx;
+  color: #2d3142;
+}
+
+.picker-arrow {
+  color: #6c757d;
+  font-size: 24rpx;
+}
+
+/* 输入分组 */
+.input-group {
+  margin-bottom: 32rpx;
+  padding: 24rpx;
+  background: #f7f9fc;
+  border-radius: 16rpx;
+}
+
+.group-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #0284c7;
+  margin-bottom: 20rpx;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 28rpx;
+  border-radius: 20rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-primary {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.btn-primary::after,
+.btn-secondary::after {
+  border: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2rpx solid #0284c7;
+  color: #0284c7;
+}
+
+/* 结果展示 */
+.result-display {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: center;
+}
+
+.result-main {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #0284c7;
+  text-align: center;
+}
+
+.result-formula {
+  font-size: 26rpx;
+  color: #6c757d;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+}
+
+/* 说明卡片 */
+.info-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  border: 2rpx solid #e6ebf3;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2d3142;
+}
+
+.info-icon {
+  font-size: 28rpx;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.formula-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  padding: 16rpx;
+  background: #f7f9fc;
+  border-radius: 12rpx;
+}
+
+.formula-label {
+  font-size: 26rpx;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.formula {
+  font-size: 28rpx;
+  color: #2d3142;
+  font-family: 'Courier New', monospace;
+}
+
+/* 提示卡片 */
+.tip-card {
+  background: rgba(2, 132, 199, 0.06);
+  border-radius: 20rpx;
+  padding: 24rpx;
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2d3142;
+}
+
+.tip-icon {
+  font-size: 28rpx;
+}
+
+.tip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  font-size: 26rpx;
+  color: #6c757d;
+  line-height: 1.6;
+}
+

@@ -1,0 +1,105 @@
+<view class="ph-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="header-icon">🧪</text>
+    <view class="header-content">
+      <view class="header-title">pH 值计算</view>
+      <view class="header-desc">计算强酸强碱溶液的pH值，或由pH反推浓度</view>
+    </view>
+  </view>
+
+  <!-- 计算类型选择 -->
+  <view class="section-card">
+    <view class="section-title">计算类型</view>
+    <picker mode="selector" range="{{typeOptions}}" value="{{typeIndex}}" bindchange="handleTypeChange">
+      <view class="picker-display">
+        <text>{{typeOptions[typeIndex]}}</text>
+        <text class="picker-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="section-card">
+    <view class="section-title">输入参数</view>
+    
+    <calculator-input
+      label="{{inputLabel}}"
+      type="digit"
+      value="{{inputValue}}"
+      placeholder="{{placeholder}}"
+      validator="positive"
+      hint="{{inputHint}}"
+      bindinput="handleValueInput"
+      bindvalidate="handleValidate"
+    />
+
+    <!-- 计算按钮 -->
+    <view class="action-buttons">
+      <button class="btn-primary" bindtap="calculate">计算</button>
+      <button class="btn-secondary" bindtap="reset">清空</button>
+    </view>
+  </view>
+
+  <!-- 结果展示 -->
+  <result-card
+    wx:if="{{result}}"
+    title="计算结果"
+    result="{{resultText}}"
+    hint="{{hint}}"
+    show-copy="{{true}}"
+    show-export="{{true}}"
+    show-history="{{true}}"
+    history-type="ph"
+    history-input="{{historyInput}}"
+    unit="{{unit}}"
+    precision="{{precision}}"
+    formula="{{formula}}"
+    warning="{{warning}}"
+    data-source="pH标准计算公式"
+    show-metadata="{{true}}"
+    metadata-expanded="{{false}}"
+  >
+    <view class="result-display">
+      <view class="result-main">{{result}}</view>
+      <view class="result-detail" wx:if="{{detail}}">{{detail}}</view>
+    </view>
+  </result-card>
+
+  <!-- 说明卡片 -->
+  <view class="info-card">
+    <view class="info-header">
+      <text class="info-icon">📖</text>
+      <text>公式说明</text>
+    </view>
+    <view class="info-content">
+      <view class="formula-item">
+        <text class="formula-label">强酸溶液：</text>
+        <text class="formula">pH = -log₁₀[H⁺]</text>
+      </view>
+      <view class="formula-item">
+        <text class="formula-label">强碱溶液：</text>
+        <text class="formula">pOH = -log₁₀[OH⁻]，pH = 14 - pOH</text>
+      </view>
+      <view class="formula-item">
+        <text class="formula-label">反推浓度：</text>
+        <text class="formula">[H⁺] = 10⁻ᵖᴴ</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提示卡片 -->
+  <view class="tip-card">
+    <view class="tip-header">
+      <text class="tip-icon">💡</text>
+      <text>使用提示</text>
+    </view>
+    <view class="tip-content">
+      <text>• 本工具适用于强酸强碱溶液的简单计算</text>
+      <text>• 弱酸弱碱需考虑电离平衡，计算更复杂</text>
+      <text>• 温度影响：水的离子积Kw随温度变化</text>
+      <text>• pH范围建议：0-14（理论可超出此范围）</text>
+    </view>
+  </view>
+</view>
+

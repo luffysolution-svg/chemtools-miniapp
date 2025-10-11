@@ -1,0 +1,144 @@
+<view class="container">
+  <view class="page-header">
+    <text class="page-title">⚙️ 个性化设置</text>
+  </view>
+
+  <!-- 主题设置 -->
+  <view class="section">
+    <view class="section-title">🎨 主题设置</view>
+    <view class="setting-item">
+      <text class="label">主题模式</text>
+      <picker mode="selector" range="{{themes}}" range-key="label" bindchange="onThemeChange">
+        <view class="picker">{{themeLabels[theme]}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 显示设置 -->
+  <view class="section">
+    <view class="section-title">📊 显示设置</view>
+    
+    <view class="setting-item">
+      <text class="label">精度（小数位）</text>
+      <picker mode="selector" range="{{decimalOptions}}" bindchange="onDecimalChange">
+        <view class="picker">{{decimalPlaces}} 位</view>
+      </picker>
+    </view>
+    
+    <view class="setting-item">
+      <text class="label">首页布局</text>
+      <picker mode="selector" range="{{homeLayouts}}" range-key="label" bindchange="onLayoutChange">
+        <view class="picker">{{homeLayoutLabels[homeLayout]}}</view>
+      </picker>
+    </view>
+    
+    <view class="setting-item">
+      <text class="label">显示元数据</text>
+      <switch checked="{{showMetadata}}" data-field="showMetadata" bindchange="onSwitchChange" color="#667eea" />
+    </view>
+    
+    <view class="setting-item">
+      <text class="label">显示公式</text>
+      <switch checked="{{showFormula}}" data-field="showFormula" bindchange="onSwitchChange" color="#667eea" />
+    </view>
+    
+    <view class="setting-item">
+      <text class="label">显示警告信息</text>
+      <switch checked="{{showWarnings}}" data-field="showWarnings" bindchange="onSwitchChange" color="#667eea" />
+    </view>
+  </view>
+
+  <!-- 默认单位 -->
+  <view class="section">
+    <view class="section-title">📏 默认单位</view>
+    
+    <view class="setting-item">
+      <text class="label">长度</text>
+      <input class="unit-input" value="{{defaultUnits.length}}" data-type="length" bindinput="onUnitChange" />
+    </view>
+    
+    <view class="setting-item">
+      <text class="label">能量</text>
+      <input class="unit-input" value="{{defaultUnits.energy}}" data-type="energy" bindinput="onUnitChange" />
+    </view>
+    
+    <view class="setting-item">
+      <text class="label">温度</text>
+      <input class="unit-input" value="{{defaultUnits.temperature}}" data-type="temperature" bindinput="onUnitChange" />
+    </view>
+    
+    <view class="setting-item">
+      <text class="label">浓度</text>
+      <input class="unit-input" value="{{defaultUnits.concentration}}" data-type="concentration" bindinput="onUnitChange" />
+    </view>
+  </view>
+
+  <!-- 历史记录 -->
+  <view class="section">
+    <view class="section-title">📜 历史记录</view>
+    
+    <view class="setting-item">
+      <text class="label">自动保存</text>
+      <switch checked="{{autoSaveHistory}}" data-field="autoSaveHistory" bindchange="onSwitchChange" color="#667eea" />
+    </view>
+    
+    <view class="setting-item">
+      <text class="label">保存数量限制</text>
+      <text class="value">{{historyLimit}} 条</text>
+    </view>
+  </view>
+
+  <!-- 交互设置 -->
+  <view class="section">
+    <view class="section-title">🔔 交互设置</view>
+    
+    <view class="setting-item">
+      <text class="label">震动反馈</text>
+      <switch checked="{{enableVibration}}" data-field="enableVibration" bindchange="onSwitchChange" color="#667eea" />
+    </view>
+    
+    <view class="setting-item">
+      <text class="label">声音提示</text>
+      <switch checked="{{enableSound}}" data-field="enableSound" bindchange="onSwitchChange" color="#667eea" />
+    </view>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="section">
+    <view class="section-title">📈 使用统计</view>
+    
+    <view class="stat-item">
+      <text class="stat-label">总计算次数</text>
+      <text class="stat-value">{{totalCalculations}}</text>
+    </view>
+    
+    <view class="stat-item">
+      <text class="stat-label">历史记录数</text>
+      <text class="stat-value">{{totalHistory}}</text>
+    </view>
+    
+    <view class="stat-item">
+      <text class="stat-label">存储占用</text>
+      <text class="stat-value">{{storageUsed}}</text>
+    </view>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="section">
+    <view class="section-title">🗂️ 数据管理</view>
+    
+    <view class="button-group">
+      <button class="action-btn" bindtap="exportSettings">导出设置</button>
+      <button class="action-btn" bindtap="clearCache">清除缓存</button>
+      <button class="action-btn warning" bindtap="clearHistory">清除历史</button>
+      <button class="action-btn danger" bindtap="resetSettings">重置设置</button>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="footer">
+    <text class="version">版本 v2.1.0</text>
+    <text class="copyright">© 2025 化学计算工具</text>
+  </view>
+</view>
+

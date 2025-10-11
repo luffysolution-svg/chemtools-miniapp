@@ -1,0 +1,60 @@
+<view class="ksp-page">
+  <view class="page-header">
+    <text class="header-icon">💧</text>
+    <view class="header-content">
+      <view class="header-title">溶度积与沉淀</view>
+      <view class="header-desc">Ksp计算、离子强度、活度估算</view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-title">🧪 Ksp沉淀判断</view>
+    <view class="section-description">根据离子积Q与Ksp比较判断是否沉淀</view>
+    
+    <view class="form-section">
+      <calculator-input label="阳离子浓度 [M^n+] (mol·L⁻¹)" type="digit" value="{{cationConc}}" placeholder="例如：0.01" bindinput="handleCationInput" />
+      <calculator-input label="阴离子浓度 [X^m-] (mol·L⁻¹)" type="digit" value="{{anionConc}}" placeholder="例如：0.01" bindinput="handleAnionInput" />
+      <calculator-input label="溶度积常数 Ksp" type="digit" value="{{kspValue}}" placeholder="例如：1e-10" hint="25°C下的Ksp值" bindinput="handleKspInput" />
+      <calculator-input label="阳离子电荷 n" type="digit" value="{{cationCharge}}" placeholder="例如：2" bindinput="handleCationChargeInput" />
+      <calculator-input label="阴离子电荷 m" type="digit" value="{{anionCharge}}" placeholder="例如：1" bindinput="handleAnionChargeInput" />
+      
+      <view class="action-buttons">
+        <button class="btn-primary" bindtap="calculateKsp">计算</button>
+        <button class="btn-secondary" bindtap="reset">清空</button>
+      </view>
+    </view>
+    
+    <result-card wx:if="{{result}}" title="计算结果" result="{{resultText}}" hint="{{hint}}" show-copy="{{true}}" show-export="{{true}}" show-history="{{true}}" history-type="ksp" history-input="{{historyInput}}" unit="{{unit}}" precision="科学计数法" formula="Q = [M+]^m[X-]^n" data-source="溶度积理论" show-metadata="{{true}}" metadata-expanded="{{false}}">
+      <view class="result-value">{{result}}</view>
+    </result-card>
+    
+    <view class="info-card">
+      <view class="info-header"><text class="info-icon">📖</text><text>计算原理</text></view>
+      <view class="info-content">
+        <view class="formula-item">
+          <text class="formula-label">离子积Q：</text>
+          <text class="formula">Q = [M^n+]^a × [X^m-]^b</text>
+        </view>
+        <view class="formula-item">
+          <text class="formula-label">判断规则：</text>
+          <text class="formula">Q &gt; Ksp：产生沉淀</text>
+          <text class="formula">Q = Ksp：饱和溶液</text>
+          <text class="formula">Q &lt; Ksp：不饱和</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="tip-card">
+    <view class="tip-header"><text class="tip-icon">💡</text><text>常见难溶盐Ksp (25°C)</text></view>
+    <view class="tip-content">
+      <text>• AgCl：1.8×10⁻¹⁰</text>
+      <text>• AgBr：5.0×10⁻¹³</text>
+      <text>• AgI：8.3×10⁻¹⁷</text>
+      <text>• BaSO₄：1.1×10⁻¹⁰</text>
+      <text>• CaCO₃：4.5×10⁻⁹</text>
+      <text>• Fe(OH)₃：4×10⁻³⁸</text>
+    </view>
+  </view>
+</view>
+

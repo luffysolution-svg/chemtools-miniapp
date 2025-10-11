@@ -1,0 +1,84 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/favorites/favorites",
+    "pages/help/help",
+    "pages/settings/settings"
+  ],
+  "subpackages": [
+    {
+      "root": "pages/basic",
+      "name": "basic",
+      "pages": [
+        "unit/unit",
+        "ph/ph",
+        "solution/solution",
+        "molar/molar"
+      ],
+      "independent": false
+    },
+    {
+      "root": "pages/materials",
+      "name": "materials",
+      "pages": [
+        "periodic/periodic",
+        "semiconductor/semiconductor",
+        "semiconductor-extras/semiconductor-extras"
+      ],
+      "independent": false
+    },
+    {
+      "root": "pages/spectroscopy",
+      "name": "spectroscopy",
+      "pages": [
+        "xps-raman/xps-raman",
+        "uvvis/uvvis"
+      ],
+      "independent": false
+    },
+    {
+      "root": "pages/advanced",
+      "name": "advanced",
+      "pages": [
+        "xrd/xrd",
+        "electrochem/electrochem",
+        "ksp/ksp",
+        "complexation/complexation"
+      ],
+      "independent": false
+    }
+  ],
+  "preloadRule": {
+    "pages/home/home": {
+      "network": "all",
+      "packages": ["basic"]
+    }
+  },
+  "window": {
+    "navigationBarTitleText": "材料化学科研工具箱",
+    "navigationBarBackgroundColor": "#1f3c88",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f2f5fa",
+    "backgroundTextStyle": "light",
+    "enablePullDownRefresh": false
+  },
+  "style": "v2",
+  "darkmode": false,
+  "lazyCodeLoading": "requiredComponents",
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#1f3c88",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "工具"
+      },
+      {
+        "pagePath": "pages/favorites/favorites",
+        "text": "收藏"
+      }
+    ]
+  }
+}

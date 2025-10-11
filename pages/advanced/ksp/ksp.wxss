@@ -1,0 +1,190 @@
+/* 复用电化学样式，调整配色 */
+.ksp-page {
+  min-height: 100vh;
+  background: #f2f5fa;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+  padding: 32rpx;
+  background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+  border-radius: 24rpx;
+}
+
+.header-icon {
+  font-size: 56rpx;
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 24rpx;
+  flex-shrink: 0;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.header-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #0f766e;
+  margin-bottom: 8rpx;
+}
+
+.header-desc {
+  font-size: 26rpx;
+  color: #6c757d;
+}
+
+.section-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(15, 118, 110, 0.08);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2d3142;
+  margin-bottom: 12rpx;
+}
+
+.section-description {
+  font-size: 26rpx;
+  color: #6c757d;
+  margin-bottom: 24rpx;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 28rpx;
+  border-radius: 20rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-primary {
+  background: #0f766e;
+  color: #ffffff;
+}
+
+.btn-primary::after,
+.btn-secondary::after {
+  border: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2rpx solid #0f766e;
+  color: #0f766e;
+}
+
+.result-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #0f766e;
+  text-align: center;
+}
+
+.info-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-top: 24rpx;
+  border: 2rpx solid #e6ebf3;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2d3142;
+}
+
+.info-icon {
+  font-size: 28rpx;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.formula-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  padding: 16rpx;
+  background: #f7f9fc;
+  border-radius: 12rpx;
+}
+
+.formula-label {
+  font-size: 26rpx;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.formula {
+  font-size: 28rpx;
+  color: #2d3142;
+  font-family: 'Courier New', monospace;
+}
+
+.tip-card {
+  background: rgba(15, 118, 110, 0.06);
+  border-radius: 20rpx;
+  padding: 24rpx;
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2d3142;
+}
+
+.tip-icon {
+  font-size: 28rpx;
+}
+
+.tip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  font-size: 26rpx;
+  color: #6c757d;
+  line-height: 1.6;
+}
+

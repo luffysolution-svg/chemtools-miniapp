@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "络合/掩蔽估算",
+  "usingComponents": {
+    "calculator-input": "/components/calculator-input/calculator-input",
+    "result-card": "/components/result-card/result-card"
+  }
+}
+

@@ -1,0 +1,182 @@
+<view class="uvvis-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="header-icon">🌈</text>
+    <view class="header-content">
+      <view class="header-title">Beer-Lambert 定律</view>
+      <view class="header-desc">UV-Vis吸光度、浓度、摩尔吸光系数计算</view>
+    </view>
+  </view>
+
+  <!-- 计算模式选择 -->
+  <view class="section-card">
+    <view class="section-title">计算模式</view>
+    <picker mode="selector" range="{{modes}}" value="{{modeIndex}}" bindchange="handleModeChange">
+      <view class="picker-display">
+        <text>{{modes[modeIndex]}}</text>
+        <text class="picker-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="section-card">
+    <view class="section-title">输入参数</view>
+    
+    <!-- 模式1: 计算吸光度 A -->
+    <view wx:if="{{modeIndex === 0}}" class="input-group">
+      <calculator-input
+        label="摩尔吸光系数 ε (L·mol⁻¹·cm⁻¹)"
+        type="digit"
+        value="{{epsilon}}"
+        placeholder="例如：1000"
+        hint="物质的特征参数"
+        bindinput="handleEpsilonInput"
+      />
+      <calculator-input
+        label="浓度 c (mol·L⁻¹)"
+        type="digit"
+        value="{{concentration}}"
+        placeholder="例如：0.001"
+        hint="溶液浓度"
+        bindinput="handleConcentrationInput"
+      />
+      <calculator-input
+        label="光程 l (cm)"
+        type="digit"
+        value="{{pathlength}}"
+        placeholder="例如：1"
+        hint="比色皿厚度"
+        bindinput="handlePathlengthInput"
+      />
+    </view>
+
+    <!-- 模式2: 计算浓度 c -->
+    <view wx:if="{{modeIndex === 1}}" class="input-group">
+      <calculator-input
+        label="吸光度 A"
+        type="digit"
+        value="{{absorbance}}"
+        placeholder="例如：0.5"
+        hint="仪器测量值"
+        bindinput="handleAbsorbanceInput"
+      />
+      <calculator-input
+        label="摩尔吸光系数 ε (L·mol⁻¹·cm⁻¹)"
+        type="digit"
+        value="{{epsilon}}"
+        placeholder="例如：1000"
+        hint="物质的特征参数"
+        bindinput="handleEpsilonInput"
+      />
+      <calculator-input
+        label="光程 l (cm)"
+        type="digit"
+        value="{{pathlength}}"
+        placeholder="例如：1"
+        hint="比色皿厚度"
+        bindinput="handlePathlengthInput"
+      />
+    </view>
+
+    <!-- 模式3: 计算摩尔吸光系数 ε -->
+    <view wx:if="{{modeIndex === 2}}" class="input-group">
+      <calculator-input
+        label="吸光度 A"
+        type="digit"
+        value="{{absorbance}}"
+        placeholder="例如：0.5"
+        hint="仪器测量值"
+        bindinput="handleAbsorbanceInput"
+      />
+      <calculator-input
+        label="浓度 c (mol·L⁻¹)"
+        type="digit"
+        value="{{concentration}}"
+        placeholder="例如：0.001"
+        hint="溶液浓度"
+        bindinput="handleConcentrationInput"
+      />
+      <calculator-input
+        label="光程 l (cm)"
+        type="digit"
+        value="{{pathlength}}"
+        placeholder="例如：1"
+        hint="比色皿厚度"
+        bindinput="handlePathlengthInput"
+      />
+    </view>
+
+    <view class="action-buttons">
+      <button class="btn-primary" bindtap="calculate">计算</button>
+      <button class="btn-secondary" bindtap="reset">清空</button>
+    </view>
+  </view>
+
+  <!-- 结果展示 -->
+  <result-card
+    wx:if="{{result}}"
+    title="计算结果"
+    result="{{resultText}}"
+    hint="{{hint}}"
+    show-copy="{{true}}"
+    show-export="{{true}}"
+    show-history="{{true}}"
+    history-type="uvvis"
+    history-input="{{historyInput}}"
+    unit="{{unit}}"
+    precision="{{precision}}"
+    formula="{{formula}}"
+    warning="{{warning}}"
+    data-source="Beer-Lambert定律"
+    show-metadata="{{true}}"
+    metadata-expanded="{{false}}"
+  >
+    <view class="result-display">
+      <view class="result-value">{{result}}</view>
+    </view>
+  </result-card>
+
+  <!-- 公式说明 -->
+  <view class="info-card">
+    <view class="info-header">
+      <text class="info-icon">📖</text>
+      <text>Beer-Lambert 定律</text>
+    </view>
+    <view class="info-content">
+      <view class="formula-item">
+        <text class="formula-label">基本公式：</text>
+        <text class="formula">A = ε × c × l</text>
+      </view>
+      <view class="formula-item">
+        <text class="formula-label">其中：</text>
+        <text class="formula">A - 吸光度（无量纲）</text>
+        <text class="formula">ε - 摩尔吸光系数 (L·mol⁻¹·cm⁻¹)</text>
+        <text class="formula">c - 浓度 (mol·L⁻¹)</text>
+        <text class="formula">l - 光程/比色皿厚度 (cm)</text>
+      </view>
+      <view class="formula-item">
+        <text class="formula-label">适用条件：</text>
+        <text class="formula">• 单色光或窄波段光</text>
+        <text class="formula">• 稀溶液（避免分子间相互作用）</text>
+        <text class="formula">• 无散射、反射等干扰</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提示卡片 -->
+  <view class="tip-card">
+    <view class="tip-header">
+      <text class="tip-icon">💡</text>
+      <text>使用提示</text>
+    </view>
+    <view class="tip-content">
+      <text>• 标准比色皿光程通常为 1 cm</text>
+      <text>• 吸光度范围建议：0.1 - 1.0（线性范围好）</text>
+      <text>• ε值需在特定波长下测定（通常为最大吸收波长λmax）</text>
+      <text>• 浓度过高时需稀释，避免偏离Beer定律</text>
+      <text>• 透光率T与吸光度关系：A = -log₁₀(T) = log₁₀(1/T)</text>
+    </view>
+  </view>
+</view>
+

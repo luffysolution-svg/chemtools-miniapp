@@ -1,0 +1,266 @@
+<view class="spectroscopy-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="header-icon">📊</text>
+    <view class="header-content">
+      <view class="header-title">谱学参考表</view>
+      <view class="header-desc">XPS结合能、拉曼/IR特征峰位快速查询</view>
+    </view>
+  </view>
+
+  <!-- 谱学类型选择 -->
+  <view class="section-card">
+    <view class="spectro-tabs">
+      <view 
+        wx:for="{{spectroTypes}}" 
+        wx:key="id"
+        class="spectro-tab {{currentType === item.id ? 'active' : ''}}"
+        data-type="{{item.id}}"
+        bindtap="switchType"
+      >
+        <text class="tab-icon">{{item.icon}}</text>
+        <text class="tab-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{loading}}" type="table" rows="10"></skeleton>
+
+  <!-- XPS结合能表 -->
+  <view wx:elif="{{currentType === 'xps'}}" class="spectro-content">
+    <!-- 搜索 -->
+    <view class="section-card">
+      <view class="search-box">
+        <input 
+          class="search-input" 
+          type="text"
+          value="{{xpsSearchKeyword}}"
+          placeholder="搜索元素/能级"
+          bindinput="handleXpsSearch"
+        />
+        <button wx:if="{{xpsSearchKeyword}}" class="clear-btn" bindtap="clearXpsSearch">✕</button>
+      </view>
+    </view>
+
+    <!-- XPS数据表 -->
+    <view class="section-card">
+      <view class="section-title">🔬 XPS 结合能参考表</view>
+      <view class="section-description">常用元素的特征结合能（BE）值，相对C 1s = 284.8 eV校准</view>
+
+      <view class="data-table">
+        <view class="table-header">
+          <view class="header-cell">元素</view>
+          <view class="header-cell">能级</view>
+          <view class="header-cell">BE (eV)</view>
+          <view class="header-cell">说明</view>
+        </view>
+        <scroll-view class="table-body" scroll-y="{{true}}">
+          <view 
+            wx:for="{{xpsFiltered}}" 
+            wx:key="index"
+            class="table-row"
+            bindtap="copyXpsData"
+            data-item="{{item}}"
+          >
+            <view class="table-cell element-cell">{{item.element}}</view>
+            <view class="table-cell">{{item.state}}</view>
+            <view class="table-cell be-cell">{{item.be}}</view>
+            <view class="table-cell note-cell">{{item.note}}</view>
+          </view>
+          <view wx:if="{{xpsFiltered.length === 0}}" class="empty-hint">
+            未找到匹配的结合能数据
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="tip-card">
+        <view class="tip-header">
+          <text class="tip-icon">💡</text>
+          <text>使用提示</text>
+        </view>
+        <view class="tip-content">
+          <text>• 结合能（BE）可能因样品处理、充电效应等因素有±0.5 eV偏差</text>
+          <text>• 常用C 1s (284.8 eV) 或 Au 4f7/2 (84.0 eV) 进行能量校准</text>
+          <text>• 化学位移：不同化学环境导致BE偏移</text>
+          <text>• 卫星峰：某些过渡金属（如Cu²⁺）会出现卫星峰</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 拉曼/IR振动峰位表 -->
+  <view wx:if="{{currentType === 'raman-ir'}}" class="spectro-content">
+    <!-- 筛选 -->
+    <view class="section-card">
+      <view class="filter-row">
+        <view class="filter-label">谱学方法：</view>
+        <view class="filter-options">
+          <view 
+            class="filter-tag {{vibrationRegion === 'all' ? 'active' : ''}}"
+            data-region="all"
+            bindtap="selectRegion"
+          >
+            全部
+          </view>
+          <view 
+            class="filter-tag {{vibrationRegion === 'IR' ? 'active' : ''}}"
+            data-region="IR"
+            bindtap="selectRegion"
+          >
+            IR
+          </view>
+          <view 
+            class="filter-tag {{vibrationRegion === 'Raman' ? 'active' : ''}}"
+            data-region="Raman"
+            bindtap="selectRegion"
+          >
+            Raman
+          </view>
+        </view>
+      </view>
+
+      <view class="search-box">
+        <input 
+          class="search-input" 
+          type="text"
+          value="{{vibrationSearchKeyword}}"
+          placeholder="搜索官能团/峰位"
+          bindinput="handleVibrationSearch"
+        />
+        <button wx:if="{{vibrationSearchKeyword}}" class="clear-btn" bindtap="clearVibrationSearch">✕</button>
+      </view>
+    </view>
+
+    <!-- 振动峰位表 -->
+    <view class="section-card">
+      <view class="section-title">🎵 拉曼/IR 特征峰参考</view>
+      <view class="section-description">常见官能团和材料的特征振动峰位</view>
+
+      <view class="peak-list">
+        <view 
+          wx:for="{{vibrationFiltered}}" 
+          wx:key="index"
+          class="peak-item {{item.region === 'Raman' ? 'raman' : 'ir'}}"
+          bindtap="copyVibrationData"
+          data-item="{{item}}"
+        >
+          <view class="peak-header">
+            <view class="peak-mode">{{item.mode}}</view>
+            <view class="peak-region-tag">{{item.region}}</view>
+          </view>
+          <view class="peak-info">
+            <text class="peak-position">{{item.pos}} {{item.unit}}</text>
+            <text class="peak-note">{{item.note}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{vibrationFiltered.length === 0}}" class="empty-hint">
+          未找到匹配的峰位数据
+        </view>
+      </view>
+
+      <view class="tip-card">
+        <view class="tip-header">
+          <text class="tip-icon">💡</text>
+          <text>使用提示</text>
+        </view>
+        <view class="tip-content">
+          <text>• IR光谱：检测偶极矩变化，适合极性官能团</text>
+          <text>• Raman光谱：检测极化率变化，适合对称振动</text>
+          <text>• 峰位可能因分子环境、氢键、应力等因素有±10-50 cm⁻¹偏差</text>
+          <text>• 宽峰通常表示氢键或无定形态</text>
+          <text>• 尖峰通常表示晶态或无氢键作用</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快速工具：频率-能量转换 -->
+  <view wx:if="{{currentType === 'converter'}}" class="spectro-content">
+    <view class="section-card">
+      <view class="section-title">🔄 频率-能量转换</view>
+      <view class="section-description">波数、波长、能量、频率互相转换</view>
+
+      <view class="form-section">
+        <calculator-input
+          label="波数 (cm⁻¹)"
+          type="digit"
+          value="{{wavenumber}}"
+          placeholder="例如：1600"
+          hint="拉曼/IR常用单位"
+          bindinput="handleWavenumberInput"
+        />
+
+        <view class="action-buttons">
+          <button class="btn-primary" bindtap="convertWavenumber">转换</button>
+          <button class="btn-secondary" bindtap="resetConverter">清空</button>
+        </view>
+      </view>
+
+      <result-card
+        wx:if="{{converterResult}}"
+        title="转换结果"
+        result="{{converterResultText}}"
+        hint="{{converterHint}}"
+        show-copy="{{true}}"
+        show-export="{{true}}"
+        show-history="{{true}}"
+        history-type="spectroscopy"
+        history-input="{{converterHistoryInput}}"
+        unit="{{converterUnit}}"
+        formula="E = hc/λ = hcν̃"
+        data-source="光谱单位换算公式"
+        show-metadata="{{true}}"
+        metadata-expanded="{{false}}"
+      >
+        <view class="converter-result">
+          <view class="result-grid">
+            <view class="result-item">
+              <text class="item-label">波数 ν̃</text>
+              <text class="item-value">{{converterWavenumber}} cm⁻¹</text>
+            </view>
+            <view class="result-item">
+              <text class="item-label">波长 λ</text>
+              <text class="item-value">{{converterWavelength}} μm</text>
+            </view>
+            <view class="result-item">
+              <text class="item-label">频率 ν</text>
+              <text class="item-value">{{converterFrequency}} THz</text>
+            </view>
+            <view class="result-item">
+              <text class="item-label">能量 E</text>
+              <text class="item-value">{{converterEnergy}} eV</text>
+            </view>
+          </view>
+        </view>
+      </result-card>
+
+      <view class="info-card">
+        <view class="info-header">
+          <text class="info-icon">📖</text>
+          <text>转换公式</text>
+        </view>
+        <view class="info-content">
+          <view class="formula-item">
+            <text class="formula-label">波数 → 波长：</text>
+            <text class="formula">λ (μm) = 10⁴ / ν̃ (cm⁻¹)</text>
+          </view>
+          <view class="formula-item">
+            <text class="formula-label">波数 → 频率：</text>
+            <text class="formula">ν (THz) = c × ν̃ (cm⁻¹) / 10¹²</text>
+          </view>
+          <view class="formula-item">
+            <text class="formula-label">波数 → 能量：</text>
+            <text class="formula">E (eV) = h × c × ν̃ / e ≈ 1.24×10⁻⁴ × ν̃</text>
+          </view>
+          <view class="formula-item">
+            <text class="formula-label">其中：</text>
+            <text class="formula">c = 3×10¹⁰ cm/s (光速)</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+

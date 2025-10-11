@@ -1,0 +1,23 @@
+# WeChat Mini Program build artifacts and local configs
+# IDE
+.vscode/
+.idea/
+
+# WeChat DevTools temp/cache
+# Adjust if your devtools path differs
+*~
+*.log
+
+# Node modules (if ever used in tooling)
+node_modules/
+
+# Output folders (if you use miniprogram-ci or custom build)
+dist/
+miniprogramDist/
+
+# Private configs (keep example or template only)
+project.private.config.json
+
+# OS-specific
+.DS_Store
+Thumbs.db

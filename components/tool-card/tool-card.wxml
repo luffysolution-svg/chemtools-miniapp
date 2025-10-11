@@ -1,0 +1,10 @@
+<view class="tool-card {{size}}" bindtap="handleTap">
+  <view class="card-icon">{{icon}}</view>
+  <view class="card-content">
+    <view class="card-title">{{title}}</view>
+    <view class="card-desc" wx:if="{{description}}">{{description}}</view>
+  </view>
+  <view class="card-arrow" wx:if="{{showArrow}}">›</view>
+  <view class="card-badge" wx:if="{{badge}}">{{badge}}</view>
+</view>
+

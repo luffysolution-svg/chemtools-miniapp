@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "半导体数据库",
+  "usingComponents": {
+    "skeleton": "/components/skeleton/skeleton"
+  }
+}
+

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "工具箱",
+  "usingComponents": {
+    "tool-card": "/components/tool-card/tool-card"
+  }
+}
+

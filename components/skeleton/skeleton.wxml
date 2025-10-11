@@ -1,0 +1,43 @@
+<view class="skeleton-container">
+  <!-- 卡片骨架 -->
+  <view wx:if="{{type === 'card'}}" class="skeleton-card">
+    <view class="skeleton-avatar"></view>
+    <view class="skeleton-content">
+      <view class="skeleton-line short"></view>
+      <view class="skeleton-line medium"></view>
+      <view class="skeleton-line long"></view>
+    </view>
+  </view>
+
+  <!-- 列表骨架 -->
+  <view wx:if="{{type === 'list'}}" class="skeleton-list">
+    <view wx:for="{{rows}}" wx:key="*this" class="skeleton-list-item">
+      <view class="skeleton-circle"></view>
+      <view class="skeleton-list-content">
+        <view class="skeleton-line medium"></view>
+        <view class="skeleton-line short"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 工具卡片骨架 -->
+  <view wx:if="{{type === 'tool'}}" class="skeleton-tool-grid">
+    <view wx:for="{{rows}}" wx:key="*this" class="skeleton-tool-card">
+      <view class="skeleton-tool-icon"></view>
+      <view class="skeleton-tool-content">
+        <view class="skeleton-line medium"></view>
+        <view class="skeleton-line long"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 表格骨架 -->
+  <view wx:if="{{type === 'table'}}" class="skeleton-table">
+    <view wx:for="{{rows}}" wx:key="*this" class="skeleton-table-row">
+      <view class="skeleton-line short"></view>
+      <view class="skeleton-line medium"></view>
+      <view class="skeleton-line long"></view>
+    </view>
+  </view>
+</view>
+

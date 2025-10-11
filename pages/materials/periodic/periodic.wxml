@@ -1,0 +1,153 @@
+<view class="periodic-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="header-icon">🧮</text>
+    <view class="header-content">
+      <view class="header-title">元素周期表</view>
+      <view class="header-desc">查询元素基本性质与物理化学参数</view>
+    </view>
+  </view>
+
+  <!-- 搜索与筛选 -->
+  <view class="section-card">
+    <view class="search-box">
+      <input 
+        class="search-input" 
+        type="text"
+        value="{{searchKeyword}}"
+        placeholder="搜索元素名/符号/序号"
+        bindinput="handleSearchInput"
+      />
+      <button wx:if="{{searchKeyword}}" class="clear-btn" bindtap="clearSearch">✕</button>
+    </view>
+
+    <!-- 分类筛选 -->
+    <view class="filter-section">
+      <view class="filter-title">按类别筛选：</view>
+      <scroll-view class="filter-tags" scroll-x="{{true}}">
+        <view 
+          wx:for="{{categoryOptions}}" 
+          wx:key="value"
+          class="filter-tag {{selectedCategory === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="selectCategory"
+        >
+          {{item.label}}
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{loading}}" type="tool" rows="12"></skeleton>
+
+  <!-- 元素网格 -->
+  <view wx:else class="section-card">
+    <view class="section-title">
+      <text>元素周期表 ({{filteredElements.length}})</text>
+      <text class="hint-text">点击元素查看详情</text>
+    </view>
+    
+    <view class="element-grid">
+      <view 
+        wx:for="{{filteredElements}}" 
+        wx:key="number"
+        class="element-card {{item.category}}"
+        data-element="{{item}}"
+        bindtap="showElementDetail"
+      >
+        <view class="card-number">{{item.number}}</view>
+        <view class="card-symbol">{{item.symbol}}</view>
+        <view class="card-name">{{item.name}}</view>
+      </view>
+      
+      <view wx:if="{{filteredElements.length === 0}}" class="empty-hint">
+        未找到匹配的元素
+      </view>
+    </view>
+  </view>
+
+  <!-- 元素详情弹窗 -->
+  <view wx:if="{{selectedElement}}" class="modal-overlay" bindtap="closeDetail">
+    <view class="modal-content {{selectedElement.category}}-theme" catchtap="preventClose">
+      <view class="modal-header">
+        <view class="element-preview">
+          <view class="preview-number">{{selectedElement.number}}</view>
+          <view class="preview-symbol">{{selectedElement.symbol}}</view>
+          <view class="preview-name">{{selectedElement.name}}</view>
+        </view>
+        <button class="close-btn" bindtap="closeDetail">✕</button>
+      </view>
+
+      <scroll-view class="modal-body" scroll-y="{{true}}">
+        <view class="detail-section">
+          <view class="detail-title">基本信息</view>
+          <view class="detail-grid">
+            <view class="detail-item">
+              <text class="item-label">原子序数</text>
+              <text class="item-value">{{selectedElement.number}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="item-label">元素符号</text>
+              <text class="item-value">{{selectedElement.symbol}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="item-label">元素名称</text>
+              <text class="item-value">{{selectedElement.name}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="item-label">相对原子质量</text>
+              <text class="item-value">{{selectedElement.atomicMass}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="detail-section">
+          <view class="detail-title">物理性质</view>
+          <view class="detail-grid">
+            <view class="detail-item">
+              <text class="item-label">状态（常温）</text>
+              <text class="item-value">{{selectedElement.state || '—'}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="item-label">熔点 (K)</text>
+              <text class="item-value">{{selectedElement.meltingPoint || '—'}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="item-label">沸点 (K)</text>
+              <text class="item-value">{{selectedElement.boilingPoint || '—'}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="item-label">原子半径 (pm)</text>
+              <text class="item-value">{{selectedElement.atomicRadius || '—'}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="detail-section">
+          <view class="detail-title">化学性质</view>
+          <view class="detail-grid">
+            <view class="detail-item">
+              <text class="item-label">电负性</text>
+              <text class="item-value">{{selectedElement.electronegativity || '—'}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="item-label">电离能 (kJ/mol)</text>
+              <text class="item-value">{{selectedElement.ionizationEnergy || '—'}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="item-label">元素类别</text>
+              <text class="item-value">{{categoryMap[selectedElement.category] || '—'}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="modal-footer">
+        <button class="btn-secondary" bindtap="copyElementInfo">复制信息</button>
+        <button class="btn-primary" bindtap="closeDetail">关闭</button>
+      </view>
+    </view>
+  </view>
+</view>
+

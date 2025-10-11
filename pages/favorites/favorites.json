@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "收藏与历史",
+  "usingComponents": {
+    "skeleton": "/components/skeleton/skeleton"
+  }
+}
+

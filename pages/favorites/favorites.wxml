@@ -1,0 +1,226 @@
+<view class="favorites-page">
+  <!-- 顶部标签切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'favorites' ? 'active' : ''}}" bindtap="switchTab" data-tab="favorites">
+      <text class="tab-icon">⭐</text>
+      <text class="tab-text">收藏</text>
+    </view>
+    <view class="tab-item {{activeTab === 'history' ? 'active' : ''}}" bindtap="switchTab" data-tab="history">
+      <text class="tab-icon">📝</text>
+      <text class="tab-text">历史记录</text>
+    </view>
+  </view>
+
+  <!-- 收藏内容 -->
+  <view wx:if="{{activeTab === 'favorites'}}" class="tab-content">
+    <!-- 添加收藏表单 -->
+    <view class="add-form">
+      <view class="form-title">添加收藏</view>
+      
+      <view class="form-field">
+        <picker mode="selector" range="{{categories}}" value="{{categoryIndex}}" bindchange="handleCategoryChange">
+          <view class="picker-display">
+            <text class="picker-label">分类</text>
+            <text class="picker-value">{{categories[categoryIndex]}}</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-field">
+        <input class="form-input" placeholder="标题" value="{{title}}" bindinput="handleTitleInput" />
+      </view>
+
+      <view class="form-field">
+        <input class="form-input" placeholder="备注" value="{{note}}" bindinput="handleNoteInput" />
+      </view>
+
+      <view class="form-field">
+        <textarea class="form-textarea" placeholder="正文内容" value="{{body}}" bindinput="handleBodyInput"></textarea>
+      </view>
+
+      <view class="form-actions">
+        <button class="btn-primary" bindtap="addFavorite">{{editingId ? '保存修改' : '添加收藏'}}</button>
+        <button class="btn-secondary" bindtap="clearForm">清空</button>
+      </view>
+    </view>
+
+    <!-- 收藏列表 -->
+    <view class="favorite-list">
+      <view class="list-header">
+        <text class="list-title">我的收藏 ({{favorites.length}})</text>
+        <text class="clear-all" wx:if="{{favorites.length > 0}}" bindtap="clearAllFavorites">清空全部</text>
+      </view>
+
+      <view wx:if="{{favorites.length === 0}}" class="empty-state">
+        <text class="empty-icon">📌</text>
+        <text class="empty-text">还没有收藏内容</text>
+        <text class="empty-hint">可以保存常用的材料、反应或计算结果</text>
+      </view>
+
+      <view wx:for="{{favorites}}" wx:key="id" class="favorite-item">
+        <view class="item-header">
+          <view class="item-category">{{categories[item.categoryIndex]}}</view>
+          <view class="item-time">{{item.time}}</view>
+        </view>
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-note" wx:if="{{item.note}}">{{item.note}}</view>
+        <view class="item-body" wx:if="{{item.body}}">{{item.body}}</view>
+        <view class="item-actions">
+          <button class="action-btn" bindtap="copyFavorite" data-text="{{item.copyText}}">
+            <text class="btn-icon">📋</text> 复制
+          </button>
+          <button class="action-btn" bindtap="editFavorite" data-id="{{item.id}}">
+            <text class="btn-icon">✏️</text> 编辑
+          </button>
+          <button class="action-btn danger" bindtap="deleteFavorite" data-id="{{item.id}}">
+            <text class="btn-icon">🗑️</text> 删除
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史记录内容 -->
+  <view wx:if="{{activeTab === 'history'}}" class="tab-content">
+    <!-- 筛选器头部 -->
+    <view class="filter-header">
+      <view class="filter-title">
+        <text class="title-text">历史记录 ({{filteredHistory.length}}/{{totalHistory}})</text>
+        <button class="filter-toggle-btn" bindtap="toggleFilterPanel">
+          <text class="filter-icon">🔍</text>
+          <text>{{showFilterPanel ? '收起筛选' : '展开筛选'}}</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 筛选面板 -->
+    <view class="filter-panel {{showFilterPanel ? 'show' : 'hide'}}">
+      <!-- 关键词搜索 -->
+      <view class="filter-section">
+        <view class="section-label">🔍 关键词搜索</view>
+        <view class="search-box">
+          <input 
+            class="search-input" 
+            placeholder="搜索输入或结果..." 
+            value="{{searchKeyword}}"
+            bindinput="handleSearchInput"
+            confirm-type="search"
+            bindconfirm="applyFilter"
+          />
+          <text wx:if="{{searchKeyword}}" class="clear-search-btn" bindtap="clearSearch">×</text>
+        </view>
+      </view>
+
+      <!-- 类别筛选 -->
+      <view class="filter-section">
+        <view class="section-label">📁 计算类别</view>
+        <view class="filter-options">
+          <view 
+            wx:for="{{categoryFilters}}" 
+            wx:key="id"
+            class="filter-option {{categoryFilterIndex === index ? 'active' : ''}}"
+            data-index="{{index}}"
+            bindtap="handleCategoryFilterChange"
+          >
+            {{item}}
+          </view>
+        </view>
+      </view>
+
+      <!-- 时间范围筛选 -->
+      <view class="filter-section">
+        <view class="section-label">📅 时间范围</view>
+        <view class="filter-options">
+          <view 
+            wx:for="{{dateFilters}}" 
+            wx:key="id"
+            class="filter-option {{dateFilterIndex === index ? 'active' : ''}}"
+            data-index="{{index}}"
+            bindtap="handleDateFilterChange"
+          >
+            {{item}}
+          </view>
+        </view>
+      </view>
+
+      <!-- 警告筛选 -->
+      <view class="filter-section">
+        <view class="section-label">⚠️ 警告记录</view>
+        <view class="filter-switch">
+          <switch 
+            checked="{{showWarningOnly}}" 
+            bindchange="handleWarningFilterChange"
+            color="#4CAF50"
+          />
+          <text class="switch-label">仅显示包含警告的记录</text>
+        </view>
+      </view>
+
+      <!-- 筛选按钮 -->
+      <view class="filter-actions">
+        <button class="btn-filter-apply" bindtap="applyFilter">应用筛选</button>
+        <button class="btn-filter-reset" bindtap="resetFilter">重置</button>
+      </view>
+    </view>
+
+    <!-- 快速筛选栏（旧版，保留以兼容） -->
+    <view class="quick-filter-bar">
+      <picker mode="selector" range="{{typeFilters}}" value="{{typeFilterIndex}}" bindchange="handleTypeFilterChange">
+        <view class="filter-picker">
+          <text>{{typeFilters[typeFilterIndex]}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+      <button class="clear-btn" bindtap="clearHistory">清空历史</button>
+    </view>
+
+    <!-- 骨架屏 -->
+    <skeleton wx:if="{{historyLoading}}" type="list" rows="8"></skeleton>
+
+    <!-- 历史列表 -->
+    <view wx:else class="history-list">
+      <view wx:if="{{filteredHistory.length === 0 && totalHistory === 0}}" class="empty-state">
+        <text class="empty-icon">📝</text>
+        <text class="empty-text">暂无历史记录</text>
+        <text class="empty-hint">您的计算历史将在这里显示</text>
+      </view>
+
+      <view wx:if="{{filteredHistory.length === 0 && totalHistory > 0}}" class="empty-state">
+        <text class="empty-icon">🔍</text>
+        <text class="empty-text">没有符合条件的记录</text>
+        <text class="empty-hint">试试调整筛选条件</text>
+      </view>
+
+      <view wx:for="{{filteredHistory}}" wx:key="id" class="history-item {{item.hasWarning ? 'has-warning' : ''}}">
+        <view class="history-header">
+          <view class="history-type">{{item.title}}</view>
+          <view class="history-time">{{item.timeStr}}</view>
+        </view>
+        <view class="history-content">
+          <view class="history-input">输入：{{item.input}}</view>
+          <view class="history-result">结果：{{item.result}}</view>
+          <view wx:if="{{item.warning}}" class="history-warning">
+            <text class="warning-icon">⚠️</text>
+            <text class="warning-text">{{item.warning}}</text>
+          </view>
+        </view>
+        <view class="history-actions">
+          <button class="action-btn-small" bindtap="copyHistory" data-text="{{item.copyText}}">
+            <text class="btn-icon">📋</text> 复制
+          </button>
+          <button class="action-btn-small" bindtap="deleteHistory" data-id="{{item.id}}">
+            <text class="btn-icon">🗑️</text> 删除
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 导出按钮 -->
+    <view class="export-actions" wx:if="{{filteredHistory.length > 0}}">
+      <button class="export-btn" bindtap="exportHistory">
+        <text class="btn-icon">📤</text> 导出筛选结果 ({{filteredHistory.length}}条)
+      </button>
+    </view>
+  </view>
+</view>
+

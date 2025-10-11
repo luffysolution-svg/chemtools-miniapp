@@ -1,0 +1,139 @@
+.skeleton-container {
+  width: 100%;
+}
+
+/* 基础骨架元素 */
+.skeleton-line,
+.skeleton-circle,
+.skeleton-avatar,
+.skeleton-tool-icon {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 8rpx;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 线条大小 */
+.skeleton-line {
+  height: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-line.short {
+  width: 40%;
+}
+
+.skeleton-line.medium {
+  width: 60%;
+}
+
+.skeleton-line.long {
+  width: 80%;
+}
+
+/* 圆形 */
+.skeleton-circle {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeleton-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+}
+
+/* 卡片骨架 */
+.skeleton-card {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 32rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 列表骨架 */
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.skeleton-list-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+}
+
+.skeleton-list-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 工具卡片骨架 */
+.skeleton-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.skeleton-tool-card {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 32rpx 28rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  min-height: 140rpx;
+}
+
+.skeleton-tool-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-tool-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 表格骨架 */
+.skeleton-table {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.skeleton-table-row {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+  padding: 20rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+}
+

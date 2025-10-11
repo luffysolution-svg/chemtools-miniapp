@@ -1,0 +1,81 @@
+<view class="result-card {{type}}">
+  <view class="result-header">
+    <view class="result-tag">{{title || '结果'}}</view>
+    <view class="result-actions">
+      <button class="action-btn" wx:if="{{showCopy}}" bindtap="handleCopy">
+        <text class="icon">📋</text> 复制
+      </button>
+      <button class="action-btn" wx:if="{{showExport}}" bindtap="handleExport">
+        <text class="icon">📤</text> 导出
+      </button>
+      <button class="action-btn" wx:if="{{showHistory}}" bindtap="handleSaveHistory">
+        <text class="icon">📌</text> 保存
+      </button>
+    </view>
+  </view>
+  
+  <view class="result-content">
+    <slot></slot>
+  </view>
+  
+  <!-- 警告信息（如果有） -->
+  <view class="result-warning" wx:if="{{warning}}">
+    <text class="warning-icon">⚠️</text>
+    <text class="warning-text">{{warning}}</text>
+  </view>
+  
+  <!-- 元数据区域 -->
+  <view class="result-metadata" wx:if="{{showMetadata && (unit || precision || formula || conditions || dataSource)}}">
+    <view class="metadata-header" bindtap="toggleMetadata">
+      <text class="metadata-title">详细信息</text>
+      <text class="metadata-arrow {{isMetadataExpanded ? 'expanded' : ''}}">▼</text>
+    </view>
+    
+    <view class="metadata-content" wx:if="{{isMetadataExpanded}}">
+      <!-- 单位 -->
+      <view class="metadata-item" wx:if="{{unit}}">
+        <view class="meta-label">单位</view>
+        <view class="meta-value">{{unit}}</view>
+      </view>
+      
+      <!-- 精度 -->
+      <view class="metadata-item" wx:if="{{precision}}">
+        <view class="meta-label">精度</view>
+        <view class="meta-value">{{precision}}</view>
+      </view>
+      
+      <!-- 计算公式 -->
+      <view class="metadata-item formula-item" wx:if="{{formula}}">
+        <view class="meta-label">公式</view>
+        <view class="meta-value formula-text">{{formula}}</view>
+      </view>
+      
+      <!-- 计算条件 -->
+      <view class="metadata-item" wx:if="{{conditions}}">
+        <view class="meta-label">条件</view>
+        <view class="meta-value">
+          <block wx:if="{{!isConditionsArray}}">
+            {{conditionsText}}
+          </block>
+          <block wx:else>
+            <view class="condition-item" wx:for="{{conditionsList}}" wx:key="index">
+              • {{item}}
+            </view>
+          </block>
+        </view>
+      </view>
+      
+      <!-- 数据来源 -->
+      <view class="metadata-item" wx:if="{{dataSource}}">
+        <view class="meta-label">来源</view>
+        <view class="meta-value source-text">{{dataSource}}</view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="result-hint" wx:if="{{hint}}">
+    <text class="hint-icon">💡</text>
+    <text class="hint-text">{{hint}}</text>
+  </view>
+</view>
+

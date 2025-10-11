@@ -1,0 +1,240 @@
+<view class="help-container">
+  <!-- 页面头部 -->
+  <view class="help-header">
+    <view class="header-icon">📖</view>
+    <view class="header-title">使用帮助</view>
+    <view class="header-subtitle">化学计算工具使用指南与数据来源说明</view>
+  </view>
+
+  <!-- 标签页切换 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{activeTab === 0 ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-index="0"
+    >
+      <view class="tab-icon">🔧</view>
+      <view class="tab-text">使用指南</view>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 1 ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-index="1"
+    >
+      <view class="tab-icon">📊</view>
+      <view class="tab-text">数据来源</view>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 2 ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-index="2"
+    >
+      <view class="tab-icon">❓</view>
+      <view class="tab-text">常见问题</view>
+    </view>
+  </view>
+
+  <!-- 使用指南 -->
+  <view class="content-section" wx:if="{{activeTab === 0}}">
+    <view class="section-card">
+      <view class="card-title">
+        <view class="title-icon">🎯</view>
+        <text>快速开始</text>
+      </view>
+      <view class="card-content">
+        <view class="guide-item">
+          <view class="guide-number">1</view>
+          <view class="guide-text">
+            <view class="guide-title">选择计算工具</view>
+            <view class="guide-desc">在首页选择您需要的计算类型，支持单位转换、溶液配制、XRD分析、电化学计算等多种工具</view>
+          </view>
+        </view>
+        
+        <view class="guide-item">
+          <view class="guide-number">2</view>
+          <view class="guide-text">
+            <view class="guide-title">输入参数</view>
+            <view class="guide-desc">按照提示输入计算所需的参数，所有输入框都有单位提示和范围说明</view>
+          </view>
+        </view>
+        
+        <view class="guide-item">
+          <view class="guide-number">3</view>
+          <view class="guide-text">
+            <view class="guide-title">查看结果</view>
+            <view class="guide-desc">结果会实时显示，包含计算值、单位、精度说明和适用条件</view>
+          </view>
+        </view>
+        
+        <view class="guide-item">
+          <view class="guide-number">4</view>
+          <view class="guide-text">
+            <view class="guide-title">导出分享</view>
+            <view class="guide-desc">可以复制结果、保存为文件或分享给好友，支持多种格式</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 功能模块 -->
+    <view class="section-card">
+      <view class="card-title">
+        <view class="title-icon">⚙️</view>
+        <text>功能模块</text>
+      </view>
+      <view class="card-content">
+        <view class="module-list">
+          <view class="module-item" wx:for="{{modules}}" wx:key="id">
+            <view class="module-icon">{{item.icon}}</view>
+            <view class="module-info">
+              <view class="module-name">{{item.name}}</view>
+              <view class="module-desc">{{item.desc}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 使用技巧 -->
+    <view class="section-card">
+      <view class="card-title">
+        <view class="title-icon">💡</view>
+        <text>使用技巧</text>
+      </view>
+      <view class="card-content">
+        <view class="tip-list">
+          <view class="tip-item" wx:for="{{tips}}" wx:key="index">
+            <view class="tip-icon">✓</view>
+            <view class="tip-text">{{item}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据来源 -->
+  <view class="content-section" wx:if="{{activeTab === 1}}">
+    <view class="section-card">
+      <view class="card-title">
+        <view class="title-icon">📚</view>
+        <text>数据来源与引用</text>
+      </view>
+      <view class="card-content">
+        <view class="source-item" wx:for="{{dataSources}}" wx:key="id">
+          <view class="source-header">
+            <view class="source-icon">{{item.icon}}</view>
+            <view class="source-title">{{item.title}}</view>
+          </view>
+          <view class="source-desc">{{item.description}}</view>
+          <view class="source-references">
+            <view class="reference-item" wx:for="{{item.references}}" wx:key="index" wx:for-item="ref">
+              <view class="ref-label">{{ref.label}}</view>
+              <view class="ref-text">{{ref.text}}</view>
+            </view>
+          </view>
+          <view class="source-meta" wx:if="{{item.version}}">
+            <text class="meta-label">版本:</text>
+            <text class="meta-value">{{item.version}}</text>
+            <text class="meta-label" wx:if="{{item.lastUpdated}}">更新:</text>
+            <text class="meta-value" wx:if="{{item.lastUpdated}}">{{item.lastUpdated}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 数据质量说明 -->
+    <view class="section-card">
+      <view class="card-title">
+        <view class="title-icon">🎯</view>
+        <text>数据质量与精度</text>
+      </view>
+      <view class="card-content">
+        <view class="quality-item" wx:for="{{dataQuality}}" wx:key="level">
+          <view class="quality-header">
+            <view class="quality-badge {{item.level}}">{{item.levelText}}</view>
+            <view class="quality-title">{{item.title}}</view>
+          </view>
+          <view class="quality-desc">{{item.description}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 免责声明 -->
+    <view class="section-card disclaimer-card">
+      <view class="card-title">
+        <view class="title-icon">⚠️</view>
+        <text>免责声明</text>
+      </view>
+      <view class="card-content">
+        <view class="disclaimer-text">
+          <text>本工具提供的计算结果和数据仅供科研参考使用。虽然我们力求数据的准确性和可靠性，但不对计算结果的准确性作任何形式的保证。</text>
+          <text class="disclaimer-important">在用于关键实验或工业应用前，请务必通过实验验证或查阅原始文献进行确认。</text>
+          <text>对于因使用本工具而产生的任何直接或间接损失，开发者不承担任何责任。</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常见问题 -->
+  <view class="content-section" wx:if="{{activeTab === 2}}">
+    <view class="section-card">
+      <view class="card-title">
+        <view class="title-icon">❓</view>
+        <text>常见问题解答</text>
+      </view>
+      <view class="card-content">
+        <view class="faq-list">
+          <view 
+            class="faq-item {{expandedFaq === index ? 'expanded' : ''}}" 
+            wx:for="{{faqs}}" 
+            wx:key="index"
+            bindtap="toggleFaq"
+            data-index="{{index}}"
+          >
+            <view class="faq-question">
+              <view class="faq-q-icon">Q</view>
+              <view class="faq-q-text">{{item.question}}</view>
+              <view class="faq-arrow {{expandedFaq === index ? 'rotate' : ''}}">▼</view>
+            </view>
+            <view class="faq-answer" wx:if="{{expandedFaq === index}}">
+              <view class="faq-a-icon">A</view>
+              <view class="faq-a-text">{{item.answer}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系我们 -->
+    <view class="section-card">
+      <view class="card-title">
+        <view class="title-icon">📧</view>
+        <text>反馈与建议</text>
+      </view>
+      <view class="card-content">
+        <view class="contact-info">
+          <view class="contact-item">
+            <view class="contact-label">问题反馈</view>
+            <view class="contact-value">如果您发现任何bug或数据错误，欢迎通过小程序反馈功能告诉我们</view>
+          </view>
+          <view class="contact-item">
+            <view class="contact-label">功能建议</view>
+            <view class="contact-value">如果您有任何功能改进建议，我们非常乐意听取</view>
+          </view>
+          <view class="contact-item">
+            <view class="contact-label">开发者</view>
+            <view class="contact-value">材料化学科研工作者开发，持续更新中</view>
+          </view>
+        </view>
+        <button class="feedback-btn" bindtap="openFeedback">提交反馈</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 返回首页按钮 -->
+  <view class="bottom-actions">
+    <button class="action-btn primary" bindtap="goHome">返回首页</button>
+    <button class="action-btn secondary" open-type="share">分享给好友</button>
+  </view>
+</view>
+

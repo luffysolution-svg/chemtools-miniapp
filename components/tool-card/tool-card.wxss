@@ -1,0 +1,130 @@
+.tool-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 32rpx 28rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(31, 60, 136, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 140rpx;
+  overflow: hidden;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120rpx;
+  height: 120rpx;
+  background: radial-gradient(circle, rgba(31, 60, 136, 0.04) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(40%, -40%);
+}
+
+.tool-card:active {
+  transform: scale(0.97);
+  box-shadow: 0 4rpx 16rpx rgba(31, 60, 136, 0.15);
+}
+
+.tool-card.large {
+  padding: 40rpx 32rpx;
+}
+
+.tool-card.small {
+  padding: 24rpx 20rpx;
+}
+
+.card-icon {
+  font-size: 48rpx;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eef4ff 0%, #deeaff 100%);
+  border-radius: 20rpx;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(31, 60, 136, 0.08);
+  position: relative;
+  z-index: 1;
+}
+
+.tool-card.large .card-icon {
+  font-size: 56rpx;
+  width: 96rpx;
+  height: 96rpx;
+}
+
+.tool-card.small .card-icon {
+  font-size: 40rpx;
+  width: 64rpx;
+  height: 64rpx;
+}
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8rpx;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2d3142;
+  line-height: 1.3;
+}
+
+.tool-card.large .card-title {
+  font-size: 36rpx;
+}
+
+.tool-card.small .card-title {
+  font-size: 28rpx;
+}
+
+.card-desc {
+  font-size: 24rpx;
+  color: #6c757d;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.card-arrow {
+  font-size: 48rpx;
+  color: #d7dce5;
+  font-weight: 300;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.tool-card:active .card-arrow {
+  color: #1f3c88;
+  transform: translateX(4rpx);
+}
+
+.card-badge {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  padding: 6rpx 16rpx;
+  background: #dc3545;
+  color: #ffffff;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
