@@ -1,0 +1,449 @@
+/* pages/materials/organic-materials/organic-materials.wxss */
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f7fa;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx 30rpx 30rpx;
+  color: white;
+}
+
+.title {
+  font-size: 40rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.subtitle {
+  font-size: 24rpx;
+  opacity: 0.9;
+  display: block;
+}
+
+.search-box {
+  margin: 20rpx 30rpx;
+  background: white;
+  border-radius: 50rpx;
+  padding: 0 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.search-input {
+  height: 70rpx;
+  font-size: 28rpx;
+}
+
+.category-scroll {
+  white-space: nowrap;
+  padding: 20rpx 0;
+  margin-bottom: 10rpx;
+}
+
+.category-list {
+  padding: 0 30rpx;
+  display: inline-flex;
+}
+
+.category-item {
+  display: inline-block;
+  padding: 12rpx 28rpx;
+  margin-right: 20rpx;
+  background: white;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  color: #666;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+  transition: all 0.3s;
+}
+
+.category-item.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: bold;
+}
+
+.material-list {
+  flex: 1;
+  padding: 0 30rpx 30rpx;
+}
+
+.material-card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+  transition: all 0.3s;
+}
+
+.material-card:active {
+  transform: scale(0.98);
+}
+
+.material-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.material-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.material-abbr {
+  font-size: 24rpx;
+  color: #667eea;
+  background: #eef0ff;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.material-formula {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+  font-family: 'Courier New', monospace;
+}
+
+.material-category {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 15rpx;
+}
+
+.material-apps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.app-tag {
+  font-size: 22rpx;
+  color: #764ba2;
+  background: #f8f4ff;
+  padding: 6rpx 14rpx;
+  border-radius: 12rpx;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 详情弹窗 - 优化版 */
+.detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.detail-content {
+  width: 100%;
+  height: 85vh;
+  background: #f8f9fa;
+  border-radius: 30rpx 30rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* 头部样式 */
+.detail-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx 30rpx 30rpx;
+  color: white;
+  border-radius: 30rpx 30rpx 0 0;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.detail-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: white;
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.detail-close {
+  font-size: 36rpx;
+  color: white;
+  padding: 10rpx;
+  opacity: 0.9;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+}
+
+.header-info {
+  display: flex;
+  gap: 20rpx;
+  align-items: center;
+}
+
+.header-abbr {
+  font-size: 24rpx;
+  background: rgba(255,255,255,0.25);
+  padding: 8rpx 20rpx;
+  border-radius: 30rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+.header-category {
+  font-size: 24rpx;
+  background: rgba(255,255,255,0.25);
+  padding: 8rpx 20rpx;
+  border-radius: 30rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+.detail-body {
+  flex: 1;
+  padding: 20rpx;
+  background: #f8f9fa;
+  height: 0; /* 关键：让flex子元素可以正确滚动 */
+}
+
+/* 信息卡片 */
+.info-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.06);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.title-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.title-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 基本信息网格 */
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  position: relative;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #999;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.info-value.formula {
+  font-family: 'Courier New', monospace;
+  color: #667eea;
+  word-break: break-all;
+}
+
+.copy-hint {
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20rpx;
+  color: #667eea;
+  background: #eef0ff;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+/* 性能参数网格 */
+.performance-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.perf-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  padding: 20rpx;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 12rpx;
+  border: 1rpx solid #f0f0f0;
+}
+
+.perf-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.perf-value {
+  font-size: 28rpx;
+  color: #667eea;
+  font-weight: bold;
+}
+
+/* 应用领域网格 */
+.app-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.app-chip {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border: 1rpx solid #667eea30;
+  padding: 12rpx 20rpx;
+  border-radius: 30rpx;
+}
+
+.app-dot {
+  color: #667eea;
+  margin-right: 8rpx;
+  font-size: 24rpx;
+}
+
+.app-text {
+  font-size: 26rpx;
+  color: #667eea;
+  font-weight: 500;
+}
+
+/* 材料特性列表 */
+.properties-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.prop-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  gap: 20rpx;
+}
+
+.prop-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex: 1;
+}
+
+.prop-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  flex-shrink: 0;
+}
+
+.prop-key {
+  font-size: 26rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.prop-value {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 600;
+  text-align: right;
+  max-width: 50%;
+  word-break: break-all;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  padding: 20rpx 0;
+  margin-top: 10rpx;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0 8rpx 20rpx rgba(102, 126, 234, 0.3);
+}
+
+.btn-icon {
+  font-size: 32rpx;
+}
+
+.btn-text {
+  color: white;
+}
+

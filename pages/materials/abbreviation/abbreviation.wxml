@@ -1,0 +1,217 @@
+<wxs module="tools">
+  // 判断是否已收藏
+  function isFavorited(favorites, abbr) {
+    for (var i = 0; i < favorites.length; i++) {
+      if (favorites[i].abbr === abbr) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  module.exports = {
+    isFavorited: isFavorited
+  };
+</wxs>
+
+<view class="abbreviation-page">
+  <!-- 顶部信息栏 -->
+  <view class="info-banner">
+    <view class="banner-content">
+      <text class="banner-icon">📚</text>
+      <view class="banner-text">
+        <text class="banner-title">化学药品缩写查询</text>
+        <text class="banner-subtitle">收录 {{totalCount}} 条常见缩写</text>
+      </view>
+      <view class="stats-btn" bindtap="toggleStatistics">
+        <text class="stats-icon">{{showStatistics ? '▼' : '📊'}}</text>
+      </view>
+    </view>
+    
+    <!-- 数据统计面板 -->
+    <view wx:if="{{showStatistics}}" class="statistics-panel">
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.totalCount}}</text>
+        <text class="stat-label">总条目</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.categoriesCount}}</text>
+        <text class="stat-label">分类数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.detailedCount}}</text>
+        <text class="stat-label">详细数据</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.withCAS}}</text>
+        <text class="stat-label">CAS号</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.withFormula}}</text>
+        <text class="stat-label">分子式</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-section">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索缩写、全称、中文名..." 
+        value="{{searchQuery}}"
+        bindinput="handleSearch"
+        bindconfirm="handleSearchConfirm"
+      />
+      <text wx:if="{{searchQuery}}" class="clear-btn" bindtap="clearSearch">✕</text>
+    </view>
+
+    <!-- 搜索历史 -->
+    <view wx:if="{{!isSearching && searchQuery === '' && searchHistory.length > 0}}" class="search-history">
+      <view class="history-header">
+        <text class="history-title">搜索历史</text>
+        <text class="history-clear" bindtap="clearSearchHistory">清空</text>
+      </view>
+      <view class="history-tags">
+        <view 
+          wx:for="{{searchHistory}}" 
+          wx:key="*this" 
+          class="history-tag"
+          bindtap="useHistorySearch"
+          data-query="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能按钮栏 -->
+  <view class="action-bar">
+    <view class="action-btn" bindtap="toggleCategoryFilter">
+      <text class="action-icon">📁</text>
+      <text class="action-text">{{selectedCategory}}</text>
+      <text class="action-arrow">{{showCategoryFilter ? '▲' : '▼'}}</text>
+    </view>
+    <view class="action-btn" bindtap="viewFavorites">
+      <text class="action-icon">⭐</text>
+      <text class="action-text">收藏({{favorites.length}})</text>
+    </view>
+  </view>
+
+  <!-- 分类筛选面板 -->
+  <view wx:if="{{showCategoryFilter}}" class="category-panel">
+    <view 
+      wx:for="{{categories}}" 
+      wx:key="*this" 
+      class="category-item {{selectedCategory === item ? 'active' : ''}}"
+      bindtap="selectCategory"
+      data-category="{{item}}"
+    >
+      <text class="category-name">{{item}}</text>
+      <text class="category-count" wx:if="{{item !== '全部' && categoryStats[item]}}">
+        ({{categoryStats[item]}})
+      </text>
+      <text class="category-count" wx:if="{{item === '全部'}}">
+        ({{totalCount}})
+      </text>
+    </view>
+  </view>
+
+  <!-- 结果统计 -->
+  <view class="result-summary" wx:if="{{isSearching}}">
+    <text class="summary-text">找到 {{displayData.length}} 条相关结果</text>
+  </view>
+
+  <!-- 数据列表 -->
+  <view class="data-list">
+    <view wx:if="{{displayData.length === 0}}" class="empty-state">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">未找到相关内容</text>
+      <text class="empty-hint">试试其他关键词吧</text>
+    </view>
+
+    <view 
+      wx:for="{{displayData}}" 
+      wx:key="abbr" 
+      class="data-item"
+      bindtap="viewDetail"
+      data-item="{{item}}"
+    >
+      <view class="item-header">
+        <view class="abbr-wrapper">
+          <text class="abbr-text">{{item.abbr}}</text>
+          <text class="category-tag">{{item.category}}</text>
+        </view>
+        <view class="item-actions">
+          <text 
+            class="favorite-icon {{tools.isFavorited(favorites, item.abbr) ? 'favorited' : ''}}"
+            catchtap="toggleFavorite"
+            data-item="{{item}}"
+          >
+            {{tools.isFavorited(favorites, item.abbr) ? '★' : '☆'}}
+          </text>
+        </view>
+      </view>
+      
+      <view class="item-content">
+        <view class="full-name">
+          <text class="label">英文：</text>
+          <text class="value">{{item.full}}</text>
+          <text 
+            class="copy-btn"
+            catchtap="copyFull"
+            data-full="{{item.full}}"
+          >📋</text>
+        </view>
+        
+        <view class="chinese-name">
+          <text class="label">中文：</text>
+          <text class="value">{{item.chinese}}</text>
+        </view>
+        
+        <!-- 物理化学信息 -->
+        <view class="meta-info" wx:if="{{item.cas || item.formula || item.mw}}">
+          <view class="meta-item" wx:if="{{item.cas}}">
+            <text class="meta-label">CAS:</text>
+            <text class="meta-value">{{item.cas}}</text>
+            <text 
+              class="copy-btn-small"
+              catchtap="copyCAS"
+              data-cas="{{item.cas}}"
+            >📋</text>
+          </view>
+          <view class="meta-item" wx:if="{{item.formula}}">
+            <text class="meta-label">式:</text>
+            <text class="meta-value">{{item.formula}}</text>
+          </view>
+          <view class="meta-item" wx:if="{{item.mw}}">
+            <text class="meta-label">MW:</text>
+            <text class="meta-value">{{item.mw}}</text>
+          </view>
+        </view>
+        
+        <view class="description">
+          <text class="desc-text">{{item.description}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多提示 -->
+  <view class="loading-more" wx:if="{{isLoading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+  
+  <view class="no-more" wx:if="{{!hasMore && displayData.length > 0}}">
+    <text class="no-more-text">— 已加载全部 {{displayData.length}} 条数据 —</text>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="footer-tips" wx:if="{{displayData.length > 0 && !isLoading}}">
+    <text class="tips-text">💡 点击卡片查看详情，点击星标收藏</text>
+    <text class="tips-text">📋 点击复制图标可复制内容</text>
+  </view>
+</view>
+

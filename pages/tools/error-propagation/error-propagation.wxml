@@ -1,0 +1,304 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view wx:for="{{tools}}" wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}" bindtap="switchTool">
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 加减法误差传递 -->
+  <view wx:if="{{currentTool === 'add-subtract'}}">
+    <view class="tool-intro">
+      <text class="intro-title">➕ 加减法误差传递</text>
+      <text class="intro-desc">计算加法或减法运算的误差传递</text>
+      <text class="intro-formula">Δz = √(Δx² + Δy² + ...)</text>
+    </view>
+
+    <!-- 运算类型选择 -->
+    <view class="operation-switch">
+      <view class="switch-btn {{addSubOperation === 'add' ? 'active' : ''}}" 
+        data-op="add" bindtap="switchAddSubOperation">加法 (+)</view>
+      <view class="switch-btn {{addSubOperation === 'subtract' ? 'active' : ''}}" 
+        data-op="subtract" bindtap="switchAddSubOperation">减法 (-)</view>
+    </view>
+
+    <!-- 变量数量选择 -->
+    <view class="variable-count">
+      <text class="label">变量个数：</text>
+      <picker mode="selector" range="{{[2,3,4,5,6,7,8,9,10]}}" value="{{addSubVariableCount - 2}}" bindchange="onAddSubVariableCountChange">
+        <view class="picker">{{addSubVariableCount}}</view>
+      </picker>
+    </view>
+
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <view wx:for="{{addSubVariableCount}}" wx:key="index" class="variable-group">
+        <text class="variable-label">变量 x{{index + 1}}</text>
+        <view class="input-row">
+          <input class="variable-input" type="digit" placeholder="值" 
+            value="{{addSubValues[index]}}" 
+            data-index="{{index}}" bindinput="handleAddSubValueInput" />
+          <text class="separator">±</text>
+          <input class="variable-input" type="digit" placeholder="误差" 
+            value="{{addSubErrors[index]}}" 
+            data-index="{{index}}" bindinput="handleAddSubErrorInput" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 按钮组 -->
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateAddSubtract">计算</button>
+      <button class="calc-button" bindtap="clearAddSubtract">清空</button>
+    </view>
+
+    <!-- 结果展示 -->
+    <view wx:if="{{addSubResultText}}" class="result-card">
+      <view class="result-header">
+        <text class="result-title">📊 计算结果</text>
+      </view>
+      <view class="result-content">
+        <text class="result-text">{{addSubResultText}}</text>
+      </view>
+    </view>
+
+    <!-- 导出按钮 -->
+    <view wx:if="{{addSubResultText}}" class="export-button" bindtap="exportResult">
+      <text>📤 导出结果</text>
+    </view>
+  </view>
+
+  <!-- 乘除法误差传递 -->
+  <view wx:if="{{currentTool === 'multiply-divide'}}">
+    <view class="tool-intro">
+      <text class="intro-title">✖️ 乘除法误差传递</text>
+      <text class="intro-desc">计算乘法或除法运算的误差传递</text>
+      <text class="intro-formula">Δz/z = √((Δx/x)² + (Δy/y)² + ...)</text>
+    </view>
+
+    <!-- 运算类型选择 -->
+    <view class="operation-switch">
+      <view class="switch-btn {{multiDivOperation === 'multiply' ? 'active' : ''}}" 
+        data-op="multiply" bindtap="switchMultiDivOperation">乘法 (×)</view>
+      <view class="switch-btn {{multiDivOperation === 'divide' ? 'active' : ''}}" 
+        data-op="divide" bindtap="switchMultiDivOperation">除法 (÷)</view>
+    </view>
+
+    <!-- 变量数量选择 -->
+    <view class="variable-count">
+      <text class="label">变量个数：</text>
+      <picker mode="selector" range="{{[2,3,4,5,6,7,8,9,10]}}" value="{{multiDivVariableCount - 2}}" bindchange="onMultiDivVariableCountChange">
+        <view class="picker">{{multiDivVariableCount}}</view>
+      </picker>
+    </view>
+
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <view wx:for="{{multiDivVariableCount}}" wx:key="index" class="variable-group">
+        <text class="variable-label">变量 x{{index + 1}}</text>
+        <view class="input-row">
+          <input class="variable-input" type="digit" placeholder="值" 
+            value="{{multiDivValues[index]}}" 
+            data-index="{{index}}" bindinput="handleMultiDivValueInput" />
+          <text class="separator">±</text>
+          <input class="variable-input" type="digit" placeholder="误差" 
+            value="{{multiDivErrors[index]}}" 
+            data-index="{{index}}" bindinput="handleMultiDivErrorInput" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 按钮组 -->
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateMultiplyDivide">计算</button>
+      <button class="calc-button" bindtap="clearMultiplyDivide">清空</button>
+    </view>
+
+    <!-- 结果展示 -->
+    <view wx:if="{{multiDivResultText}}" class="result-card">
+      <view class="result-header">
+        <text class="result-title">📊 计算结果</text>
+      </view>
+      <view class="result-content">
+        <text class="result-text">{{multiDivResultText}}</text>
+      </view>
+    </view>
+
+    <!-- 导出按钮 -->
+    <view wx:if="{{multiDivResultText}}" class="export-button" bindtap="exportResult">
+      <text>📤 导出结果</text>
+    </view>
+  </view>
+
+  <!-- 幂函数误差传递 -->
+  <view wx:if="{{currentTool === 'power'}}">
+    <view class="tool-intro">
+      <text class="intro-title">🔢 幂函数误差传递</text>
+      <text class="intro-desc">计算幂函数 z = x^n 的误差传递</text>
+      <text class="intro-formula">Δz/z = |n| × Δx/x</text>
+    </view>
+
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <view class="input-item">
+        <text class="label">底数 x</text>
+        <input class="input" type="digit" placeholder="例如：10.5" 
+          value="{{powerValue}}" bindinput="handlePowerValueInput" />
+      </view>
+      <view class="input-item">
+        <text class="label">误差 Δx</text>
+        <input class="input" type="digit" placeholder="例如：0.2" 
+          value="{{powerError}}" bindinput="handlePowerErrorInput" />
+      </view>
+      <view class="input-item">
+        <text class="label">指数 n</text>
+        <input class="input" type="digit" placeholder="例如：2 或 -1.5" 
+          value="{{powerExponent}}" bindinput="handlePowerExponentInput" />
+      </view>
+    </view>
+
+    <!-- 按钮组 -->
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculatePower">计算</button>
+      <button class="calc-button" bindtap="clearPower">清空</button>
+    </view>
+
+    <!-- 结果展示 -->
+    <view wx:if="{{powerResultText}}" class="result-card">
+      <view class="result-header">
+        <text class="result-title">📊 计算结果</text>
+      </view>
+      <view class="result-content">
+        <text class="result-text">{{powerResultText}}</text>
+      </view>
+    </view>
+
+    <!-- 导出按钮 -->
+    <view wx:if="{{powerResultText}}" class="export-button" bindtap="exportResult">
+      <text>📤 导出结果</text>
+    </view>
+  </view>
+
+  <!-- 对数函数误差传递 -->
+  <view wx:if="{{currentTool === 'logarithm'}}">
+    <view class="tool-intro">
+      <text class="intro-title">📊 对数函数误差传递</text>
+      <text class="intro-desc">计算对数函数的误差传递</text>
+      <text class="intro-formula">Δz = Δx / (x · ln(base))</text>
+    </view>
+
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <view class="input-item">
+        <text class="label">真数 x</text>
+        <input class="input" type="digit" placeholder="例如：100" 
+          value="{{logValue}}" bindinput="handleLogValueInput" />
+      </view>
+      <view class="input-item">
+        <text class="label">误差 Δx</text>
+        <input class="input" type="digit" placeholder="例如：2" 
+          value="{{logError}}" bindinput="handleLogErrorInput" />
+      </view>
+      <view class="input-item">
+        <text class="label">底数</text>
+        <picker mode="selector" range="{{['e (自然对数)', '10 (常用对数)', '2 (二进制)', '自定义']}}" 
+          range-key="" value="{{logBase === 'e' ? 0 : logBase === '10' ? 1 : logBase === '2' ? 2 : 3}}" 
+          bindchange="onLogBaseChange">
+          <view class="picker">
+            {{logBase === 'e' ? 'e (自然对数)' : logBase === '10' ? '10 (常用对数)' : logBase === '2' ? '2 (二进制)' : '自定义'}}
+          </view>
+        </picker>
+      </view>
+      <view wx:if="{{logBase === 'custom'}}" class="input-item">
+        <text class="label">自定义底数</text>
+        <input class="input" type="digit" placeholder="例如：3" 
+          value="{{logCustomBase}}" bindinput="handleLogCustomBaseInput" />
+      </view>
+    </view>
+
+    <!-- 按钮组 -->
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateLog">计算</button>
+      <button class="calc-button" bindtap="clearLog">清空</button>
+    </view>
+
+    <!-- 结果展示 -->
+    <view wx:if="{{logResultText}}" class="result-card">
+      <view class="result-header">
+        <text class="result-title">📊 计算结果</text>
+      </view>
+      <view class="result-content">
+        <text class="result-text">{{logResultText}}</text>
+      </view>
+    </view>
+
+    <!-- 导出按钮 -->
+    <view wx:if="{{logResultText}}" class="export-button" bindtap="exportResult">
+      <text>📤 导出结果</text>
+    </view>
+  </view>
+
+  <!-- 三角函数误差传递 -->
+  <view wx:if="{{currentTool === 'trigonometry'}}">
+    <view class="tool-intro">
+      <text class="intro-title">📐 三角函数误差传递</text>
+      <text class="intro-desc">计算sin/cos/tan的误差传递</text>
+      <text class="intro-formula">Δ(sin x) = |cos x| × Δx</text>
+    </view>
+
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <view class="input-item">
+        <text class="label">函数类型</text>
+        <picker mode="selector" range="{{['sin', 'cos', 'tan']}}" 
+          value="{{trigFunction === 'sin' ? 0 : trigFunction === 'cos' ? 1 : 2}}" 
+          bindchange="onTrigFunctionChange">
+          <view class="picker">{{trigFunction}}</view>
+        </picker>
+      </view>
+      <view class="input-item">
+        <text class="label">角度单位</text>
+        <picker mode="selector" range="{{['弧度 (rad)', '角度 (°)']}}" 
+          value="{{trigUnit === 'radian' ? 0 : 1}}" 
+          bindchange="onTrigUnitChange">
+          <view class="picker">{{trigUnit === 'radian' ? '弧度 (rad)' : '角度 (°)'}}</view>
+        </picker>
+      </view>
+      <view class="input-item">
+        <text class="label">角度值 x</text>
+        <input class="input" type="digit" placeholder="{{trigUnit === 'radian' ? '例如：1.5708' : '例如：90'}}" 
+          value="{{trigValue}}" bindinput="handleTrigValueInput" />
+      </view>
+      <view class="input-item">
+        <text class="label">误差 Δx</text>
+        <input class="input" type="digit" placeholder="{{trigUnit === 'radian' ? '例如：0.01' : '例如：1'}}" 
+          value="{{trigError}}" bindinput="handleTrigErrorInput" />
+      </view>
+    </view>
+
+    <!-- 按钮组 -->
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateTrig">计算</button>
+      <button class="calc-button" bindtap="clearTrig">清空</button>
+    </view>
+
+    <!-- 结果展示 -->
+    <view wx:if="{{trigResultText}}" class="result-card">
+      <view class="result-header">
+        <text class="result-title">📊 计算结果</text>
+      </view>
+      <view class="result-content">
+        <text class="result-text">{{trigResultText}}</text>
+      </view>
+    </view>
+
+    <!-- 导出按钮 -->
+    <view wx:if="{{trigResultText}}" class="export-button" bindtap="exportResult">
+      <text>📤 导出结果</text>
+    </view>
+  </view>
+</view>
+

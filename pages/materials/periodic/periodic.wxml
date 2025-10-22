@@ -8,34 +8,29 @@
     </view>
   </view>
 
-  <!-- 搜索与筛选 -->
+  <!-- 学术风格搜索 -->
   <view class="section-card">
-    <view class="search-box">
-      <input 
-        class="search-input" 
-        type="text"
-        value="{{searchKeyword}}"
-        placeholder="搜索元素名/符号/序号"
-        bindinput="handleSearchInput"
-      />
-      <button wx:if="{{searchKeyword}}" class="clear-btn" bindtap="clearSearch">✕</button>
-    </view>
+    <search-input
+      value="{{searchKeyword}}"
+      placeholder="搜索元素名称、符号或原子序数"
+      enableHistory="{{true}}"
+      historyKey="periodic"
+      hotSearches="{{hotElements}}"
+      showHot="{{!searchKeyword}}"
+      bindinput="handleSearchInput"
+      bindsearch="handleSearch"
+      bindclear="clearSearch"
+    />
 
-    <!-- 分类筛选 -->
-    <view class="filter-section">
-      <view class="filter-title">按类别筛选：</view>
-      <scroll-view class="filter-tags" scroll-x="{{true}}">
-        <view 
-          wx:for="{{categoryOptions}}" 
-          wx:key="value"
-          class="filter-tag {{selectedCategory === item.value ? 'active' : ''}}"
-          data-value="{{item.value}}"
-          bindtap="selectCategory"
-        >
-          {{item.label}}
-        </view>
-      </scroll-view>
-    </view>
+    <!-- 学术风格筛选器 -->
+    <quick-filter
+      title="元素类别"
+      filters="{{categoryFilters}}"
+      selected="{{selectedCategory}}"
+      mode="single"
+      showCount="{{true}}"
+      bindchange="handleCategoryChange"
+    />
   </view>
 
   <!-- 骨架屏 -->
@@ -76,7 +71,7 @@
           <view class="preview-symbol">{{selectedElement.symbol}}</view>
           <view class="preview-name">{{selectedElement.name}}</view>
         </view>
-        <button class="close-btn" bindtap="closeDetail">✕</button>
+        <button class="close-btn" bindtap="closeDetail">×</button>
       </view>
 
       <scroll-view class="modal-body" scroll-y="{{true}}">
@@ -138,6 +133,65 @@
             <view class="detail-item">
               <text class="item-label">元素类别</text>
               <text class="item-value">{{categoryMap[selectedElement.category] || '—'}}</text>
+            </view>
+            <view wx:if="{{selectedElement.electronAffinity !== undefined}}" class="detail-item">
+              <text class="item-label">电子亲和能 (kJ/mol)</text>
+              <text class="item-value">{{selectedElement.electronAffinity || '—'}}</text>
+            </view>
+            <view wx:if="{{selectedElement.oxidationStatesText}}" class="detail-item full-width">
+              <text class="item-label">氧化态</text>
+              <text class="item-value">{{selectedElement.oxidationStatesText}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 扩展数据 - 新增部分 -->
+        <view wx:if="{{selectedElement.hasExtendedData}}" class="detail-section extended-section">
+          <view class="detail-title">
+            <text>扩展数据</text>
+            <view class="new-badge">NEW</view>
+          </view>
+          
+          <view class="detail-grid">
+            <view wx:if="{{selectedElement.density}}" class="detail-item">
+              <text class="item-label">密度 (g/cm³)</text>
+              <text class="item-value">{{selectedElement.density}}</text>
+            </view>
+            <view wx:if="{{selectedElement.electronConfig}}" class="detail-item">
+              <text class="item-label">电子构型</text>
+              <text class="item-value">{{selectedElement.electronConfig}}</text>
+            </view>
+            <view wx:if="{{selectedElement.groupName}}" class="detail-item">
+              <text class="item-label">族</text>
+              <text class="item-value">{{selectedElement.groupName}}</text>
+            </view>
+            <view wx:if="{{selectedElement.periodName}}" class="detail-item">
+              <text class="item-label">周期</text>
+              <text class="item-value">{{selectedElement.periodName}}</text>
+            </view>
+            <view wx:if="{{selectedElement.blockName}}" class="detail-item">
+              <text class="item-label">区块</text>
+              <text class="item-value">{{selectedElement.blockName}}</text>
+            </view>
+            <view wx:if="{{selectedElement.valenceElectrons}}" class="detail-item">
+              <text class="item-label">价电子数</text>
+              <text class="item-value">{{selectedElement.valenceElectrons}}</text>
+            </view>
+            <view wx:if="{{selectedElement.crystalStructure}}" class="detail-item full-width">
+              <text class="item-label">晶体结构</text>
+              <text class="item-value">{{selectedElement.crystalStructure}}</text>
+            </view>
+            <view wx:if="{{selectedElement.magneticOrdering}}" class="detail-item">
+              <text class="item-label">磁性</text>
+              <text class="item-value">{{selectedElement.magneticOrdering}}</text>
+            </view>
+            <view wx:if="{{selectedElement.thermalConductivity}}" class="detail-item">
+              <text class="item-label">热导率 W/(m·K)</text>
+              <text class="item-value">{{selectedElement.thermalConductivity}}</text>
+            </view>
+            <view wx:if="{{selectedElement.specificHeat}}" class="detail-item">
+              <text class="item-label">比热容 J/(mol·K)</text>
+              <text class="item-value">{{selectedElement.specificHeat}}</text>
             </view>
           </view>
         </view>

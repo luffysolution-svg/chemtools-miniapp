@@ -32,7 +32,13 @@
         value="{{v1}}"
         placeholder="例如：50"
         validator="positive"
+        enableHistory="{{true}}"
+        historyTool="solution"
+        historyField="volume"
+        presets="{{volumePresets}}"
+        touchArea="large"
         bindinput="handleV1Input"
+        bindchange="handleV1Change"
       />
       <calculator-input
         label="浓度 (mol·L⁻¹)"
@@ -40,7 +46,13 @@
         value="{{c1}}"
         placeholder="例如：0.5"
         validator="positive"
+        enableHistory="{{true}}"
+        historyTool="solution"
+        historyField="concentration"
+        presets="{{concentrationPresets}}"
+        touchArea="large"
         bindinput="handleC1Input"
+        bindchange="handleC1Change"
       />
     </view>
 
@@ -53,14 +65,26 @@
         value="{{v2}}"
         placeholder="{{modeIndex === 0 ? '例如：50' : '例如：100'}}"
         validator="positive"
+        enableHistory="{{true}}"
+        historyTool="solution"
+        historyField="volume"
+        presets="{{volumePresets}}"
+        touchArea="large"
         bindinput="handleV2Input"
+        bindchange="handleV2Change"
       />
       <calculator-input
         label="{{modeIndex === 0 ? '浓度 (mol·L⁻¹)' : '目标浓度 (mol·L⁻¹)'}}"
         type="digit"
         value="{{c2}}"
         placeholder="{{modeIndex === 0 ? '例如：0.3' : '可选'}}"
+        enableHistory="{{true}}"
+        historyTool="solution"
+        historyField="concentration"
+        presets="{{concentrationPresets}}"
+        touchArea="large"
         bindinput="handleC2Input"
+        bindchange="handleC2Change"
       />
     </view>
 

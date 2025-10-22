@@ -1,0 +1,359 @@
+<!--全局搜索页面-->
+<view class="search-page {{themeClass}}">
+  <!-- 学术风格全局搜索 -->
+  <view class="search-header">
+    <search-input
+      value="{{searchKeyword}}"
+      placeholder="搜索工具、数据、公式..."
+      enableHistory="{{true}}"
+      historyKey="global-search"
+      hotSearches="{{hotSearches}}"
+      showHot="{{!searchKeyword && !searchResults.length}}"
+      bindinput="handleSearchInput"
+      bindsearch="handleSearchConfirm"
+      bindclear="clearSearch"
+    />
+    
+    <!-- 语音搜索按钮 -->
+    <view class="voice-search-btn" bindtap="startVoiceSearch">
+      <text class="voice-icon">{{isVoiceSearching ? '⏸️' : '🎤'}}</text>
+    </view>
+    
+    <!-- 搜索选项和过滤按钮 -->
+    <view class="header-actions">
+      <view class="search-options-btn" bindtap="toggleSearchOptions">
+        <icon type="info" size="18" color="#666"></icon>
+      </view>
+      <view class="filter-btn" bindtap="toggleFilters">
+        <text class="filter-icon">{{showFilters ? '▲' : '▼'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索建议下拉框 -->
+  <view wx:if="{{showSuggestions && searchSuggestions.length > 0}}" class="suggestions-dropdown">
+    <view class="suggestions-header">
+      <text class="suggestions-title">💡 搜索建议</text>
+    </view>
+    <view
+      wx:for="{{searchSuggestions}}"
+      wx:key="index"
+      class="suggestion-item"
+      bindtap="useSuggestion"
+      data-suggestion="{{item}}"
+    >
+      <text class="suggestion-icon">{{item.icon}}</text>
+      <text class="suggestion-text">{{item.text}}</text>
+      <text class="suggestion-source">{{item.source}}</text>
+    </view>
+  </view>
+
+  <!-- 搜索选项面板 -->
+  <view wx:if="{{showOptions}}" class="search-options-panel">
+    <view class="options-title">搜索范围</view>
+    <view class="options-list">
+      <view class="option-item" bindtap="toggleSearchScope" data-scope="includeTools">
+        <checkbox checked="{{searchOptions.includeTools}}" color="#1AAD19"/>
+        <text>工具</text>
+      </view>
+      <view class="option-item" bindtap="toggleSearchScope" data-scope="includeAbbreviations">
+        <checkbox checked="{{searchOptions.includeAbbreviations}}" color="#1AAD19"/>
+        <text>化学缩写</text>
+      </view>
+      <view class="option-item" bindtap="toggleSearchScope" data-scope="includeSemiconductors">
+        <checkbox checked="{{searchOptions.includeSemiconductors}}" color="#1AAD19"/>
+        <text>半导体材料</text>
+      </view>
+      <view class="option-item" bindtap="toggleSearchScope" data-scope="includeElements">
+        <checkbox checked="{{searchOptions.includeElements}}" color="#1AAD19"/>
+        <text>元素周期表</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索历史和热门搜索 -->
+  <view wx:if="{{showHistory}}" class="search-suggestions">
+    <!-- 搜索历史 -->
+    <view wx:if="{{searchHistory.length > 0}}" class="suggestion-section">
+      <view class="section-header">
+        <text class="section-title">🕐 搜索历史</text>
+        <text class="clear-btn" bindtap="clearSearchHistory">清空</text>
+      </view>
+      <view class="tag-list">
+        <view
+          wx:for="{{searchHistory}}"
+          wx:key="*this"
+          class="tag-item"
+          bindtap="useHistorySearch"
+          data-keyword="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 热门搜索 -->
+    <view class="suggestion-section">
+      <view class="section-header">
+        <text class="section-title">🔥 热门搜索</text>
+        <text class="section-subtitle">基于真实统计</text>
+      </view>
+      <view class="hot-search-list">
+        <view
+          wx:for="{{hotSearches}}"
+          wx:key="keyword"
+          class="hot-search-tag rank-{{index + 1}}"
+          bindtap="useHotSearch"
+          data-keyword="{{item.keyword}}"
+        >
+          <text class="rank-number">{{index + 1}}</text>
+          <text class="keyword-text">{{item.keyword}}</text>
+          <text class="search-count">{{item.count}}次</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索过滤器 -->
+  <view wx:if="{{showFilters && !showHistory}}" class="search-filters">
+    <view class="filter-group">
+      <text class="filter-label">排序：</text>
+      <view class="filter-options">
+        <view 
+          class="filter-option {{sortBy === 'relevance' ? 'active' : ''}}"
+          bindtap="changeSortBy"
+          data-sort="relevance"
+        >
+          相关度
+        </view>
+        <view 
+          class="filter-option {{sortBy === 'recent' ? 'active' : ''}}"
+          bindtap="changeSortBy"
+          data-sort="recent"
+        >
+          最近搜索
+        </view>
+        <view 
+          class="filter-option {{sortBy === 'popular' ? 'active' : ''}}"
+          bindtap="changeSortBy"
+          data-sort="popular"
+        >
+          热门
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{isSearching}}" class="loading-container">
+    <icon type="waiting" size="40" color="#1AAD19"></icon>
+    <text class="loading-text">搜索中...</text>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view wx:if="{{!isSearching && !showHistory}}" class="search-results">
+    <!-- 结果操作栏 -->
+    <view wx:if="{{!noResults && searchResults.length > 0}}" class="result-actions-bar">
+      <view class="result-info">
+        <text class="result-total">共 {{searchResults.length}} 条结果</text>
+        <text wx:if="{{fromCache}}" class="cache-badge">⚡ 缓存</text>
+      </view>
+      <view class="result-actions">
+        <view class="action-btn-small" bindtap="exportResults">
+          <text class="btn-icon-small">📤</text>
+          <text class="btn-text-small">导出</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 无结果 -->
+    <view wx:if="{{noResults}}" class="no-results">
+      <icon type="search" size="60" color="#ccc"></icon>
+      <text class="no-results-text">未找到 "{{searchKeyword}}" 相关结果</text>
+      <text class="no-results-hint">试试其他关键词</text>
+      <view class="search-suggestions-text">
+        <text class="suggestion-title">💡 搜索建议：</text>
+        <text class="suggestion-item">• 工具：XRD、pH、单位换算</text>
+        <text class="suggestion-item">• 缩写：DMF、DMSO、THF</text>
+        <text class="suggestion-item">• 半导体：TiO2、GaN、Si</text>
+        <text class="suggestion-item">• 元素：氧、铁、碳、金</text>
+        <text class="suggestion-item">• 光谱：XPS、Raman、IR</text>
+        <text class="suggestion-item">• Ksp：AgCl、BaSO4</text>
+        <text class="suggestion-item">• 电极：SCE、SHE</text>
+        <text class="suggestion-item">• X射线源：CuKa、MoKa</text>
+      </view>
+    </view>
+
+    <!-- 有结果 -->
+    <view wx:else>
+      <!-- 工具结果 -->
+      <view wx:if="{{allResultsByType.tools && allResultsByType.tools.length > 0}}" class="result-section">
+        <view class="result-header">
+          <text class="result-title">🛠️ 工具</text>
+          <text class="result-count">{{resultsByType.tools.length}}/{{allResultsByType.tools.length}}</text>
+        </view>
+        <view
+          wx:for="{{resultsByType.tools}}"
+          wx:key="name"
+          class="result-item"
+          bindtap="handleResultTap"
+          data-item="{{item}}"
+        >
+          <view class="result-name">{{item.name}}</view>
+          <view class="result-type">{{item.type}}</view>
+        </view>
+        <view wx:if="{{hasMoreByType.tools}}" class="load-more-results" bindtap="loadMoreResults" data-type="tools">
+          <text class="load-more-text">加载更多 (还有 {{allResultsByType.tools.length - resultsByType.tools.length}} 条)</text>
+        </view>
+      </view>
+
+      <!-- 缩写结果 -->
+      <view wx:if="{{allResultsByType.abbreviations && allResultsByType.abbreviations.length > 0}}" class="result-section">
+        <view class="result-header">
+          <text class="result-title">📖 化学缩写</text>
+          <text class="result-count">{{resultsByType.abbreviations.length}}/{{allResultsByType.abbreviations.length}}</text>
+        </view>
+        <view
+          wx:for="{{resultsByType.abbreviations}}"
+          wx:key="name"
+          class="result-item"
+          bindtap="handleResultTap"
+          data-item="{{item}}"
+        >
+          <view class="result-name">{{item.name}}</view>
+          <view class="result-desc">{{item.fullName}} - {{item.chineseName}}</view>
+        </view>
+        <view wx:if="{{hasMoreByType.abbreviations}}" class="load-more-results" bindtap="loadMoreResults" data-type="abbreviations">
+          <text class="load-more-text">加载更多 (还有 {{allResultsByType.abbreviations.length - resultsByType.abbreviations.length}} 条)</text>
+        </view>
+      </view>
+
+      <!-- 半导体结果 -->
+      <view wx:if="{{allResultsByType.semiconductors && allResultsByType.semiconductors.length > 0}}" class="result-section">
+        <view class="result-header">
+          <text class="result-title">💎 半导体材料</text>
+          <text class="result-count">{{resultsByType.semiconductors.length}}/{{allResultsByType.semiconductors.length}}</text>
+        </view>
+        <view
+          wx:for="{{resultsByType.semiconductors}}"
+          wx:key="formula"
+          class="result-item"
+          bindtap="handleResultTap"
+          data-item="{{item}}"
+        >
+          <view class="result-name">{{item.name}} ({{item.formula}})</view>
+          <view class="result-desc">带隙: {{item.bandgap}} eV</view>
+        </view>
+        <view wx:if="{{hasMoreByType.semiconductors}}" class="load-more-results" bindtap="loadMoreResults" data-type="semiconductors">
+          <text class="load-more-text">加载更多 (还有 {{allResultsByType.semiconductors.length - resultsByType.semiconductors.length}} 条)</text>
+        </view>
+      </view>
+
+      <!-- 元素结果 -->
+      <view wx:if="{{allResultsByType.elements && allResultsByType.elements.length > 0}}" class="result-section">
+        <view class="result-header">
+          <text class="result-title">⚛️ 元素</text>
+          <text class="result-count">{{resultsByType.elements.length}}/{{allResultsByType.elements.length}}</text>
+        </view>
+        <view
+          wx:for="{{resultsByType.elements}}"
+          wx:key="symbol"
+          class="result-item"
+          bindtap="handleResultTap"
+          data-item="{{item}}"
+        >
+          <view class="result-name">{{item.name}} ({{item.symbol}})</view>
+          <view class="result-desc">原子序数: {{item.number}}</view>
+        </view>
+        <view wx:if="{{hasMoreByType.elements}}" class="load-more-results" bindtap="loadMoreResults" data-type="elements">
+          <text class="load-more-text">加载更多 (还有 {{allResultsByType.elements.length - resultsByType.elements.length}} 条)</text>
+        </view>
+      </view>
+
+      <!-- 光谱数据结果 -->
+      <view wx:if="{{allResultsByType.spectroscopy && allResultsByType.spectroscopy.length > 0}}" class="result-section">
+        <view class="result-header">
+          <text class="result-title">📊 光谱数据</text>
+          <text class="result-count">{{resultsByType.spectroscopy.length}}/{{allResultsByType.spectroscopy.length}}</text>
+        </view>
+        <view
+          wx:for="{{resultsByType.spectroscopy}}"
+          wx:key="name"
+          class="result-item"
+          bindtap="handleResultTap"
+          data-item="{{item}}"
+        >
+          <view class="result-name">{{item.name}}</view>
+          <view class="result-desc">{{item.description}}</view>
+        </view>
+        <view wx:if="{{hasMoreByType.spectroscopy}}" class="load-more-results" bindtap="loadMoreResults" data-type="spectroscopy">
+          <text class="load-more-text">加载更多 (还有 {{allResultsByType.spectroscopy.length - resultsByType.spectroscopy.length}} 条)</text>
+        </view>
+      </view>
+
+      <!-- Ksp数据结果 -->
+      <view wx:if="{{allResultsByType.ksp && allResultsByType.ksp.length > 0}}" class="result-section">
+        <view class="result-header">
+          <text class="result-title">⚗️ 难溶盐</text>
+          <text class="result-count">{{resultsByType.ksp.length}}/{{allResultsByType.ksp.length}}</text>
+        </view>
+        <view
+          wx:for="{{resultsByType.ksp}}"
+          wx:key="name"
+          class="result-item"
+          bindtap="handleResultTap"
+          data-item="{{item}}"
+        >
+          <view class="result-name">{{item.name}} - {{item.chineseName}}</view>
+          <view class="result-desc">Ksp = {{item.ksp}}</view>
+        </view>
+        <view wx:if="{{hasMoreByType.ksp}}" class="load-more-results" bindtap="loadMoreResults" data-type="ksp">
+          <text class="load-more-text">加载更多 (还有 {{allResultsByType.ksp.length - resultsByType.ksp.length}} 条)</text>
+        </view>
+      </view>
+
+      <!-- 参比电极结果 -->
+      <view wx:if="{{allResultsByType.references && allResultsByType.references.length > 0}}" class="result-section">
+        <view class="result-header">
+          <text class="result-title">🔋 参比电极</text>
+          <text class="result-count">{{resultsByType.references.length}}/{{allResultsByType.references.length}}</text>
+        </view>
+        <view
+          wx:for="{{resultsByType.references}}"
+          wx:key="name"
+          class="result-item"
+          bindtap="handleResultTap"
+          data-item="{{item}}"
+        >
+          <view class="result-name">{{item.name}} - {{item.chineseName}}</view>
+          <view class="result-desc">E = {{item.potential}}</view>
+        </view>
+        <view wx:if="{{hasMoreByType.references}}" class="load-more-results" bindtap="loadMoreResults" data-type="references">
+          <text class="load-more-text">加载更多 (还有 {{allResultsByType.references.length - resultsByType.references.length}} 条)</text>
+        </view>
+      </view>
+
+      <!-- X射线源结果 -->
+      <view wx:if="{{allResultsByType.xrays && allResultsByType.xrays.length > 0}}" class="result-section">
+        <view class="result-header">
+          <text class="result-title">📡 X射线源</text>
+          <text class="result-count">{{resultsByType.xrays.length}}/{{allResultsByType.xrays.length}}</text>
+        </view>
+        <view
+          wx:for="{{resultsByType.xrays}}"
+          wx:key="name"
+          class="result-item"
+          bindtap="handleResultTap"
+          data-item="{{item}}"
+        >
+          <view class="result-name">{{item.name}}</view>
+          <view class="result-desc">λ = {{item.wavelength}}, E = {{item.energy}}</view>
+        </view>
+        <view wx:if="{{hasMoreByType.xrays}}" class="load-more-results" bindtap="loadMoreResults" data-type="xrays">
+          <text class="load-more-text">加载更多 (还有 {{allResultsByType.xrays.length - resultsByType.xrays.length}} 条)</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+

@@ -1,0 +1,48 @@
+/**
+ * 半导体页面辅助函数
+ */
+
+/**
+ * 安全获取bandGap值
+ */
+function getBandGapValue(material) {
+  if (!material) return 'N/A';
+  
+  if (material.bandGap && typeof material.bandGap === 'object') {
+    return material.bandGap.value || 'N/A';
+  }
+  
+  if (material.bandgap !== undefined) {
+    return material.bandgap;
+  }
+  
+  return 'N/A';
+}
+
+/**
+ * 安全获取bandGap类型
+ */
+function getBandGapType(material) {
+  if (!material) return 'direct';
+  
+  if (material.bandGap && typeof material.bandGap === 'object') {
+    return material.bandGap.type || 'direct';
+  }
+  
+  return 'direct';
+}
+
+/**
+ * 获取带隙类型中文
+ */
+function getBandGapTypeName(material) {
+  var type = getBandGapType(material);
+  return type === 'direct' ? '直接' : '间接';
+}
+
+module.exports = {
+  getBandGapValue: getBandGapValue,
+  getBandGapType: getBandGapType,
+  getBandGapTypeName: getBandGapTypeName
+};
+

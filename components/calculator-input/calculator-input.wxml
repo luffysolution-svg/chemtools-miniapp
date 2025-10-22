@@ -1,6 +1,8 @@
 <view class="calculator-input">
   <view class="input-label" wx:if="{{label}}">{{label}}</view>
-  <view class="input-wrapper {{error ? 'error' : ''}}">
+  
+  <!-- 主输入区域 -->
+  <view class="input-wrapper {{error ? 'error' : ''}} {{focused ? 'focused' : ''}} {{touchArea === 'large' ? 'large' : ''}}">
     <input 
       class="input-field" 
       type="{{type}}"
@@ -13,8 +15,67 @@
       maxlength="{{maxlength}}"
     />
     <view class="input-unit" wx:if="{{unit}}">{{unit}}</view>
+    
+    <!-- 历史记录按钮 -->
+    <view class="input-icon history-icon" wx:if="{{enableHistory && !icon}}" bindtap="toggleHistory">
+      <text>📋</text>
+    </view>
+    
+    <!-- 自定义图标 -->
     <view class="input-icon" wx:if="{{icon}}" bindtap="handleIconTap">{{icon}}</view>
   </view>
+  
+  <!-- 预设值快捷按钮 -->
+  <view class="presets-row" wx:if="{{presets && presets.length > 0}}">
+    <scroll-view class="presets-scroll" scroll-x>
+      <view class="presets-container">
+        <view 
+          wx:for="{{presets}}" 
+          wx:key="value"
+          class="preset-btn {{value === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="selectPreset"
+        >
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  
+  <!-- 历史记录下拉 -->
+  <view class="history-dropdown" wx:if="{{showHistory && historyList.length > 0}}">
+    <view class="history-header">
+      <text class="history-title">最近使用</text>
+      <text class="history-clear" bindtap="clearHistoryList">清除</text>
+    </view>
+    <scroll-view class="history-list" scroll-y>
+      <view 
+        wx:for="{{historyList}}" 
+        wx:key="index"
+        class="history-item"
+        data-value="{{item}}"
+        bindtap="selectHistory"
+      >
+        <text class="history-value">{{item}}</text>
+        <text class="history-icon">↩</text>
+      </view>
+    </scroll-view>
+  </view>
+  
+  <!-- 自动补全建议 -->
+  <view class="suggestions-dropdown" wx:if="{{showSuggestions && suggestions.length > 0}}">
+    <view 
+      wx:for="{{suggestions}}" 
+      wx:key="index"
+      class="suggestion-item"
+      data-value="{{item}}"
+      bindtap="selectSuggestion"
+    >
+      <text>{{item}}</text>
+    </view>
+  </view>
+  
+  <!-- 错误和提示信息 -->
   <view class="input-error" wx:if="{{error}}">{{error}}</view>
   <view class="input-hint" wx:if="{{hint && !error}}">{{hint}}</view>
 </view>

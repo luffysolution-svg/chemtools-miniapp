@@ -1,0 +1,10 @@
+@import '../xrd-enhanced/xrd-enhanced.wxss';
+
+.tool-intro {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+}
+
+.tab-item.active {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+}
+

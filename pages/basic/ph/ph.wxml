@@ -30,8 +30,16 @@
       placeholder="{{placeholder}}"
       validator="positive"
       hint="{{inputHint}}"
+      enableHistory="{{true}}"
+      historyTool="ph"
+      historyField="{{typeIndex === 0 ? 'concentration' : 'phValue'}}"
+      presets="{{currentPresets}}"
+      realtime="{{true}}"
+      touchArea="large"
       bindinput="handleValueInput"
+      bindchange="handleValueChange"
       bindvalidate="handleValidate"
+      bindrealtimecalculate="handleRealtimeCalculate"
     />
 
     <!-- 计算按钮 -->
@@ -65,6 +73,18 @@
       <view class="result-detail" wx:if="{{detail}}">{{detail}}</view>
     </view>
   </result-card>
+
+  <!-- 分享操作按钮 v5.0.0 NEW! -->
+  <view wx:if="{{result}}" class="share-actions">
+    <button class="share-btn primary" bindtap="shareResult">
+      <text class="btn-icon">🔗</text>
+      <text class="btn-text">分享结果</text>
+    </button>
+    <button class="share-btn secondary" bindtap="copyResult">
+      <text class="btn-icon">📋</text>
+      <text class="btn-text">复制</text>
+    </button>
+  </view>
 
   <!-- 说明卡片 -->
   <view class="info-card">

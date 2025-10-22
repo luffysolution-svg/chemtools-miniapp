@@ -1,0 +1,163 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view 
+      wx:for="{{tools}}" 
+      wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}"
+      bindtap="switchTool"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 表观量子效率 -->
+  <view wx:if="{{currentTool === 'aqe'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">💡 表观量子效率(AQE)</text>
+      <text class="intro-desc">光催化剂利用光子的效率</text>
+      <text class="intro-formula">AQE = 反应分子数/入射光子数 × 100%</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="反应速率"
+        value="{{reactionRate}}"
+        type="digit"
+        placeholder="例如：0.0001"
+        unit="mol/h"
+        icon="⚗️"
+        bind:input="handleReactionRateInput"
+      />
+
+      <view class="picker-field">
+        <text class="picker-label">时间单位</text>
+        <picker mode="selector" range="{{timeUnits}}" value="{{timeUnitIndex}}" bindchange="handleTimeUnitChange">
+          <view class="picker-value">{{timeUnits[timeUnitIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="光子通量"
+        value="{{photonFlux}}"
+        type="digit"
+        placeholder="例如：100"
+        unit="mW"
+        icon="💡"
+        enableHistory="{{true}}"
+        historyTool="photocatalysis"
+        historyField="power"
+        presets="{{powerPresets}}"
+        touchArea="large"
+        bind:input="handlePhotonFluxInput"
+        bindchange="handlePhotonFluxChange"
+      />
+
+      <view class="picker-field">
+        <text class="picker-label">功率单位</text>
+        <picker mode="selector" range="{{powerUnits}}" value="{{powerUnitIndex}}" bindchange="handlePowerUnitChange">
+          <view class="picker-value">{{powerUnits[powerUnitIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="光源波长"
+        value="{{wavelength}}"
+        type="digit"
+        placeholder="365"
+        unit="nm"
+        icon="🌈"
+        hint="UV光：365nm，可见光：400-700nm"
+        enableHistory="{{true}}"
+        historyTool="photocatalysis"
+        historyField="wavelength"
+        presets="{{wavelengthPresets}}"
+        touchArea="large"
+        bind:input="handleWavelengthInput"
+        bindchange="handleWavelengthChange"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateAQEValue">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{aqeResultText}}" title="计算结果">
+      <view class="result-text">{{aqeResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 降解动力学 -->
+  <view wx:if="{{currentTool === 'kinetics'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📉 降解动力学拟合</text>
+      <text class="intro-desc">一级动力学模型</text>
+      <text class="intro-formula">ln(C/C₀) = -kt</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">时间-浓度数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{kineticsDataInput}}"
+          placeholder="{{kineticsPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleKineticsDataInput"
+        />
+        <text class="field-hint">至少输入3个时间点</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateKinetics">拟合</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{kineticsResultText}}" title="拟合结果">
+      <view class="result-text">{{kineticsResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 活性对比 -->
+  <view wx:if="{{currentTool === 'compare'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📊 光催化活性对比</text>
+      <text class="intro-desc">多样品性能比较</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">样品数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{compareDataInput}}"
+          placeholder="{{comparePlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleCompareDataInput"
+        />
+        <text class="field-hint">输入各样品的速率常数k值</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateCompare">对比</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{compareResultText}}" title="对比结果">
+      <view class="result-text">{{compareResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 导出按钮 -->
+  <view wx:if="{{aqeResultText || kineticsResultText || compareResultText}}" class="export-button" bindtap="exportResult">
+    <text>📤 导出结果</text>
+  </view>
+</view>
+

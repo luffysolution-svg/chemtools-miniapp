@@ -1,8 +1,9 @@
 /**
- * pH值计算页面
+ * pH值计算页面（增强版）
  */
 
 const { historyService } = require('../../../services/history');
+const { getPresets } = require('../../../utils/input-presets');
 
 Page({
   data: {
@@ -17,11 +18,23 @@ Page({
     detail: '',
     hint: '',
     historyInput: '',
-    validationError: ''
+    validationError: '',
+    // 新增：预设值
+    currentPresets: []
   },
 
   onLoad() {
     this.updateInputLabel();
+    this.loadPresets();
+  },
+  
+  /**
+   * 加载预设值
+   */
+  loadPresets() {
+    const field = this.data.typeIndex === 2 ? 'phValue' : 'concentration';
+    const presets = getPresets('ph', field);
+    this.setData({ currentPresets: presets });
   },
 
   /**
@@ -68,6 +81,7 @@ Page({
       inputValue: ''
     });
     this.updateInputLabel();
+    this.loadPresets();
   },
 
   /**
@@ -75,6 +89,25 @@ Page({
    */
   handleValueInput(e) {
     this.setData({ inputValue: e.detail.value });
+  },
+  
+  /**
+   * 数值变化（历史记录或预设值选择）
+   */
+  handleValueChange(e) {
+    this.setData({ inputValue: e.detail.value });
+    if (e.detail.value) {
+      this.calculate();
+    }
+  },
+  
+  /**
+   * 实时计算
+   */
+  handleRealtimeCalculate(e) {
+    if (e.detail.value) {
+      this.calculate();
+    }
   },
 
   /**
@@ -189,9 +222,91 @@ Page({
   },
 
   /**
+   * 分享结果
+   */
+  async shareResult() {
+    const { result, historyInput, typeIndex, typeOptions } = this.data;
+
+    if (!result) {
+      wx.showToast({
+        title: '请先计算结果',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      const app = getApp();
+      const shareService = app.getShareService();
+
+      const shareData = {
+        title: 'pH计算结果',
+        inputs: {
+          '计算类型': typeOptions[typeIndex],
+          '输入': historyInput
+        },
+        results: {
+          '结果': result,
+          '详情': this.data.detail
+        },
+        notes: this.data.hint || '结果仅供参考，实际溶液受温度、离子强度等因素影响',
+        path: '/pages/basic/ph/ph'
+      };
+
+      await shareService.shareResult(shareData);
+    } catch (e) {
+      console.error('分享失败:', e);
+    }
+  },
+
+  /**
+   * 复制结果
+   */
+  async copyResult() {
+    const { result } = this.data;
+
+    if (!result) {
+      wx.showToast({
+        title: '暂无结果可复制',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      const app = getApp();
+      const shareService = app.getShareService();
+
+      const shareData = {
+        title: 'pH计算结果',
+        inputs: {
+          '输入': this.data.historyInput
+        },
+        results: {
+          '结果': result
+        }
+      };
+
+      await shareService.copyToClipboard(shareData);
+    } catch (e) {
+      console.error('复制失败:', e);
+    }
+  },
+
+  /**
    * 分享
    */
   onShareAppMessage() {
+    const { result, historyInput } = this.data;
+    
+    if (result) {
+      return {
+        title: `pH计算：${historyInput} → ${result}`,
+        path: '/pages/basic/ph/ph',
+        imageUrl: ''
+      };
+    }
+    
     return {
       title: 'pH计算工具 - 材料化学科研工具箱',
       path: '/pages/basic/ph/ph'

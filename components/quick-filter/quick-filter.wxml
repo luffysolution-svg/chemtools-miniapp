@@ -1,0 +1,33 @@
+<view class="quick-filter-container academic-style">
+  <!-- 筛选标题（可选） -->
+  <view wx:if="{{title}}" class="filter-title">
+    <text>{{title}}</text>
+  </view>
+
+  <!-- 筛选按钮组 -->
+  <scroll-view class="filter-scroll" scroll-x>
+    <view class="filter-buttons">
+      <view 
+        wx:for="{{filters}}" 
+        wx:key="value"
+        class="filter-btn {{isSelected(item.value) ? 'selected' : ''}}"
+        data-value="{{item.value}}"
+        bindtap="toggleFilter"
+      >
+        <text class="filter-label">{{item.label}}</text>
+        <text wx:if="{{showCount && item.count !== undefined}}" class="filter-count">{{item.count}}</text>
+      </view>
+      
+      <!-- 清除按钮 -->
+      <view 
+        wx:if="{{showClear && hasSelection}}" 
+        class="filter-btn clear-all-btn"
+        bindtap="clearAll"
+      >
+        <text class="clear-icon">✕</text>
+        <text class="filter-label">清除</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+

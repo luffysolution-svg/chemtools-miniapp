@@ -3,7 +3,7 @@
   <view class="help-header">
     <view class="header-icon">📖</view>
     <view class="header-title">使用帮助</view>
-    <view class="header-subtitle">化学计算工具使用指南与数据来源说明</view>
+    <view class="header-subtitle">材料化学计算工具的使用指南和数据来源</view>
   </view>
 
   <!-- 标签页切换 -->
@@ -167,9 +167,9 @@
       </view>
       <view class="card-content">
         <view class="disclaimer-text">
-          <text>本工具提供的计算结果和数据仅供科研参考使用。虽然我们力求数据的准确性和可靠性，但不对计算结果的准确性作任何形式的保证。</text>
-          <text class="disclaimer-important">在用于关键实验或工业应用前，请务必通过实验验证或查阅原始文献进行确认。</text>
-          <text>对于因使用本工具而产生的任何直接或间接损失，开发者不承担任何责任。</text>
+          <text>这个工具提供的计算结果和数据仅供科研参考。虽然我尽力保证数据的准确性，但无法对所有结果的准确性做保证。</text>
+          <text class="disclaimer-important">如果要用在关键实验或重要场合，请一定要通过实验验证或查阅原始文献确认一下。</text>
+          <text>因使用本工具产生的任何问题，开发者不承担责任。</text>
         </view>
       </view>
     </view>
@@ -215,15 +215,15 @@
         <view class="contact-info">
           <view class="contact-item">
             <view class="contact-label">问题反馈</view>
-            <view class="contact-value">如果您发现任何bug或数据错误，欢迎通过小程序反馈功能告诉我们</view>
+            <view class="contact-value">发现bug或数据错误？欢迎通过小程序反馈功能告诉我</view>
           </view>
           <view class="contact-item">
             <view class="contact-label">功能建议</view>
-            <view class="contact-value">如果您有任何功能改进建议，我们非常乐意听取</view>
+            <view class="contact-value">有什么想法或建议都可以提，我会认真考虑</view>
           </view>
           <view class="contact-item">
             <view class="contact-label">开发者</view>
-            <view class="contact-value">材料化学科研工作者开发，持续更新中</view>
+            <view class="contact-value">是Luffy呀 - 材料化学方向，持续更新中</view>
           </view>
         </view>
         <button class="feedback-btn" bindtap="openFeedback">提交反馈</button>

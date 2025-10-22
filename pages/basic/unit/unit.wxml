@@ -30,8 +30,17 @@
       value="{{inputValue}}"
       placeholder="请输入要换算的数值"
       validator="number"
+      enableHistory="{{true}}"
+      historyTool="unit"
+      historyField="value"
+      presets="{{valuePresets}}"
+      realtime="{{true}}"
+      realtimeDelay="{{800}}"
+      touchArea="large"
       bindinput="handleValueInput"
+      bindchange="handleValueChange"
       bindvalidate="handleValidate"
+      bindrealtimecalculate="handleRealtimeCalculate"
     />
 
     <!-- 原始单位 -->
@@ -94,6 +103,14 @@
       <view class="result-formula" wx:if="{{formula}}">{{formula}}</view>
     </view>
   </result-card>
+
+  <!-- 分享操作 v6.0.0 NEW! -->
+  <view class="share-actions" wx:if="{{result}}">
+    <button class="share-btn card-btn" bindtap="generateCard">
+      <text class="btn-icon">🎨</text>
+      <text>生成精美卡片</text>
+    </button>
+  </view>
 
   <!-- 提示卡片 -->
   <view class="tip-card">

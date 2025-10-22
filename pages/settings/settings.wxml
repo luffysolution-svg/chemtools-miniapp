@@ -1,111 +1,45 @@
 <view class="container">
   <view class="page-header">
-    <text class="page-title">⚙️ 个性化设置</text>
+    <text class="page-title">🗂️ 数据管理</text>
   </view>
 
-  <!-- 主题设置 -->
-  <view class="section">
-    <view class="section-title">🎨 主题设置</view>
-    <view class="setting-item">
-      <text class="label">主题模式</text>
-      <picker mode="selector" range="{{themes}}" range-key="label" bindchange="onThemeChange">
-        <view class="picker">{{themeLabels[theme]}}</view>
-      </picker>
-    </view>
-  </view>
-
-  <!-- 显示设置 -->
-  <view class="section">
-    <view class="section-title">📊 显示设置</view>
+  <!-- 系统功能 -->
+  <view class="section advanced-section">
+    <view class="section-title">⚙️ 系统功能</view>
     
-    <view class="setting-item">
-      <text class="label">精度（小数位）</text>
-      <picker mode="selector" range="{{decimalOptions}}" bindchange="onDecimalChange">
-        <view class="picker">{{decimalPlaces}} 位</view>
-      </picker>
-    </view>
-    
-    <view class="setting-item">
-      <text class="label">首页布局</text>
-      <picker mode="selector" range="{{homeLayouts}}" range-key="label" bindchange="onLayoutChange">
-        <view class="picker">{{homeLayoutLabels[homeLayout]}}</view>
-      </picker>
-    </view>
-    
-    <view class="setting-item">
-      <text class="label">显示元数据</text>
-      <switch checked="{{showMetadata}}" data-field="showMetadata" bindchange="onSwitchChange" color="#667eea" />
-    </view>
-    
-    <view class="setting-item">
-      <text class="label">显示公式</text>
-      <switch checked="{{showFormula}}" data-field="showFormula" bindchange="onSwitchChange" color="#667eea" />
-    </view>
-    
-    <view class="setting-item">
-      <text class="label">显示警告信息</text>
-      <switch checked="{{showWarnings}}" data-field="showWarnings" bindchange="onSwitchChange" color="#667eea" />
+    <view class="setting-item" bindtap="navigateToBackup">
+      <view class="setting-label">
+        <text class="setting-name">💾 数据备份</text>
+        <text class="setting-desc">自动备份与恢复</text>
+      </view>
+      <text class="setting-arrow">›</text>
     </view>
   </view>
 
-  <!-- 默认单位 -->
-  <view class="section">
-    <view class="section-title">📏 默认单位</view>
+  <!-- 高级功能 v6.0.0 -->
+  <view class="section advanced-section">
+    <view class="section-title">⚡ 高级功能</view>
     
-    <view class="setting-item">
-      <text class="label">长度</text>
-      <input class="unit-input" value="{{defaultUnits.length}}" data-type="length" bindinput="onUnitChange" />
+    <view class="setting-item" bindtap="navigateToStatistics">
+      <view class="setting-label">
+        <text class="setting-name">📊 分享统计</text>
+        <text class="setting-desc">查看详细的分享数据和使用偏好</text>
+      </view>
+      <text class="setting-arrow">›</text>
     </view>
-    
-    <view class="setting-item">
-      <text class="label">能量</text>
-      <input class="unit-input" value="{{defaultUnits.energy}}" data-type="energy" bindinput="onUnitChange" />
-    </view>
-    
-    <view class="setting-item">
-      <text class="label">温度</text>
-      <input class="unit-input" value="{{defaultUnits.temperature}}" data-type="temperature" bindinput="onUnitChange" />
-    </view>
-    
-    <view class="setting-item">
-      <text class="label">浓度</text>
-      <input class="unit-input" value="{{defaultUnits.concentration}}" data-type="concentration" bindinput="onUnitChange" />
+
+    <view class="setting-item" bindtap="navigateToOffline">
+      <view class="setting-label">
+        <text class="setting-name">📱 离线模式</text>
+        <text class="setting-desc">下载工具离线使用</text>
+      </view>
+      <text class="setting-arrow">›</text>
     </view>
   </view>
 
-  <!-- 历史记录 -->
+  <!-- 基础统计 -->
   <view class="section">
-    <view class="section-title">📜 历史记录</view>
-    
-    <view class="setting-item">
-      <text class="label">自动保存</text>
-      <switch checked="{{autoSaveHistory}}" data-field="autoSaveHistory" bindchange="onSwitchChange" color="#667eea" />
-    </view>
-    
-    <view class="setting-item">
-      <text class="label">保存数量限制</text>
-      <text class="value">{{historyLimit}} 条</text>
-    </view>
-  </view>
-
-  <!-- 交互设置 -->
-  <view class="section">
-    <view class="section-title">🔔 交互设置</view>
-    
-    <view class="setting-item">
-      <text class="label">震动反馈</text>
-      <switch checked="{{enableVibration}}" data-field="enableVibration" bindchange="onSwitchChange" color="#667eea" />
-    </view>
-    
-    <view class="setting-item">
-      <text class="label">声音提示</text>
-      <switch checked="{{enableSound}}" data-field="enableSound" bindchange="onSwitchChange" color="#667eea" />
-    </view>
-  </view>
-
-  <!-- 统计信息 -->
-  <view class="section">
-    <view class="section-title">📈 使用统计</view>
+    <view class="section-title">📈 基础统计</view>
     
     <view class="stat-item">
       <text class="stat-label">总计算次数</text>
@@ -118,27 +52,245 @@
     </view>
     
     <view class="stat-item">
+      <text class="stat-label">收藏数量</text>
+      <text class="stat-value">{{totalFavorites}}</text>
+    </view>
+    
+    <view class="stat-item">
       <text class="stat-label">存储占用</text>
       <text class="stat-value">{{storageUsed}}</text>
     </view>
   </view>
 
-  <!-- 数据管理 -->
+  <!-- 数据访问统计 -->
   <view class="section">
-    <view class="section-title">🗂️ 数据管理</view>
+    <view class="section-header" bindtap="toggleDataAccess">
+      <view class="section-title">🔍 数据访问统计</view>
+      <text class="toggle-icon">{{showDataAccess ? '▼' : '▶'}}</text>
+    </view>
     
-    <view class="button-group">
-      <button class="action-btn" bindtap="exportSettings">导出设置</button>
-      <button class="action-btn" bindtap="clearCache">清除缓存</button>
-      <button class="action-btn warning" bindtap="clearHistory">清除历史</button>
-      <button class="action-btn danger" bindtap="resetSettings">重置设置</button>
+    <view wx:if="{{showDataAccess}}" class="stats-content">
+      <!-- 最常查询的元素 -->
+      <view wx:if="{{topElements.length > 0}}" class="stat-group">
+        <view class="stat-group-title">最常查询元素 Top5</view>
+        <view wx:for="{{topElements}}" wx:key="name" class="rank-item">
+          <text class="rank-number">{{index + 1}}.</text>
+          <text class="rank-name">{{item.name}}</text>
+          <view class="rank-bar-container">
+            <view class="rank-bar" style="width: {{item.percentage || 0}}%"></view>
+          </view>
+          <text class="rank-count">{{item.count}}次</text>
+        </view>
+      </view>
+
+      <!-- 最常查询的半导体 -->
+      <view wx:if="{{topSemiconductors.length > 0}}" class="stat-group">
+        <view class="stat-group-title">最常查询半导体 Top5</view>
+        <view wx:for="{{topSemiconductors}}" wx:key="name" class="rank-item">
+          <text class="rank-number">{{index + 1}}.</text>
+          <text class="rank-name">{{item.name}}</text>
+          <view class="rank-bar-container">
+            <view class="rank-bar" style="width: {{item.percentage || 0}}%"></view>
+          </view>
+          <text class="rank-count">{{item.count}}次</text>
+        </view>
+      </view>
+
+      <!-- 最常查询的缩写 -->
+      <view wx:if="{{topAbbreviations.length > 0}}" class="stat-group">
+        <view class="stat-group-title">最常查询缩写 Top5</view>
+        <view wx:for="{{topAbbreviations}}" wx:key="name" class="rank-item">
+          <text class="rank-number">{{index + 1}}.</text>
+          <text class="rank-name">{{item.name}}</text>
+          <view class="rank-bar-container">
+            <view class="rank-bar" style="width: {{item.percentage || 0}}%"></view>
+          </view>
+          <text class="rank-count">{{item.count}}次</text>
+        </view>
+      </view>
+      
+      <view wx:if="{{topElements.length === 0 && topSemiconductors.length === 0 && topAbbreviations.length === 0}}" class="empty-stats">
+        <text>暂无数据访问记录</text>
+      </view>
     </view>
   </view>
 
-  <!-- 版本信息 -->
+  <!-- 计算类型统计 -->
+  <view class="section">
+    <view class="section-header" bindtap="toggleCalcType">
+      <view class="section-title">📊 计算类型统计</view>
+      <text class="toggle-icon">{{showCalcType ? '▼' : '▶'}}</text>
+    </view>
+    
+    <view wx:if="{{showCalcType}}" class="stats-content">
+      <!-- 计算类型分布 -->
+      <view wx:if="{{calcTypeDistribution.length > 0}}" class="stat-group">
+        <view class="stat-group-title">计算类型分布</view>
+        <view wx:for="{{calcTypeDistribution}}" wx:key="name" class="rank-item">
+          <text class="rank-number">{{index + 1}}.</text>
+          <text class="rank-name">{{item.name}}</text>
+          <view class="rank-bar-container">
+            <view class="rank-bar" style="width: {{item.percentage || 0}}%"></view>
+          </view>
+          <text class="rank-count">{{item.count}}次</text>
+        </view>
+      </view>
+
+      <!-- 单位换算类型 -->
+      <view wx:if="{{unitTypeDistribution.length > 0}}" class="stat-group">
+        <view class="stat-group-title">单位换算类型</view>
+        <view wx:for="{{unitTypeDistribution}}" wx:key="name" class="rank-item">
+          <text class="rank-number">{{index + 1}}.</text>
+          <text class="rank-name">{{item.name}}</text>
+          <view class="rank-bar-container">
+            <view class="rank-bar" style="width: {{item.percentage || 0}}%"></view>
+          </view>
+          <text class="rank-count">{{item.count}}次</text>
+        </view>
+      </view>
+
+      <!-- XRD晶系分布 -->
+      <view wx:if="{{xrdCrystalSystem.length > 0}}" class="stat-group">
+        <view class="stat-group-title">XRD晶系分布</view>
+        <view wx:for="{{xrdCrystalSystem}}" wx:key="name" class="rank-item">
+          <text class="rank-number">{{index + 1}}.</text>
+          <text class="rank-name">{{item.name}}</text>
+          <view class="rank-bar-container">
+            <view class="rank-bar" style="width: {{item.percentage || 0}}%"></view>
+          </view>
+          <text class="rank-count">{{item.count}}次</text>
+        </view>
+      </view>
+      
+      <view wx:if="{{calcTypeDistribution.length === 0}}" class="empty-stats">
+        <text>暂无计算类型记录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 科研价值统计 -->
+  <view class="section">
+    <view class="section-header" bindtap="toggleResearchValue">
+      <view class="section-title">🎯 科研价值统计</view>
+      <text class="toggle-icon">{{showResearchValue ? '▼' : '▶'}}</text>
+    </view>
+    
+    <view wx:if="{{showResearchValue}}" class="stats-content">
+      <view class="value-stats">
+        <view class="value-item">
+          <text class="value-label">收藏率</text>
+          <text class="value-number highlight">{{favoriteRate}}</text>
+        </view>
+        
+        <view class="value-item">
+          <text class="value-label">重复计算</text>
+          <text class="value-number">{{repeatCalcCount}}次</text>
+        </view>
+        
+        <view class="value-item">
+          <text class="value-label">警告信息</text>
+          <text class="value-number warning">{{errorWarningCount}}次</text>
+        </view>
+      </view>
+
+      <!-- 最受欢迎的计算类型 -->
+      <view wx:if="{{topFavoriteTypes.length > 0}}" class="stat-group">
+        <view class="stat-group-title">最受欢迎的计算 Top5</view>
+        <view wx:for="{{topFavoriteTypes}}" wx:key="name" class="rank-item">
+          <text class="rank-number">{{index + 1}}.</text>
+          <text class="rank-name">{{item.name}}</text>
+          <view class="rank-bar-container">
+            <view class="rank-bar favorite-bar" style="width: {{item.percentage || 0}}%"></view>
+          </view>
+          <text class="rank-count">{{item.count}}次</text>
+        </view>
+      </view>
+      
+      <view wx:if="{{topFavoriteTypes.length === 0 && repeatCalcCount === 0}}" class="empty-stats">
+        <text>暂无科研价值数据</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据备份与恢复 -->
+  <view class="section">
+    <view class="section-title">💾 数据备份与恢复</view>
+    
+    <view class="backup-hint">
+      <text class="hint-icon">💡</text>
+      <text class="hint-text">定期备份数据可防止意外数据丢失</text>
+    </view>
+    
+    <view class="button-group">
+      <button class="action-btn primary" bindtap="backupData">
+        <text class="btn-icon">💾</text>
+        <text>备份数据</text>
+      </button>
+      
+      <button class="action-btn success" bindtap="importData">
+        <text class="btn-icon">📥</text>
+        <text>导入数据</text>
+      </button>
+      
+      <button class="action-btn info" bindtap="restoreData">
+        <text class="btn-icon">🔄</text>
+        <text>从备份恢复</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 数据导出 -->
+  <view class="section">
+    <view class="section-title">📤 数据导出</view>
+    
+    <view class="button-group">
+      <button class="action-btn" bindtap="exportData">
+        <text class="btn-icon">📊</text>
+        <text>导出报告</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 数据清理 -->
+  <view class="section">
+    <view class="section-title">🗑️ 数据清理</view>
+    
+    <view class="button-group">
+      <button class="action-btn" bindtap="clearCache">
+        <text class="btn-icon">🧹</text>
+        <text>清除缓存</text>
+      </button>
+      
+      <button class="action-btn warning" bindtap="clearHistory">
+        <text class="btn-icon">📜</text>
+        <text>清除历史记录</text>
+      </button>
+      
+      <button class="action-btn warning" bindtap="clearFavorites">
+        <text class="btn-icon">⭐</text>
+        <text>清除收藏</text>
+      </button>
+      
+      <button class="action-btn danger" bindtap="clearAllData">
+        <text class="btn-icon">⚠️</text>
+        <text>清除所有数据</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="section">
+    <view class="section-title">ℹ️ 关于</view>
+    
+    <view class="about-item" bindtap="showAbout">
+      <text class="about-label">版本信息</text>
+      <text class="about-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 页脚 -->
   <view class="footer">
-    <text class="version">版本 v2.1.0</text>
+    <text class="version">材料化学科研工具箱 v6.0.0</text>
     <text class="copyright">© 2025 化学计算工具</text>
   </view>
 </view>
-

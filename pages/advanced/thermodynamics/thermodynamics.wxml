@@ -1,0 +1,197 @@
+<!--pages/advanced/thermodynamics/thermodynamics.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">热力学计算</text>
+  </view>
+
+  <!-- Tab导航 -->
+  <scroll-view class="tabs" scroll-x>
+    <view 
+      wx:for="{{tabs}}" 
+      wx:key="index"
+      class="tab-item {{activeTab === index ? 'active' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+    </view>
+  </scroll-view>
+
+  <scroll-view class="content" scroll-y>
+    <!-- Gibbs自由能 -->
+    <view wx:if="{{activeTab === 0}}" class="calc-section">
+      <view class="input-group">
+        <text class="label">焓变 ΔH (kJ/mol)</text>
+        <input class="input" type="digit" placeholder="请输入" value="{{deltaH}}" data-field="deltaH" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">温度 T (K)</text>
+        <input class="input" type="digit" placeholder="298.15" value="{{temperature}}" data-field="temperature" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">熵变 ΔS (J/(mol·K))</text>
+        <input class="input" type="digit" placeholder="请输入" value="{{deltaS}}" data-field="deltaS" bindinput="onInput"/>
+      </view>
+      
+      <button class="calc-btn" bindtap="calculateGibbs">计算</button>
+      
+      <view wx:if="{{gibbsResult}}" class="result-card">
+        <view class="result-title">计算结果</view>
+        <view class="result-item">
+          <text class="result-label">ΔG</text>
+          <text class="result-value">{{gibbsResult.deltaG}} kJ/mol</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">自发性</text>
+          <text class="result-value highlight">{{gibbsResult.spontaneity}}</text>
+        </view>
+        <view class="result-formula">ΔG = ΔH - T·ΔS</view>
+      </view>
+    </view>
+
+    <!-- 平衡常数 -->
+    <view wx:if="{{activeTab === 1}}" class="calc-section">
+      <view class="input-group">
+        <text class="label">标准Gibbs自由能变 ΔG° (kJ/mol)</text>
+        <input class="input" type="digit" placeholder="请输入" value="{{deltaG_k}}" data-field="deltaG_k" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">温度 T (K)</text>
+        <input class="input" type="digit" placeholder="298.15" value="{{temp_k}}" data-field="temp_k" bindinput="onInput"/>
+      </view>
+      
+      <button class="calc-btn" bindtap="calculateK">计算</button>
+      
+      <view wx:if="{{kResult}}" class="result-card">
+        <view class="result-title">计算结果</view>
+        <view class="result-item">
+          <text class="result-label">平衡常数 K</text>
+          <text class="result-value">{{kResult.K}}</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">pK</text>
+          <text class="result-value">{{kResult.pK}}</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">反应倾向</text>
+          <text class="result-value highlight">{{kResult.tendency}}</text>
+        </view>
+        <view class="result-formula">ΔG° = -RT ln(K)</view>
+      </view>
+    </view>
+
+    <!-- Van't Hoff方程 -->
+    <view wx:if="{{activeTab === 2}}" class="calc-section">
+      <view class="input-group">
+        <text class="label">温度T₁下的平衡常数 K₁</text>
+        <input class="input" type="digit" placeholder="请输入" value="{{K1}}" data-field="K1" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">温度 T₁ (K)</text>
+        <input class="input" type="digit" placeholder="298.15" value="{{T1}}" data-field="T1" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">温度 T₂ (K)</text>
+        <input class="input" type="digit" placeholder="323.15" value="{{T2}}" data-field="T2" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">标准焓变 ΔH° (kJ/mol)</text>
+        <input class="input" type="digit" placeholder="请输入" value="{{deltaH_vh}}" data-field="deltaH_vh" bindinput="onInput"/>
+      </view>
+      
+      <button class="calc-btn" bindtap="calculateVanHoff">计算</button>
+      
+      <view wx:if="{{vhResult}}" class="result-card">
+        <view class="result-title">计算结果</view>
+        <view class="result-item">
+          <text class="result-label">K₂</text>
+          <text class="result-value">{{vhResult.K2}}</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">温度变化</text>
+          <text class="result-value">{{vhResult.tempChange}} K</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">ΔG₁</text>
+          <text class="result-value">{{vhResult.deltaG1}} kJ/mol</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">ΔG₂</text>
+          <text class="result-value">{{vhResult.deltaG2}} kJ/mol</text>
+        </view>
+        <view class="result-formula">ln(K₂/K₁) = -ΔH°/R × (1/T₂ - 1/T₁)</view>
+      </view>
+    </view>
+
+    <!-- 反应焓变 -->
+    <view wx:if="{{activeTab === 3}}" class="calc-section">
+      <view class="section-header">
+        <text class="section-title">产物</text>
+        <button class="add-btn" size="mini" bindtap="addProduct">+ 添加</button>
+      </view>
+      <view wx:for="{{products}}" wx:key="index" class="reaction-item">
+        <input 
+          class="small-input" 
+          type="digit" 
+          placeholder="系数"
+          value="{{item.coefficient}}"
+          data-index="{{index}}"
+          data-field="coefficient"
+          bindinput="onProductInput"
+        />
+        <input 
+          class="small-input" 
+          type="digit" 
+          placeholder="ΔHf (kJ/mol)"
+          value="{{item.deltaH_f}}"
+          data-index="{{index}}"
+          data-field="deltaH_f"
+          bindinput="onProductInput"
+        />
+        <text class="remove-btn" data-index="{{index}}" bindtap="removeProduct">×</text>
+      </view>
+      
+      <view class="section-header">
+        <text class="section-title">反应物</text>
+        <button class="add-btn" size="mini" bindtap="addReactant">+ 添加</button>
+      </view>
+      <view wx:for="{{reactants}}" wx:key="index" class="reaction-item">
+        <input 
+          class="small-input" 
+          type="digit" 
+          placeholder="系数"
+          value="{{item.coefficient}}"
+          data-index="{{index}}"
+          data-field="coefficient"
+          bindinput="onReactantInput"
+        />
+        <input 
+          class="small-input" 
+          type="digit" 
+          placeholder="ΔHf (kJ/mol)"
+          value="{{item.deltaH_f}}"
+          data-index="{{index}}"
+          data-field="deltaH_f"
+          bindinput="onReactantInput"
+        />
+        <text class="remove-btn" data-index="{{index}}" bindtap="removeReactant">×</text>
+      </view>
+      
+      <button class="calc-btn" bindtap="calculateEnthalpy">计算</button>
+      
+      <view wx:if="{{enthalpyResult}}" class="result-card">
+        <view class="result-title">计算结果</view>
+        <view class="result-item">
+          <text class="result-label">反应焓变 ΔH</text>
+          <text class="result-value">{{enthalpyResult.deltaH}} kJ/mol</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">反应类型</text>
+          <text class="result-value highlight">{{enthalpyResult.reactionType}}</text>
+        </view>
+        <view class="result-formula">ΔH = Σ ΔHf(产物) - Σ ΔHf(反应物)</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "误差传递计算器",
+  "usingComponents": {
+    "calculator-input": "/components/calculator-input/calculator-input",
+    "result-card": "/components/result-card/result-card"
+  }
+}
+

@@ -1,0 +1,377 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view 
+      wx:for="{{tools}}" 
+      wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}"
+      bindtap="switchTool"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- d-2θ互算（Bragg定律）-->
+  <view wx:if="{{currentTool === 'bragg'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">💎 Bragg定律计算</text>
+      <text class="intro-desc">d值与2θ衍射角互算</text>
+      <text class="intro-formula">nλ = 2d·sinθ (n=1)</text>
+    </view>
+
+    <view class="input-section">
+      <!-- X射线源选择 -->
+      <view class="picker-field">
+        <text class="picker-label">🌊 X射线源</text>
+        <picker mode="selector" range="{{xrayTargets}}" value="{{xrayIndex}}" bindchange="handleXrayChange">
+          <view class="picker-value">{{xrayTargets[xrayIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="波长λ"
+        value="{{braggLambda}}"
+        type="digit"
+        placeholder="{{braggLambdaPlaceholder}}"
+        unit="Å"
+        icon="🌊"
+        hint="可自定义波长"
+        enableHistory="{{true}}"
+        historyTool="xrd"
+        historyField="wavelength"
+        presets="{{wavelengthPresets}}"
+        touchArea="large"
+        bind:input="handleBraggLambdaInput"
+        bindchange="handleWavelengthChange"
+      />
+
+      <!-- 计算模式切换 -->
+      <view class="mode-switch">
+        <view 
+          class="mode-item {{braggMode === 'theta-to-d' ? 'active' : ''}}"
+          data-mode="theta-to-d"
+          bindtap="switchBraggMode"
+        >
+          <text>2θ → d</text>
+        </view>
+        <view 
+          class="mode-item {{braggMode === 'd-to-theta' ? 'active' : ''}}"
+          data-mode="d-to-theta"
+          bindtap="switchBraggMode"
+        >
+          <text>d → 2θ</text>
+        </view>
+      </view>
+
+      <!-- 2θ → d 模式 -->
+      <view wx:if="{{braggMode === 'theta-to-d'}}">
+        <calculator-input
+          label="衍射角2θ"
+          value="{{braggTheta2}}"
+          type="digit"
+          placeholder="例如：38.5"
+          unit="°"
+          icon="📐"
+          enableHistory="{{true}}"
+          historyTool="xrd"
+          historyField="angle"
+          presets="{{anglePresets}}"
+          realtime="{{true}}"
+          touchArea="large"
+          bind:input="handleBraggTheta2Input"
+          bindchange="handleAngleChange"
+          bindrealtimecalculate="handleRealtimeCalculate"
+        />
+      </view>
+
+      <!-- d → 2θ 模式 -->
+      <view wx:if="{{braggMode === 'd-to-theta'}}">
+        <calculator-input
+          label="晶面间距d"
+          value="{{braggDValue}}"
+          type="digit"
+          placeholder="例如：2.336"
+          unit="Å"
+          icon="💎"
+          enableHistory="{{true}}"
+          historyTool="xrd"
+          historyField="dValue"
+          presets="{{dValuePresets}}"
+          realtime="{{true}}"
+          touchArea="large"
+          bind:input="handleBraggDInput"
+          bindchange="handleDValueChange"
+          bindrealtimecalculate="handleRealtimeCalculateBragg"
+        />
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateBragg">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{braggResultText}}" title="计算结果">
+      <view class="result-text">{{braggResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 晶系d(hkl)计算 -->
+  <view wx:if="{{currentTool === 'crystal'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🔷 晶面间距计算</text>
+      <text class="intro-desc">根据晶系和米勒指数计算d值</text>
+    </view>
+
+    <view class="input-section">
+      <!-- 晶系选择 -->
+      <view class="picker-field">
+        <text class="picker-label">💎 晶系</text>
+        <picker mode="selector" range="{{crystalSystemsBasic}}" value="{{crystalIndexBasic}}" bindchange="handleCrystalSystemChange">
+          <view class="picker-value">{{crystalSystemsBasic[crystalIndexBasic]}}</view>
+        </picker>
+      </view>
+
+      <!-- 晶格参数输入 -->
+      <calculator-input
+        label="晶格常数 a"
+        value="{{latticeA}}"
+        type="digit"
+        placeholder="例如：4.05"
+        unit="Å"
+        icon="📏"
+        bind:input="handleLatticeAInput"
+      />
+
+      <calculator-input wx:if="{{crystalIndexBasic === 2}}"
+        label="晶格常数 b"
+        value="{{latticeB}}"
+        type="digit"
+        placeholder="例如：4.05"
+        unit="Å"
+        icon="📏"
+        bind:input="handleLatticeBInput"
+      />
+
+      <calculator-input wx:if="{{crystalIndexBasic >= 1}}"
+        label="晶格常数 c"
+        value="{{latticeC}}"
+        type="digit"
+        placeholder="例如：4.05"
+        unit="Å"
+        icon="📏"
+        bind:input="handleLatticeCInput"
+      />
+
+      <!-- 米勒指数输入 -->
+      <view class="miller-indices">
+        <text class="field-label">米勒指数 (hkl)</text>
+        <view class="miller-input-group">
+          <input
+            class="miller-input"
+            type="digit"
+            value="{{millerH}}"
+            placeholder="h"
+            bindinput="handleMillerHInput"
+          />
+          <input
+            class="miller-input"
+            type="digit"
+            value="{{millerK}}"
+            placeholder="k"
+            bindinput="handleMillerKInput"
+          />
+          <input
+            class="miller-input"
+            type="digit"
+            value="{{millerL}}"
+            placeholder="l"
+            bindinput="handleMillerLInput"
+          />
+        </view>
+        <text class="field-hint">例如：(1 1 1)</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateCrystal">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{crystalResultText}}" title="计算结果">
+      <view class="result-text">{{crystalResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- Scherrer公式 -->
+  <view wx:if="{{currentTool === 'scherrer'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📏 Scherrer公式</text>
+      <text class="intro-desc">根据XRD峰宽计算晶粒尺寸</text>
+      <text class="intro-formula">D = Kλ / (β·cosθ)</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="半峰宽FWHM"
+        value="{{fwhm}}"
+        type="digit"
+        placeholder="例如：0.5"
+        unit="°"
+        icon="📐"
+        bind:input="handleFwhmInput"
+      />
+      
+      <calculator-input
+        label="衍射角2θ"
+        value="{{theta2}}"
+        type="digit"
+        placeholder="例如：38.5"
+        unit="°"
+        icon="📐"
+        bind:input="handleTheta2Input"
+      />
+      
+      <calculator-input
+        label="波长λ"
+        value="{{lambda}}"
+        type="digit"
+        placeholder="{{lambdaPlaceholder}}"
+        unit="Å"
+        icon="🌊"
+        hint="默认Cu Kα：1.5406"
+        bind:input="handleLambdaInput"
+      />
+      
+      <calculator-input
+        label="形状因子K"
+        value="{{shapeK}}"
+        type="digit"
+        placeholder="0.9"
+        icon="⬡"
+        hint="球形颗粒：0.9"
+        bind:input="handleShapeKInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateScherrer">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{scherrerResultText}}" title="计算结果">
+      <view class="result-text">{{scherrerResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 晶格精修 -->
+  <view wx:if="{{currentTool === 'refine'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🔷 晶格常数精修</text>
+      <text class="intro-desc">使用多个衍射峰精修晶格参数</text>
+    </view>
+
+    <view class="input-section">
+      <view class="picker-field">
+        <text class="picker-label">晶系</text>
+        <picker mode="selector" range="{{crystalSystems}}" value="{{crystalIndex}}" bindchange="handleCrystalSystemChange">
+          <view class="picker-value">{{crystalSystems[crystalIndex]}}</view>
+        </picker>
+      </view>
+
+      <view class="textarea-field">
+        <text class="field-label">衍射峰数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{refinePeaks}}"
+          placeholder="{{refinePeaksPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleRefinePeaksInput"
+        />
+        <text class="field-hint">至少输入3个衍射峰</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateRefine">精修</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{refineResultText}}" title="精修结果">
+      <view class="result-text">{{refineResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 消光判断 -->
+  <view wx:if="{{currentTool === 'extinction'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🔍 消光系统判断</text>
+      <text class="intro-desc">根据出现的衍射峰判断布拉维格子类型</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">观察到的衍射峰(hkl)</text>
+        <textarea
+          class="textarea-input"
+          value="{{extinctionPeaks}}"
+          placeholder="{{extinctionPeaksPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleExtinctionPeaksInput"
+        />
+        <text class="field-hint">输入观察到的所有衍射峰</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateExtinction">分析</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{extinctionResultText}}" title="分析结果">
+      <view class="result-text">{{extinctionResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 峰强分析 -->
+  <view wx:if="{{currentTool === 'intensity'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📊 相对峰强分析</text>
+      <text class="intro-desc">归一化峰强，计算相对强度</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">峰强数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{intensityPeaks}}"
+          placeholder="{{intensityPeaksPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleIntensityPeaksInput"
+        />
+        <text class="field-hint">输入峰位和对应强度</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateIntensity">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{intensityResultText}}" title="分析结果">
+      <view class="result-text">{{intensityResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 导出按钮（底部浮动） -->
+  <view wx:if="{{braggResultText || crystalResultText || scherrerResultText || refineResultText || extinctionResultText || intensityResultText}}" class="export-button" bindtap="exportResult">
+    <text>📤 导出结果</text>
+  </view>
+</view>
+

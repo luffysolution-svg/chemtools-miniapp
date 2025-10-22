@@ -18,7 +18,13 @@
       value="{{formula}}"
       placeholder="例如：H2O、Al2(SO4)3·18H2O"
       hint="支持括号和水合物（用·或.）"
+      enableHistory="{{true}}"
+      historyTool="molar"
+      historyField="formula"
+      presets="{{formulaPresets}}"
+      touchArea="large"
       bindinput="handleFormulaInput"
+      bindchange="handleFormulaChange"
     />
 
     <view class="action-buttons">
@@ -68,7 +74,13 @@
         value="{{mass}}"
         placeholder="例如：18"
         validator="positive"
+        enableHistory="{{true}}"
+        historyTool="molar"
+        historyField="mass"
+        presets="{{massPresets}}"
+        touchArea="large"
         bindinput="handleMassInput"
+        bindchange="handleMassChange"
       />
       <button class="convert-btn" bindtap="massToMoles">→ 转为物质的量</button>
     </view>
@@ -80,7 +92,13 @@
         value="{{moles}}"
         placeholder="例如：1"
         validator="positive"
+        enableHistory="{{true}}"
+        historyTool="molar"
+        historyField="moles"
+        presets="{{molesPresets}}"
+        touchArea="large"
         bindinput="handleMolesInput"
+        bindchange="handleMolesChange"
       />
       <button class="convert-btn" bindtap="molesToMass">→ 转为质量</button>
     </view>

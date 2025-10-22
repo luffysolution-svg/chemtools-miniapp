@@ -1,0 +1,101 @@
+<view class="search-input-container academic-style">
+  <!-- 搜索框主体 -->
+  <view class="search-box {{focused ? 'focused' : ''}}">
+    <text class="search-icon">🔍</text>
+    <input 
+      class="search-field"
+      type="text"
+      value="{{value}}"
+      placeholder="{{placeholder}}"
+      placeholder-class="search-placeholder"
+      bindinput="handleInput"
+      bindfocus="handleFocus"
+      bindblur="handleBlur"
+      bindconfirm="handleConfirm"
+      confirm-type="search"
+      maxlength="{{maxlength}}"
+    />
+    
+    <!-- 历史记录按钮 -->
+    <view 
+      wx:if="{{enableHistory && !value}}" 
+      class="action-btn history-btn"
+      bindtap="toggleHistory"
+    >
+      <text class="btn-icon">📋</text>
+    </view>
+    
+    <!-- 清除按钮 -->
+    <view 
+      wx:if="{{value}}" 
+      class="action-btn clear-btn"
+      bindtap="clearInput"
+    >
+      <text class="btn-icon">✕</text>
+    </view>
+  </view>
+
+  <!-- 搜索历史下拉 -->
+  <view 
+    wx:if="{{showHistory && historyList.length > 0}}" 
+    class="history-dropdown academic-card"
+  >
+    <view class="dropdown-header">
+      <text class="header-title">最近搜索</text>
+      <text class="header-action" bindtap="clearHistory">清除</text>
+    </view>
+    <scroll-view class="history-list" scroll-y>
+      <view 
+        wx:for="{{historyList}}" 
+        wx:key="index"
+        class="history-item"
+        data-value="{{item}}"
+        bindtap="selectHistory"
+      >
+        <text class="history-icon">🕐</text>
+        <text class="history-text">{{item}}</text>
+        <text class="history-arrow">→</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 热门搜索 -->
+  <view 
+    wx:if="{{showHotSearches && hotSearches.length > 0}}" 
+    class="hot-searches"
+  >
+    <view class="hot-header">
+      <text class="hot-icon">🔥</text>
+      <text class="hot-title">热门搜索</text>
+    </view>
+    <view class="hot-tags">
+      <view 
+        wx:for="{{hotSearches}}" 
+        wx:key="index"
+        class="hot-tag"
+        data-value="{{item}}"
+        bindtap="selectHot"
+      >
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索建议下拉 -->
+  <view 
+    wx:if="{{showSuggestions && suggestions.length > 0}}" 
+    class="suggestions-dropdown academic-card"
+  >
+    <view 
+      wx:for="{{suggestions}}" 
+      wx:key="index"
+      class="suggestion-item"
+      data-value="{{item}}"
+      bindtap="selectSuggestion"
+    >
+      <text class="suggestion-icon">💡</text>
+      <text class="suggestion-text">{{item}}</text>
+    </view>
+  </view>
+</view>
+

@@ -1,0 +1,191 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view 
+      wx:for="{{tools}}" 
+      wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}"
+      bindtap="switchTool"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 多组分溶液配制 -->
+  <view wx:if="{{currentTool === 'multi-component'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">⚗️ 多组分溶液配制</text>
+      <text class="intro-desc">计算多种组分的质量和体积</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="目标总体积"
+        value="{{totalVolume}}"
+        type="digit"
+        placeholder="100"
+        unit="mL"
+        icon="🧪"
+        enableHistory="{{true}}"
+        historyTool="formula-calc"
+        historyField="volume"
+        presets="{{volumePresets}}"
+        touchArea="large"
+        bind:input="handleTotalVolumeInput"
+        bindchange="handleVolumeChange"
+      />
+
+      <view class="textarea-field">
+        <view class="field-header">
+          <text class="field-label">组分信息</text>
+          <text class="field-example-btn" bindtap="fillExampleComponents">填充示例</text>
+        </view>
+        <textarea
+          class="textarea-input"
+          value="{{componentInput}}"
+          placeholder="{{componentPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleComponentInput"
+        />
+        <view class="field-hint-block">
+          <text class="hint-title">💡 智能输入：</text>
+          <text class="hint-line">• 方式1：化学式,浓度 → 自动计算分子量</text>
+          <text class="hint-line">• 方式2：化学式,浓度,分子量 → 手动指定</text>
+          <text class="hint-title">示例：</text>
+          <text class="hint-example">NaCl,0.1 （自动计算58.44）</text>
+          <text class="hint-example">KCl,0.05,74.55 （手动指定）</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateMulti">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{multiResultText}}" title="配制方案">
+      <view class="result-text">{{multiResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- pH缓冲液配制 -->
+  <view wx:if="{{currentTool === 'buffer'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🧪 pH缓冲液配制</text>
+      <text class="intro-desc">Henderson-Hasselbalch方程</text>
+      <text class="intro-formula">pH = pKa + log([A⁻]/[HA])</text>
+    </view>
+
+    <view class="input-section">
+      <view class="picker-field">
+        <text class="picker-label">缓冲体系</text>
+        <picker mode="selector" range="{{bufferSystems}}" value="{{bufferSystemIndex}}" bindchange="handleBufferSystemChange">
+          <view class="picker-value">{{bufferSystems[bufferSystemIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="目标pH"
+        value="{{targetPH}}"
+        type="digit"
+        placeholder="例如：7.4"
+        icon="📊"
+        bind:input="handleTargetPHInput"
+      />
+
+      <calculator-input
+        label="总体积"
+        value="{{bufferVolume}}"
+        type="digit"
+        placeholder="1000"
+        unit="mL"
+        icon="🧪"
+        bind:input="handleBufferVolumeInput"
+      />
+
+      <calculator-input
+        label="总浓度"
+        value="{{bufferConcentration}}"
+        type="digit"
+        placeholder="0.1"
+        unit="M"
+        icon="⚗️"
+        bind:input="handleBufferConcentrationInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateBufferSolution">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{bufferResultText}}" title="配制方案">
+      <view class="result-text">{{bufferResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 水热反应参数 -->
+  <view wx:if="{{currentTool === 'hydrothermal'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🔥 水热反应参数</text>
+      <text class="intro-desc">填充度与安全性评估</text>
+    </view>
+
+    <view class="input-section">
+      <view class="picker-field">
+        <text class="picker-label">溶剂类型</text>
+        <picker mode="selector" range="{{solventTypes}}" value="{{solventIndex}}" bindchange="handleSolventChange">
+          <view class="picker-value">{{solventTypes[solventIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="填充体积"
+        value="{{fillVolume}}"
+        type="digit"
+        placeholder="例如：40"
+        unit="mL"
+        icon="💧"
+        bind:input="handleFillVolumeInput"
+      />
+
+      <calculator-input
+        label="反应釜容积"
+        value="{{autoclaveVolume}}"
+        type="digit"
+        placeholder="例如：100"
+        unit="mL"
+        icon="🔵"
+        bind:input="handleAutoclaveVolumeInput"
+      />
+
+      <calculator-input
+        label="反应温度"
+        value="{{temperature}}"
+        type="digit"
+        placeholder="例如：180"
+        unit="°C"
+        icon="🌡️"
+        bind:input="handleTemperatureInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateHydro">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{hydroResultText}}" title="参数分析">
+      <view class="result-text">{{hydroResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 导出按钮 -->
+  <view wx:if="{{multiResultText || bufferResultText || hydroResultText}}" class="export-button" bindtap="exportResult">
+    <text>📤 导出结果</text>
+  </view>
+</view>
+

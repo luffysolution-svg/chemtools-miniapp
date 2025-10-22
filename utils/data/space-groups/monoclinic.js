@@ -1,0 +1,132 @@
+// UTF-8, no BOM
+// 单斜晶系空间群 (13个，列出最常用的10个)
+
+module.exports = [
+  {
+    number: 3,
+    symbol: 'P2',
+    system: 'monoclinic',
+    laueClass: '2/m',
+    pointGroup: '2',
+    centrosymmetric: false,
+    extinction: [],
+    generalPositions: 2,
+    equivalentPositions: ['(x,y,z)', '(-x,y,-z)'],
+    symmetryElements: ['2₁ 螺旋轴 // b'],
+    notes: '单斜，P格子，二次旋转轴',
+    examples: []
+  },
+  {
+    number: 4,
+    symbol: 'P2₁',
+    system: 'monoclinic',
+    laueClass: '2/m',
+    pointGroup: '2',
+    centrosymmetric: false,
+    extinction: ['0k0: k=2n'],
+    generalPositions: 2,
+    equivalentPositions: ['(x,y,z)', '(-x,y+1/2,-z)'],
+    symmetryElements: ['2₁ 螺旋轴 // b，平移 b/2'],
+    notes: '单斜，最常见手性空间群之一',
+    examples: ['许多手性有机化合物', '蛋白质晶体']
+  },
+  {
+    number: 5,
+    symbol: 'C2',
+    system: 'monoclinic',
+    laueClass: '2/m',
+    pointGroup: '2',
+    centrosymmetric: false,
+    extinction: ['hkl: h+k=2n'],
+    generalPositions: 4,
+    equivalentPositions: ['(x,y,z)', '(-x,y,-z)', '(x+1/2,y+1/2,z)', '(-x+1/2,y+1/2,-z)'],
+    symmetryElements: ['2次旋转轴 // b'],
+    notes: '单斜，C心格子',
+    examples: ['β-硫', '石膏']
+  },
+  {
+    number: 10,
+    symbol: 'P2/m',
+    system: 'monoclinic',
+    laueClass: '2/m',
+    pointGroup: '2/m',
+    centrosymmetric: true,
+    extinction: [],
+    generalPositions: 4,
+    equivalentPositions: ['(x,y,z)', '(-x,y,-z)', '(-x,-y,-z)', '(x,-y,z)'],
+    symmetryElements: ['2次旋转轴 // b', '镜面 ⊥ b', '反演中心'],
+    notes: '单斜，P格子，有镜面',
+    examples: []
+  },
+  {
+    number: 11,
+    symbol: 'P2₁/m',
+    system: 'monoclinic',
+    laueClass: '2/m',
+    pointGroup: '2/m',
+    centrosymmetric: true,
+    extinction: ['0k0: k=2n'],
+    generalPositions: 4,
+    equivalentPositions: ['(x,y,z)', '(-x,y+1/2,-z)', '(-x,-y,-z)', '(x,-y+1/2,z)'],
+    symmetryElements: ['2₁ 螺旋轴', '镜面 ⊥ b', '反演中心'],
+    notes: '单斜，极常用空间群',
+    examples: ['许多无机化合物', '有机晶体']
+  },
+  {
+    number: 12,
+    symbol: 'C2/m',
+    system: 'monoclinic',
+    laueClass: '2/m',
+    pointGroup: '2/m',
+    centrosymmetric: true,
+    extinction: ['hkl: h+k=2n'],
+    generalPositions: 8,
+    equivalentPositions: ['(x,y,z)', '(-x,y,-z)', '(-x,-y,-z)', '(x,-y,z)', '(x+1/2,y+1/2,z)', '(-x+1/2,y+1/2,-z)', '(-x+1/2,-y+1/2,-z)', '(x+1/2,-y+1/2,z)'],
+    symmetryElements: ['2次旋转轴', 'C心格子', '反演中心'],
+    notes: '单斜，C心，最高对称性',
+    examples: ['辉石族矿物', '多种层状硅酸盐']
+  },
+  {
+    number: 13,
+    symbol: 'P2/c',
+    system: 'monoclinic',
+    laueClass: '2/m',
+    pointGroup: '2/m',
+    centrosymmetric: true,
+    extinction: ['h0l: l=2n'],
+    generalPositions: 4,
+    equivalentPositions: ['(x,y,z)', '(-x,y,-z+1/2)', '(-x,-y,-z)', '(x,-y,z+1/2)'],
+    symmetryElements: ['2次旋转轴', 'c滑移面', '反演中心'],
+    notes: '单斜，极常用',
+    examples: ['许多有机化合物']
+  },
+  {
+    number: 14,
+    symbol: 'P2₁/c',
+    system: 'monoclinic',
+    laueClass: '2/m',
+    pointGroup: '2/m',
+    centrosymmetric: true,
+    extinction: ['h0l: l=2n', '0k0: k=2n'],
+    generalPositions: 4,
+    equivalentPositions: ['(x,y,z)', '(-x,y+1/2,-z+1/2)', '(-x,-y,-z)', '(x,-y+1/2,z+1/2)'],
+    symmetryElements: ['2₁ 螺旋轴', 'c滑移面', '反演中心'],
+    notes: '**最常见的空间群**，约35%晶体结构属于此群',
+    examples: ['大量有机化合物', '配位化合物', '苯甲酸', '萘']
+  },
+  {
+    number: 15,
+    symbol: 'C2/c',
+    system: 'monoclinic',
+    laueClass: '2/m',
+    pointGroup: '2/m',
+    centrosymmetric: true,
+    extinction: ['hkl: h+k=2n', 'h0l: l=2n'],
+    generalPositions: 8,
+    equivalentPositions: ['(x,y,z)', '(-x,y,-z+1/2)', '(-x,-y,-z)', '(x,-y,z+1/2)', '(x+1/2,y+1/2,z)', '(-x+1/2,y+1/2,-z+1/2)', '(-x+1/2,-y+1/2,-z)', '(x+1/2,-y+1/2,z+1/2)'],
+    symmetryElements: ['2次旋转轴', 'C心格子', 'c滑移面', '反演中心'],
+    notes: '单斜，第二常用空间群',
+    examples: ['辉石族矿物', '多种配位化合物']
+  }
+];
+

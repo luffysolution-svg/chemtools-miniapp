@@ -1,0 +1,532 @@
+.container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 加载中 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 无数据提示 */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 60rpx;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* 统计概览卡片 */
+.overview-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.title-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.title-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: white;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24rpx;
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12rpx;
+}
+
+.item-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 8rpx;
+}
+
+.item-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 趋势对比卡片 */
+.trend-cards {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.trend-card {
+  flex: 1;
+  background: white;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.trend-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.trend-value {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.trend-change {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.trend-change.up {
+  color: #56ab2f;
+}
+
+.trend-change.down {
+  color: #ff6b6b;
+}
+
+.trend-change.stable {
+  color: #999;
+}
+
+.change-icon {
+  font-size: 24rpx;
+  margin-right: 6rpx;
+}
+
+.change-text {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.trend-compare {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 区块卡片 */
+.section-card {
+  background: white;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  background: #f8f9fb;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.header-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.toggle-icon {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.section-content {
+  padding: 20rpx;
+}
+
+/* 排行榜列表 */
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx;
+  background: #f8f9fb;
+  border-radius: 12rpx;
+}
+
+.rank-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.rank-number {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #1f3c88;
+  width: 48rpx;
+  text-align: center;
+}
+
+.rank-name {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.rank-right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.rank-count {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.rank-bar {
+  width: 100rpx;
+  height: 8rpx;
+  background: #e8ecf0;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s;
+}
+
+.rank-percent {
+  font-size: 22rpx;
+  color: #999;
+  width: 60rpx;
+  text-align: right;
+}
+
+/* 渠道列表 */
+.channel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.channel-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.channel-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.channel-name {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.channel-count {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.channel-bar {
+  height: 12rpx;
+  background: #e8ecf0;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.channel-percent {
+  font-size: 22rpx;
+  color: #999;
+  text-align: right;
+}
+
+/* 高峰时段 */
+.peak-hours {
+  margin-bottom: 24rpx;
+}
+
+.peak-title {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.peak-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.peak-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  background: #f8f9fb;
+  border-radius: 8rpx;
+}
+
+.peak-hour {
+  font-size: 26rpx;
+  color: #1f3c88;
+  font-weight: 600;
+  margin-right: 12rpx;
+}
+
+.peak-period {
+  font-size: 24rpx;
+  color: #999;
+  margin-right: auto;
+}
+
+.peak-count {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 24小时图表 */
+.hourly-chart {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 200rpx;
+  padding: 20rpx 0;
+}
+
+.hourly-chart .chart-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.hourly-chart .chart-bar {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 2rpx;
+}
+
+.hourly-chart .bar-fill {
+  width: 100%;
+  background: linear-gradient(to top, #667eea 0%, #764ba2 100%);
+  border-radius: 4rpx 4rpx 0 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 4rpx;
+  transition: height 0.3s;
+}
+
+.hourly-chart .bar-value {
+  font-size: 18rpx;
+  color: white;
+  padding-top: 4rpx;
+}
+
+.hourly-chart .chart-label {
+  font-size: 20rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 每日趋势图表 */
+.daily-chart {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 220rpx;
+  padding: 20rpx 0;
+}
+
+.daily-chart .chart-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.daily-chart .chart-bar {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 4rpx;
+}
+
+.daily-chart .bar-fill {
+  width: 100%;
+  background: linear-gradient(to top, #56ab2f 0%, #a8e063 100%);
+  border-radius: 8rpx 8rpx 0 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 10rpx;
+  transition: height 0.3s;
+}
+
+.daily-chart .bar-value {
+  font-size: 22rpx;
+  color: white;
+  font-weight: 600;
+  padding-top: 8rpx;
+}
+
+.daily-chart .chart-label {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 12rpx;
+}
+
+/* 偏好卡片 */
+.preference-card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.preference-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.pref-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  background: #f8f9fb;
+  border-radius: 8rpx;
+}
+
+.pref-label {
+  font-size: 26rpx;
+  color: #666;
+  margin-right: 12rpx;
+}
+
+.pref-value {
+  font-size: 26rpx;
+  color: #1f3c88;
+  font-weight: 600;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.btn-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+}
+
+.action-btn.danger {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+}
+

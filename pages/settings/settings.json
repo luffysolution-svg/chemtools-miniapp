@@ -1,8 +1,9 @@
 {
-  "navigationBarTitleText": "设置",
+  "navigationBarTitleText": "数据管理",
   "navigationBarBackgroundColor": "#667eea",
   "navigationBarTextStyle": "white",
   "backgroundColor": "#f5f7fa",
-  "enablePullDownRefresh": false
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
 }
 

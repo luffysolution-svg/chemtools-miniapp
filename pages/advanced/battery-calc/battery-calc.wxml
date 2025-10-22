@@ -1,0 +1,233 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view 
+      wx:for="{{tools}}" 
+      wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}"
+      bindtap="switchTool"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 比容量计算 -->
+  <view wx:if="{{currentTool === 'specific-capacity'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">⚡ 比容量计算</text>
+      <text class="intro-desc">计算重量/体积比容量</text>
+      <text class="intro-formula">Q_sp = Q / (m × ratio)</text>
+    </view>
+
+    <view class="input-section">
+      <view class="section-title">🔹 实测比容量</view>
+      
+      <calculator-input
+        label="容量"
+        value="{{capacity}}"
+        type="digit"
+        placeholder="例如：180"
+        unit="mAh"
+        icon="⚡"
+        enableHistory="{{true}}"
+        historyTool="battery"
+        historyField="capacity"
+        presets="{{capacityPresets}}"
+        touchArea="large"
+        bind:input="handleCapacityInput"
+        bindchange="handleCapacityChange"
+      />
+
+      <calculator-input
+        label="活性物质质量"
+        value="{{mass}}"
+        type="digit"
+        placeholder="例如：10"
+        unit="mg"
+        icon="⚖️"
+        bind:input="handleMassInput"
+      />
+
+      <calculator-input
+        label="活性物质占比"
+        value="{{activeMaterialRatio}}"
+        type="digit"
+        placeholder="100"
+        unit="%"
+        icon="📊"
+        hint="默认100%"
+        bind:input="handleRatioInput"
+      />
+
+      <calculator-input
+        label="材料密度（可选）"
+        value="{{density}}"
+        type="digit"
+        placeholder="例如：4.5"
+        unit="g/cm³"
+        icon="📦"
+        hint="输入后将计算体积比容量"
+        bind:input="handleDensityInput"
+      />
+
+      <button class="calc-button primary" bindtap="calculateSpecific">计算实测比容量</button>
+
+      <view class="divider">或</view>
+
+      <view class="section-title">🔹 理论比容量</view>
+
+      <calculator-input
+        label="分子量"
+        value="{{molWeight}}"
+        type="digit"
+        placeholder="例如：70"
+        unit="g/mol"
+        icon="🧬"
+        bind:input="handleMolWeightInput"
+      />
+
+      <calculator-input
+        label="电子转移数"
+        value="{{electronTransfer}}"
+        type="number"
+        placeholder="例如：1"
+        icon="⚛️"
+        hint="氧化还原反应的电子数"
+        bind:input="handleElectronTransferInput"
+      />
+
+      <button class="calc-button" bindtap="calculateTheoretical">计算理论比容量</button>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{specificResultText}}" title="计算结果">
+      <view class="result-text">{{specificResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 库伦效率 -->
+  <view wx:if="{{currentTool === 'coulombic'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🔋 库伦效率</text>
+      <text class="intro-desc">充放电效率分析</text>
+      <text class="intro-formula">CE = Q_dis / Q_ch × 100%</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="充电容量"
+        value="{{chargeCapacity}}"
+        type="digit"
+        placeholder="例如：200"
+        unit="mAh"
+        icon="⚡"
+        bind:input="handleChargeCapacityInput"
+      />
+
+      <calculator-input
+        label="放电容量"
+        value="{{dischargeCapacity}}"
+        type="digit"
+        placeholder="例如：180"
+        unit="mAh"
+        icon="🔋"
+        bind:input="handleDischargeCapacityInput"
+      />
+
+      <calculator-input
+        label="循环次数（可选）"
+        value="{{cycleNumber}}"
+        type="number"
+        placeholder="例如：1"
+        icon="🔄"
+        hint="区分首次/循环效率"
+        bind:input="handleCycleNumberInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateCoulombic">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{coulombicResultText}}" title="计算结果">
+      <view class="result-text">{{coulombicResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 容量保持率 -->
+  <view wx:if="{{currentTool === 'retention'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📉 容量保持率</text>
+      <text class="intro-desc">循环稳定性分析</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">循环数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{retentionDataInput}}"
+          placeholder="{{retentionPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleRetentionDataInput"
+        />
+        <text class="field-hint">至少输入2个循环点</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateRetention">分析</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{retentionResultText}}" title="分析结果">
+      <view class="result-text">{{retentionResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 倍率性能 -->
+  <view wx:if="{{currentTool === 'rate'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">⚡ 倍率性能</text>
+      <text class="intro-desc">不同倍率下的容量表现</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">倍率数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{rateDataInput}}"
+          placeholder="{{ratePlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleRateDataInput"
+        />
+        <text class="field-hint">至少输入2个倍率点</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateRate">分析</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{rateResultText}}" title="分析结果">
+      <view class="result-text">{{rateResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 导出按钮 -->
+  <view wx:if="{{specificResultText || coulombicResultText || retentionResultText || rateResultText}}" class="export-button" bindtap="exportResult">
+    <text>📤 导出结果</text>
+  </view>
+</view>
+
+

@@ -1,0 +1,120 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view 
+      wx:for="{{tools}}" 
+      wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}"
+      bindtap="switchTool"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- BET表面积 -->
+  <view wx:if="{{currentTool === 'bet'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📊 BET比表面积分析</text>
+      <text class="intro-desc">Brunauer-Emmett-Teller方法</text>
+      <text class="intro-note">适用于N₂吸附测试数据</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">吸附数据（P/P0范围：0.05-0.30）</text>
+        <textarea
+          class="textarea-input"
+          value="{{betDataInput}}"
+          placeholder="{{betPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleBetDataInput"
+        />
+        <text class="field-hint">至少输入5个BET线性区域的数据点</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateBETAnalysis">计算BET表面积</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{betResultText}}" title="分析结果">
+      <view class="result-text">{{betResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- Langmuir拟合 -->
+  <view wx:if="{{currentTool === 'langmuir'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📈 Langmuir等温线拟合</text>
+      <text class="intro-desc">单层吸附模型</text>
+      <text class="intro-formula">Q = Qm·K·C / (1 + K·C)</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">平衡吸附数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{langmuirDataInput}}"
+          placeholder="{{langmuirPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleLangmuirDataInput"
+        />
+        <text class="field-hint">至少输入4个平衡数据点</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateLangmuir">拟合</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{langmuirResultText}}" title="拟合结果">
+      <view class="result-text">{{langmuirResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- Freundlich拟合 -->
+  <view wx:if="{{currentTool === 'freundlich'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📉 Freundlich等温线拟合</text>
+      <text class="intro-desc">经验吸附模型</text>
+      <text class="intro-formula">Q = Kf·C^(1/n)</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">平衡吸附数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{freundlichDataInput}}"
+          placeholder="{{freundlichPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleFreundlichDataInput"
+        />
+        <text class="field-hint">至少输入4个平衡数据点</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateFreundlich">拟合</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{freundlichResultText}}" title="拟合结果">
+      <view class="result-text">{{freundlichResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 导出按钮 -->
+  <view wx:if="{{betResultText || langmuirResultText || freundlichResultText}}" class="export-button" bindtap="exportResult">
+    <text>📤 导出结果</text>
+  </view>
+</view>
+

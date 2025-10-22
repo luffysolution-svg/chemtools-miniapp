@@ -50,27 +50,27 @@ Component({
     },
     // 历史记录相关信息
     historyType: {
-      type: String,
+      type: null,  // 允许任意类型（包括 null）
       value: ''
     },
     historyInput: {
-      type: String,
+      type: null,  // 允许任意类型（包括 null）
       value: ''
     },
     // === 元数据相关（新增） ===
     // 单位
     unit: {
-      type: String,
+      type: null,  // 允许任意类型（包括 null）
       value: ''
     },
     // 精度说明
     precision: {
-      type: String,
+      type: null,  // 允许任意类型（包括 null）
       value: ''
     },
     // 计算公式
     formula: {
-      type: String,
+      type: null,  // 允许任意类型（包括 null）
       value: ''
     },
     // 计算条件（数组或字符串）
@@ -80,12 +80,12 @@ Component({
     },
     // 警告信息
     warning: {
-      type: String,
+      type: null,  // 允许任意类型（包括 null）
       value: ''
     },
     // 数据来源
     dataSource: {
-      type: String,
+      type: null,  // 允许任意类型（包括 null）
       value: ''
     },
     // 是否显示元数据区域
@@ -246,19 +246,19 @@ Component({
         return;
       }
 
-      // 构建元数据对象
+      // 构建元数据对象（null 安全）
       const metadata = {};
-      if (unit) metadata.unit = unit;
-      if (precision) metadata.precision = precision;
-      if (formula) metadata.formula = formula;
-      if (conditions) metadata.conditions = conditions;
-      if (warning) metadata.warning = warning;
-      if (dataSource) metadata.dataSource = dataSource;
+      if (unit && unit !== null && unit !== '') metadata.unit = unit;
+      if (precision && precision !== null && precision !== '') metadata.precision = precision;
+      if (formula && formula !== null && formula !== '') metadata.formula = formula;
+      if (conditions && conditions !== null) metadata.conditions = conditions;
+      if (warning && warning !== null && warning !== '') metadata.warning = warning;
+      if (dataSource && dataSource !== null && dataSource !== '') metadata.dataSource = dataSource;
 
       historyService.add({
         type: historyType,
-        title: title,
-        input: historyInput,
+        title: title || '计算结果',
+        input: historyInput || '',
         result: result,
         metadata: metadata
       });

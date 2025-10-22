@@ -1,0 +1,158 @@
+<view class="container">
+  <view class="page-title">配位场理论计算器</view>
+  
+  <!-- 输入区域 -->
+  <view class="card">
+    <view class="section-title">配合物信息</view>
+    
+    <!-- 金属离子选择 -->
+    <view class="form-group">
+      <view class="form-label">金属离子 *</view>
+      <picker mode="selector" range="{{metalOptions}}" value="{{metalIndex}}" bindchange="onMetalChange">
+        <view class="picker-display">
+          {{selectedMetal || '请选择金属离子'}}
+          <text class="arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+    
+    <!-- 几何构型选择 -->
+    <view class="form-group">
+      <view class="form-label">几何构型 *</view>
+      <picker mode="selector" range="{{geometryOptions}}" range-key="name" value="{{geometryIndex}}" bindchange="onGeometryChange">
+        <view class="picker-display">
+          {{geometryOptions[geometryIndex].name}}
+          <text class="arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+    
+    <!-- 配体选择 -->
+    <view class="form-group">
+      <view class="form-label">配体组成 *</view>
+      <view class="ligand-selector">
+        <view class="ligand-item" wx:for="{{ligandSlots}}" wx:key="index">
+          <picker mode="selector" range="{{ligandOptions}}" value="{{item}}" bindchange="onLigandChange" data-index="{{index}}">
+            <view class="ligand-picker">
+              位置{{index + 1}}: {{ligandOptions[item] || '选择'}}
+            </view>
+          </picker>
+        </view>
+      </view>
+    </view>
+    
+    <button class="btn btn-primary btn-block" bindtap="calculate">计算</button>
+  </view>
+  
+  <!-- 结果展示 -->
+  <view class="card" wx:if="{{result}}">
+    <view class="section-title">计算结果</view>
+    
+    <view class="result-item">
+      <text class="label">金属离子</text>
+      <text class="value">{{result.metalIon}} ({{result.dn}})</text>
+    </view>
+    
+    <view class="result-item">
+      <text class="label">几何构型</text>
+      <text class="value">{{result.geometry}}</text>
+    </view>
+    
+    <view class="result-item highlight">
+      <text class="label">晶体场分裂能 Delta</text>
+      <text class="value">{{result.delta}} cm^-1</text>
+    </view>
+    
+    <view class="result-item">
+      <text class="label">能量转换</text>
+      <view class="value">
+        <text>{{result.deltaInKJ}} kJ/mol</text>
+        <text class="sub">{{result.deltaInEV}} eV</text>
+      </view>
+    </view>
+    
+    <view class="result-item">
+      <text class="label">自旋状态</text>
+      <text class="value">{{spinStateText[result.spinState]}}</text>
+    </view>
+    
+    <view class="result-item">
+      <text class="label">未配对电子数</text>
+      <text class="value">{{result.unpaired}}</text>
+    </view>
+    
+    <view class="result-item">
+      <text class="label">磁性</text>
+      <text class="value">{{result.magnetic}}</text>
+    </view>
+    
+    <view class="result-item" wx:if="{{result.color}}">
+      <text class="label">颜色预测</text>
+      <view class="value">
+        <view>观察颜色：<text class="color-text">{{result.color.observedColor}}</text></view>
+        <view class="sub">吸收波长：{{result.color.wavelength}} nm</view>
+      </view>
+    </view>
+    
+    <view class="result-item" wx:if="{{result.lfse}}">
+      <text class="label">LFSE</text>
+      <view class="value">
+        <text>{{result.lfse.value.toFixed(2)}} Delta0</text>
+        <text class="sub">{{result.lfse.inKJ}} kJ/mol</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- d轨道能级图 -->
+  <view class="card" wx:if="{{orbitalDiagram}}">
+    <view class="section-title">d轨道能级图</view>
+    
+    <view class="orbital-diagram">
+      <canvas canvas-id="orbitalCanvas" class="orbital-canvas"></canvas>
+    </view>
+    
+    <view class="orbital-info">
+      <view class="info-item" wx:for="{{orbitalDiagram.levels}}" wx:key="name">
+        <text class="orbital-name">{{item.name}}</text>
+        <text class="orbital-energy">{{item.energyValue > 0 ? '+' : ''}}{{item.energyValue}} cm^-1</text>
+        <text class="orbital-electrons">电子数：{{item.totalElectrons}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 已知配合物数据库 -->
+  <view class="card">
+    <view class="section-title">已知配合物数据库</view>
+    <input class="search-input" placeholder="搜索配合物..." bindinput="onSearchComplex" />
+    
+    <scroll-view class="complex-list" scroll-y>
+      <view class="complex-item" wx:for="{{knownComplexes}}" wx:key="complex">
+        <view class="complex-formula">{{item.complex}}</view>
+        <view class="complex-info">
+          <text>Δ = {{item.delta}} {{item.unit}}</text>
+          <text class="divider">|</text>
+          <text>颜色：{{item.color}}</text>
+          <text class="divider">|</text>
+          <text>{{item.magnetic}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  
+  <!-- 帮助说明 -->
+  <view class="card help-section">
+    <view class="section-title">使用说明</view>
+    <view class="help-text">
+      <text>1. 选择金属离子（如 Cr3+, Fe2+等）</text>
+      <text>2. 选择几何构型（八面体、四面体、平面四方）</text>
+      <text>3. 选择配体（默认全部为H2O，可修改）</text>
+      <text>4. 点击计算，查看结果和d轨道能级图</text>
+    </view>
+    
+    <view class="help-text mt-md">
+      <text class="text-bold">配体场强序列：</text>
+      <text class="text-sm">I- &lt; Br- &lt; Cl- &lt; F- &lt; OH- &lt; H2O &lt; NH3 &lt; en &lt; bipy &lt; phen &lt; CN- &lt; CO</text>
+    </view>
+  </view>
+</view>
+

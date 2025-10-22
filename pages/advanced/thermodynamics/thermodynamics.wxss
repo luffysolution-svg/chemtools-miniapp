@@ -1,0 +1,183 @@
+/* pages/advanced/thermodynamics/thermodynamics.wxss */
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f7fa;
+}
+
+.header {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  padding: 40rpx 30rpx;
+  color: white;
+}
+
+.title {
+  font-size: 40rpx;
+  font-weight: bold;
+}
+
+.tabs {
+  white-space: nowrap;
+  background: white;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+}
+
+.tab-item {
+  display: inline-block;
+  padding: 12rpx 28rpx;
+  margin-right: 20rpx;
+  background: #f5f7fa;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.tab-item.active {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  font-weight: bold;
+}
+
+.content {
+  flex: 1;
+  padding: 30rpx;
+}
+
+.calc-section {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+}
+
+.input-group {
+  margin-bottom: 30rpx;
+}
+
+.label {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+}
+
+.input {
+  width: 100%;
+  height: 80rpx;
+  background: #f5f7fa;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box; /* 包含内边距，避免超宽 */
+}
+
+.calc-btn {
+  width: 100%;
+  height: 88rpx;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  border: none;
+  margin-top: 30rpx;
+}
+
+.result-card {
+  margin-top: 40rpx;
+  padding: 30rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  border-left: 6rpx solid #f093fb;
+}
+
+.result-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  font-size: 26rpx;
+}
+
+.result-label {
+  color: #666;
+}
+
+.result-value {
+  color: #333;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+}
+
+.result-value.highlight {
+  color: #f093fb;
+  font-weight: bold;
+}
+
+.result-formula {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #eee;
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+  font-style: italic;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30rpx 0 20rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.add-btn {
+  background: #f093fb;
+  color: white;
+  border-radius: 20rpx;
+}
+
+.reaction-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  gap: 15rpx;
+}
+
+.small-input {
+  flex: 1;
+  height: 70rpx;
+  background: #f5f7fa;
+  border-radius: 12rpx;
+  padding: 0 15rpx;
+  font-size: 26rpx;
+}
+
+.remove-btn {
+  width: 60rpx;
+  height: 60rpx;
+  background: #ffebee;
+  color: #f44336;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  font-weight: bold;
+}
+

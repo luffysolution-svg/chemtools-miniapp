@@ -1,0 +1,27 @@
+<view class="data-card academic-style {{cardClass}}" bindtap="handleTap" bindlongpress="handleLongPress">
+  <!-- 卡片头部 -->
+  <view class="card-header" wx:if="{{title || showBadge}}">
+    <view class="header-left">
+      <text wx:if="{{icon}}" class="card-icon">{{icon}}</text>
+      <text class="card-title">{{title}}</text>
+    </view>
+    <view class="header-right">
+      <view wx:if="{{badge}}" class="card-badge {{badgeType}}">{{badge}}</view>
+      <text wx:if="{{subtitle}}" class="card-subtitle">{{subtitle}}</text>
+    </view>
+  </view>
+
+  <!-- 卡片主体内容 -->
+  <view class="card-body">
+    <slot></slot>
+  </view>
+
+  <!-- 卡片底部（可选） -->
+  <view class="card-footer" wx:if="{{showFooter}}">
+    <slot name="footer"></slot>
+  </view>
+
+  <!-- 左侧指示条（用于危险等级等） -->
+  <view wx:if="{{indicator}}" class="card-indicator {{indicatorType}}"></view>
+</view>
+

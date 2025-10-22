@@ -30,7 +30,19 @@
           </picker>
         </view>
         
-        <calculator-input label="电位值 (V)" type="digit" value="{{potential}}" placeholder="例如：0.5" bindinput="handlePotentialInput" />
+        <calculator-input 
+          label="电位值 (V)" 
+          type="digit" 
+          value="{{potential}}" 
+          placeholder="例如：0.5" 
+          enableHistory="{{true}}"
+          historyTool="electrochem"
+          historyField="potential"
+          presets="{{potentialPresets}}"
+          touchArea="large"
+          bindinput="handlePotentialInput" 
+          bindchange="handlePotentialChange"
+        />
         
         <view class="form-row">
           <view class="form-label">目标参比电极</view>
@@ -58,10 +70,59 @@
       <view class="section-description">E = E° - (RT/nF)lnQ</view>
       
       <view class="form-section">
-        <calculator-input label="标准电极电位 E° (V)" type="digit" value="{{e0}}" placeholder="例如：0.34" bindinput="handleE0Input" />
-        <calculator-input label="温度 T (°C)" type="digit" value="{{temperature}}" placeholder="25" hint="默认25°C" bindinput="handleTemperatureInput" />
-        <calculator-input label="电子转移数 n" type="digit" value="{{electronNum}}" placeholder="例如：2" bindinput="handleElectronNumInput" />
-        <calculator-input label="反应商 Q" type="digit" value="{{reactionQ}}" placeholder="例如：0.1" hint="Q=[生成物]/[反应物]" bindinput="handleQInput" />
+        <calculator-input 
+          label="标准电极电位 E° (V)" 
+          type="digit" 
+          value="{{e0}}" 
+          placeholder="例如：0.34" 
+          enableHistory="{{true}}"
+          historyTool="electrochem"
+          historyField="e0"
+          presets="{{potentialPresets}}"
+          touchArea="large"
+          bindinput="handleE0Input" 
+          bindchange="handleE0Change"
+        />
+        <calculator-input 
+          label="温度 T (°C)" 
+          type="digit" 
+          value="{{temperature}}" 
+          placeholder="25" 
+          hint="默认25°C" 
+          enableHistory="{{true}}"
+          historyTool="electrochem"
+          historyField="temperature"
+          presets="{{temperaturePresets}}"
+          touchArea="large"
+          bindinput="handleTemperatureInput"
+          bindchange="handleTemperatureChange"
+        />
+        <calculator-input 
+          label="电子转移数 n" 
+          type="digit" 
+          value="{{electronNum}}" 
+          placeholder="例如：2" 
+          enableHistory="{{true}}"
+          historyTool="electrochem"
+          historyField="electronNum"
+          presets="{{electronNumPresets}}"
+          touchArea="large"
+          bindinput="handleElectronNumInput"
+          bindchange="handleElectronNumChange"
+        />
+        <calculator-input 
+          label="反应商 Q" 
+          type="digit" 
+          value="{{reactionQ}}" 
+          placeholder="例如：0.1" 
+          hint="Q=[生成物]/[反应物]" 
+          enableHistory="{{true}}"
+          historyTool="electrochem"
+          historyField="reactionQ"
+          touchArea="large"
+          bindinput="handleQInput"
+          bindchange="handleQChange"
+        />
         
         <view class="action-buttons">
           <button class="btn-primary" bindtap="calculateNernst">计算</button>
@@ -89,6 +150,175 @@
     </view>
   </view>
 
+  <!-- CV曲线分析 -->
+  <view wx:if="{{currentTool === 'cv'}}" class="tool-content">
+    <view class="section-card">
+      <view class="section-title">📈 CV曲线峰电流分析</view>
+      <view class="section-description">Randles-Sevcik方程分析</view>
+      
+      <view class="form-section">
+        <calculator-input 
+          label="峰电流 ip (A)" 
+          type="digit" 
+          value="{{cvPeakCurrent}}" 
+          placeholder="例如：0.001" 
+          required="{{true}}"
+          touchArea="large"
+          bindinput="handleCVPeakCurrentInput"
+        />
+        <calculator-input 
+          label="扫速 v (V/s)" 
+          type="digit" 
+          value="{{cvScanRate}}" 
+          placeholder="例如：0.1" 
+          required="{{true}}"
+          touchArea="large"
+          bindinput="handleCVScanRateInput"
+        />
+        <calculator-input 
+          label="电极面积 A (cm²)" 
+          type="digit" 
+          value="{{cvArea}}" 
+          placeholder="例如：1.0" 
+          required="{{true}}"
+          touchArea="large"
+          bindinput="handleCVAreaInput"
+        />
+        <calculator-input 
+          label="浓度 C (mol/cm³)" 
+          type="digit" 
+          value="{{cvConcentration}}" 
+          placeholder="可选，用于计算扩散系数" 
+          touchArea="large"
+          bindinput="handleCVConcentrationInput"
+        />
+        
+        <view class="action-buttons">
+          <button class="btn-primary" bindtap="calculateCV">计算</button>
+          <button class="btn-secondary" bindtap="resetCV">清空</button>
+        </view>
+      </view>
+      
+      <result-card wx:if="{{cvResultText}}" title="CV分析结果" result="{{cvResultText}}" show-copy="{{true}}" show-export="{{true}}">
+        <view class="result-text">{{cvResultText}}</view>
+      </result-card>
+    </view>
+  </view>
+
+  <!-- EIS等效电路拟合 -->
+  <view wx:if="{{currentTool === 'eis'}}" class="tool-content">
+    <view class="section-card">
+      <view class="section-title">⚡ EIS等效电路分析</view>
+      <view class="section-description">电化学阻抗谱等效电路模型</view>
+      
+      <view class="form-section">
+        <view class="form-row">
+          <view class="form-label">电路类型</view>
+          <picker mode="selector" range="{{eisCircuitTypes}}" value="{{eisCircuitIndex}}" bindchange="handleEISCircuitChange">
+            <view class="picker-display">{{eisCircuitTypes[eisCircuitIndex]}}<text class="picker-arrow">▼</text></view>
+          </picker>
+        </view>
+        
+        <calculator-input 
+          label="溶液电阻 Rs (Ω)" 
+          type="digit" 
+          value="{{eisRs}}" 
+          placeholder="例如：10" 
+          touchArea="large"
+          bindinput="handleEISRsInput"
+        />
+        <calculator-input 
+          label="电荷转移电阻 Rct (Ω)" 
+          type="digit" 
+          value="{{eisRct}}" 
+          placeholder="例如：100" 
+          touchArea="large"
+          bindinput="handleEISRctInput"
+        />
+        <calculator-input 
+          label="Warburg阻抗 W" 
+          type="digit" 
+          value="{{eisW}}" 
+          placeholder="可选" 
+          touchArea="large"
+          bindinput="handleEISWInput"
+        />
+        <calculator-input 
+          label="CPE参数 Q" 
+          type="digit" 
+          value="{{eisCPE_Q}}" 
+          placeholder="可选，用于RQ电路" 
+          touchArea="large"
+          bindinput="handleEISCPEQInput"
+        />
+        <calculator-input 
+          label="CPE指数 n (0-1)" 
+          type="digit" 
+          value="{{eisCPE_n}}" 
+          placeholder="可选，用于RQ电路" 
+          touchArea="large"
+          bindinput="handleEISCPENInput"
+        />
+        
+        <view class="action-buttons">
+          <button class="btn-primary" bindtap="calculateEIS">分析</button>
+          <button class="btn-secondary" bindtap="resetEIS">清空</button>
+        </view>
+      </view>
+      
+      <result-card wx:if="{{eisResultText}}" title="EIS分析结果" result="{{eisResultText}}" show-copy="{{true}}" show-export="{{true}}">
+        <view class="result-text">{{eisResultText}}</view>
+      </result-card>
+    </view>
+  </view>
+
+  <!-- Tafel斜率计算 -->
+  <view wx:if="{{currentTool === 'tafel'}}" class="tool-content">
+    <view class="section-card">
+      <view class="section-title">📊 Tafel斜率计算</view>
+      <view class="section-description">从极化曲线自动计算Tafel斜率和交换电流密度</view>
+      
+      <view class="form-section">
+        <view class="form-row">
+          <view class="form-label">分析区域</view>
+          <picker mode="selector" range="{{tafelRegionOptions}}" value="{{tafelRegion === 'both' ? 0 : tafelRegion === 'anodic' ? 1 : 2}}" bindchange="handleTafelRegionChange">
+            <view class="picker-display">{{tafelRegionOptions[tafelRegion === 'both' ? 0 : tafelRegion === 'anodic' ? 1 : 2]}}<text class="picker-arrow">▼</text></view>
+          </picker>
+        </view>
+        
+        <view class="form-row">
+          <view class="field-header">
+            <view class="form-label">极化数据 *</view>
+            <text class="field-example-btn" bindtap="fillTafelExample">填充示例</text>
+          </view>
+          <textarea 
+            class="form-textarea" 
+            value="{{tafelData}}" 
+            placeholder="{{tafelDataPlaceholder}}" 
+            bindinput="handleTafelDataInput"
+            auto-height
+            maxlength="-1"
+          />
+          <view class="field-hint-block">
+            <text class="hint-title">格式：过电位(V),电流密度(A/cm²)</text>
+            <text class="hint-example">0.05,1e-6</text>
+            <text class="hint-example">0.10,5e-6</text>
+            <text class="hint-line">至少3个数据点</text>
+          </view>
+        </view>
+        
+        <view class="action-buttons">
+          <button class="btn-primary" bindtap="calculateTafel">计算</button>
+          <button class="btn-secondary" bindtap="resetTafel">清空</button>
+        </view>
+      </view>
+      
+      <result-card wx:if="{{tafelResultText}}" title="Tafel分析结果" result="{{tafelResultText}}" show-copy="{{true}}" show-export="{{true}}">
+        <view class="result-text">{{tafelResultText}}</view>
+      </result-card>
+    </view>
+  </view>
+
   <view class="tip-card">
     <view class="tip-header"><text class="tip-icon">💡</text><text>使用提示</text></view>
     <view class="tip-content">
@@ -96,6 +326,9 @@
       <text>• SCE：饱和甘汞电极，E = +0.241 V vs NHE</text>
       <text>• Ag/AgCl：银/氯化银电极，约+0.197 V vs NHE</text>
       <text>• 电位换算：E(NHE) = E(参比) + ΔE(参比→NHE)</text>
+      <text>• CV分析：用于研究电极反应动力学</text>
+      <text>• EIS拟合：需专业软件完成精确拟合</text>
+      <text>• Tafel斜率：反映电极反应速率</text>
     </view>
   </view>
 </view>

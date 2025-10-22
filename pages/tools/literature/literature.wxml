@@ -1,0 +1,289 @@
+<!--DOI文献查询页面-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">📖 DOI文献查询</text>
+    <text class="page-desc">输入DOI获取文献信息和引用格式</text>
+  </view>
+
+  <!-- 自动查询模式 -->
+  <view class="query-section" wx:if="{{!manualMode}}">
+    <!-- DOI输入框 -->
+    <view class="input-group">
+      <text class="input-label">DOI标识符</text>
+      <view class="input-wrapper">
+        <input 
+          class="doi-input" 
+          type="text" 
+          placeholder="例：10.1038/nature12345"
+          value="{{doiInput}}"
+          bindinput="handleDOIInput"
+          confirm-type="search"
+          bindconfirm="queryDOI"
+        />
+        <button class="scan-btn" size="mini" bindtap="scanDOI">扫码</button>
+      </view>
+      <text class="input-hint">支持扫描DOI二维码或条形码</text>
+    </view>
+
+    <!-- 查询按钮 -->
+    <button 
+      class="query-btn" 
+      type="primary" 
+      bindtap="queryDOI"
+      loading="{{isQuerying}}"
+      disabled="{{isQuerying}}"
+    >
+      {{isQuerying ? '查询中...' : '查询文献'}}
+    </button>
+
+    <!-- 手动输入切换 -->
+    <view class="mode-switch">
+      <text class="switch-text" bindtap="switchToManualMode">网络异常？切换到手动输入 →</text>
+    </view>
+  </view>
+
+  <!-- 手动输入模式 -->
+  <view class="manual-section" wx:if="{{manualMode}}">
+    <view class="mode-header">
+      <text class="mode-title">手动输入模式</text>
+      <text class="mode-link" bindtap="switchToAutoMode">← 返回自动查询</text>
+    </view>
+
+    <view class="manual-form">
+      <view class="form-item">
+        <text class="form-label">标题 *</text>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="文献标题"
+          value="{{manualData.title}}"
+          data-field="title"
+          bindinput="handleManualInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">作者 *</text>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="用逗号分隔，如：John Doe, Jane Smith"
+          value="{{manualData.authors}}"
+          data-field="authors"
+          bindinput="handleManualInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">期刊 *</text>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="期刊名称"
+          value="{{manualData.journal}}"
+          data-field="journal"
+          bindinput="handleManualInput"
+        />
+      </view>
+
+      <view class="form-row">
+        <view class="form-item-half">
+          <text class="form-label">年份 *</text>
+          <input 
+            class="form-input" 
+            type="number" 
+            placeholder="2023"
+            value="{{manualData.year}}"
+            data-field="year"
+            bindinput="handleManualInput"
+          />
+        </view>
+        <view class="form-item-half">
+          <text class="form-label">卷号</text>
+          <input 
+            class="form-input" 
+            type="text" 
+            placeholder="123"
+            value="{{manualData.volume}}"
+            data-field="volume"
+            bindinput="handleManualInput"
+          />
+        </view>
+      </view>
+
+      <view class="form-row">
+        <view class="form-item-half">
+          <text class="form-label">期号</text>
+          <input 
+            class="form-input" 
+            type="text" 
+            placeholder="4"
+            value="{{manualData.issue}}"
+            data-field="issue"
+            bindinput="handleManualInput"
+          />
+        </view>
+        <view class="form-item-half">
+          <text class="form-label">页码</text>
+          <input 
+            class="form-input" 
+            type="text" 
+            placeholder="123-456"
+            value="{{manualData.pages}}"
+            data-field="pages"
+            bindinput="handleManualInput"
+          />
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">DOI（可选）</text>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="10.1038/nature12345"
+          value="{{manualData.doi}}"
+          data-field="doi"
+          bindinput="handleManualInput"
+        />
+      </view>
+
+      <button class="query-btn" type="primary" bindtap="generateFromManual">
+        生成引用
+      </button>
+    </view>
+  </view>
+
+  <!-- 文献信息展示 -->
+  <view class="metadata-section" wx:if="{{showMetadata && metadata}}">
+    <view class="section-header">
+      <text class="section-title">📄 文献信息</text>
+    </view>
+
+    <view class="metadata-card">
+      <!-- 标题 -->
+      <view class="meta-item title-item">
+        <text class="meta-value">{{metadata.title}}</text>
+      </view>
+
+      <!-- 作者 -->
+      <view class="meta-item" wx:if="{{metadata.authors && metadata.authors.length > 0}}">
+        <text class="meta-label">作者：</text>
+        <text class="meta-value">
+          <block wx:for="{{metadata.authors}}" wx:key="index">
+            {{item.given}} {{item.family}}{{index < metadata.authors.length - 1 ? ', ' : ''}}
+          </block>
+        </text>
+      </view>
+
+      <!-- 期刊 -->
+      <view class="meta-item" wx:if="{{metadata.journal}}">
+        <text class="meta-label">期刊：</text>
+        <text class="meta-value">{{metadata.journal}}</text>
+      </view>
+
+      <!-- 年卷期页 -->
+      <view class="meta-item">
+        <text class="meta-label">出版：</text>
+        <text class="meta-value">
+          {{metadata.year || 'N/A'}}{{metadata.volume ? ', ' + metadata.volume : ''}}{{metadata.issue ? '(' + metadata.issue + ')' : ''}}{{metadata.pages ? ': ' + metadata.pages : ''}}
+        </text>
+      </view>
+
+      <!-- DOI -->
+      <view class="meta-item" wx:if="{{metadata.doi}}">
+        <text class="meta-label">DOI：</text>
+        <text class="meta-value doi-link" bindtap="openDOILink">{{metadata.doi}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 引用格式 -->
+  <view class="citation-section" wx:if="{{showMetadata && metadata}}">
+    <view class="section-header">
+      <text class="section-title">📋 引用格式</text>
+    </view>
+
+    <!-- 格式选择 -->
+    <scroll-view class="format-tabs" scroll-x>
+      <view class="format-tabs-inner">
+        <view 
+          class="format-tab {{currentFormat === item.id ? 'active' : ''}}"
+          wx:for="{{formats}}"
+          wx:key="id"
+          data-format="{{item.id}}"
+          data-name="{{item.name}}"
+          bindtap="switchFormat"
+        >
+          <text class="format-name">{{item.name}}</text>
+          <text class="format-desc">{{item.description}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 引用内容 -->
+    <view class="citation-card">
+      <text class="citation-text" selectable>{{citation}}</text>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button class="action-btn copy-btn" bindtap="copyCitation">
+        📋 复制引用
+      </button>
+      <button class="action-btn share-btn" bindtap="shareCitation">
+        📤 分享引用
+      </button>
+    </view>
+  </view>
+
+  <!-- 历史记录 -->
+  <view class="history-section">
+    <view class="section-header" bindtap="toggleHistory">
+      <text class="section-title">🕐 查询历史 ({{history.length}})</text>
+      <text class="toggle-icon">{{showHistory ? '▼' : '▶'}}</text>
+    </view>
+
+    <view class="history-list" wx:if="{{showHistory}}">
+      <view 
+        class="history-item"
+        wx:for="{{history}}"
+        wx:key="doi"
+        data-doi="{{item.doi}}"
+        bindtap="selectFromHistory"
+      >
+        <view class="history-title">{{item.title}}</view>
+        <view class="history-meta">
+          <text class="history-journal">{{item.journal}}</text>
+          <text class="history-year">{{item.year}}</text>
+        </view>
+        <view class="history-doi">DOI: {{item.doi}}</view>
+      </view>
+
+      <view class="history-empty" wx:if="{{history.length === 0}}">
+        <text>暂无查询历史</text>
+      </view>
+
+      <button class="clear-history-btn" size="mini" bindtap="clearHistory" wx:if="{{history.length > 0}}">
+        清除历史
+      </button>
+    </view>
+  </view>
+
+  <!-- 缓存统计 -->
+  <view class="cache-stats" wx:if="{{cacheStats}}">
+    <text class="stats-text">缓存：{{cacheStats.size}}/{{cacheStats.maxSize}} 条（有效期 {{cacheStats.expiryHours}} 小时）</text>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="help-section">
+    <text class="help-title">💡 使用说明</text>
+    <text class="help-text">1. 输入完整DOI（如：10.1038/nature12345）</text>
+    <text class="help-text">2. 支持扫描DOI二维码快速输入</text>
+    <text class="help-text">3. 网络异常时可切换到手动输入模式</text>
+    <text class="help-text">4. 支持6种常用引用格式转换</text>
+    <text class="help-text">5. 查询结果自动缓存，加快重复查询速度</text>
+  </view>
+</view>
+

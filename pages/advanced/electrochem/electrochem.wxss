@@ -6,6 +6,57 @@
   padding-bottom: 120rpx;
 }
 
+/* 文本域增强样式 */
+.field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.field-example-btn {
+  font-size: 24rpx;
+  color: #48c6ef;
+  padding: 8rpx 16rpx;
+  background: rgba(72, 198, 239, 0.1);
+  border-radius: 6rpx;
+  border: 1rpx solid #48c6ef;
+}
+
+.field-hint-block {
+  margin-top: 12rpx;
+  background: #fffbf0;
+  border-left: 4rpx solid #ffa500;
+  padding: 12rpx 16rpx;
+  border-radius: 6rpx;
+}
+
+.hint-title {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  font-weight: bold;
+  margin-bottom: 4rpx;
+}
+
+.hint-line {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 6rpx;
+}
+
+.hint-example {
+  display: block;
+  font-size: 22rpx;
+  color: #888;
+  font-family: 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.02);
+  padding: 4rpx 8rpx;
+  margin: 2rpx 0 2rpx 12rpx;
+  border-radius: 4rpx;
+}
+
 .page-header {
   display: flex;
   align-items: center;
@@ -145,18 +196,23 @@
 
 .action-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 20rpx;
   margin-top: 16rpx;
 }
 
 .btn-primary,
 .btn-secondary {
-  flex: 1;
-  padding: 28rpx;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 28rpx 24rpx;
   border-radius: 20rpx;
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 600;
   border: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn-primary {

@@ -1,0 +1,171 @@
+<!--批量计算页面-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-icon">⚡</text>
+    <text class="title-text">批量计算</text>
+  </view>
+
+  <!-- 可滚动内容区域 -->
+  <scroll-view class="scroll-content" scroll-y enable-back-to-top>
+
+  <!-- 计算类型选择 -->
+  <view class="section">
+    <view class="section-title">计算类型</view>
+    <picker mode="selector" range="{{calcTypes}}" value="{{calcTypeIndex}}" bindchange="handleCalcTypeChange">
+      <view class="picker">
+        <text class="picker-text">{{calcTypes[calcTypeIndex]}}</text>
+        <text class="picker-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 单位换算参数 -->
+  <view wx:if="{{calcTypeIndex === 0}}" class="section">
+    <view class="section-title">换算参数</view>
+    
+    <view class="param-row">
+      <text class="param-label">类别</text>
+      <picker mode="selector" range="{{unitCategories}}" value="{{unitCategoryIndex}}" bindchange="handleUnitCategoryChange" class="param-picker">
+        <view class="picker-small">
+          <text>{{unitCategories[unitCategoryIndex]}}</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="param-row">
+      <text class="param-label">从</text>
+      <input class="param-input" type="text" value="{{unitFrom}}" bindinput="handleUnitFromInput" placeholder="输入单位"/>
+      <text class="param-label" style="margin-left: 20rpx;">到</text>
+      <input class="param-input" type="text" value="{{unitTo}}" bindinput="handleUnitToInput" placeholder="输入单位"/>
+    </view>
+
+    <view class="hint-text">提示：可从 {{allUnits.slice(0,5).join('、')}} 等单位中选择</view>
+  </view>
+
+  <!-- XRD参数 -->
+  <view wx:if="{{calcTypeIndex === 1 || calcTypeIndex === 2}}" class="section">
+    <view class="section-title">XRD参数</view>
+    <view class="param-row">
+      <text class="param-label">波长 λ (Å)</text>
+      <input class="param-input" type="digit" value="{{xrdLambda}}" bindinput="handleLambdaInput" placeholder="1.5406"/>
+    </view>
+    <view class="hint-text">默认使用Cu Kα (1.5406 Å)</view>
+  </view>
+
+  <!-- 稀释计算参数 -->
+  <view wx:if="{{calcTypeIndex === 3}}" class="section">
+    <view class="section-title">稀释参数</view>
+    <view class="param-row">
+      <text class="param-label">初始浓度 C₁ (M)</text>
+      <input class="param-input" type="digit" value="{{dilutionC1}}" bindinput="handleDilutionC1Input" placeholder="例如: 1.0"/>
+    </view>
+    <view class="param-row">
+      <text class="param-label">最终体积 V₂ (mL)</text>
+      <input class="param-input" type="digit" value="{{dilutionV2}}" bindinput="handleDilutionV2Input" placeholder="例如: 100"/>
+    </view>
+    <view class="hint-text">输入框中填写初始体积 V₁，计算最终浓度 C₂</view>
+  </view>
+
+  <!-- 数据输入区 -->
+  <view class="section">
+    <view class="section-title">
+      <text>输入数据</text>
+      <view class="title-buttons">
+        <button class="mini-btn example-btn" size="mini" bindtap="fillExample">💡 示例数据</button>
+        <button class="mini-btn" size="mini" bindtap="importCsv">📋 导入CSV</button>
+        <button class="mini-btn" size="mini" bindtap="clearInput">🗑️ 清空</button>
+      </view>
+    </view>
+    
+    <textarea 
+      class="input-area" 
+      value="{{inputText}}" 
+      bindinput="handleInputChange"
+      placeholder="{{placeholder || '每行一个数值'}}"
+      placeholder-class="input-placeholder"
+      maxlength="-1"
+      auto-height
+      show-confirm-bar="{{false}}"
+      adjust-position="{{false}}"
+    />
+    
+    <view class="hint-text">💡 提示：支持每行一个数值，或用空格/制表符分隔多个数值，支持从Excel复制粘贴</view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="button-group">
+    <button class="calc-btn" type="primary" bindtap="batchCalculate" disabled="{{calculating}}">
+      <view class="btn-content">
+        <text class="btn-icon">{{calculating ? '⏳' : '🚀'}}</text>
+        <text class="btn-text">{{calculating ? '计算中...' : '开始批量计算'}}</text>
+      </view>
+    </button>
+  </view>
+
+  <!-- 进度条 -->
+  <view wx:if="{{calculating}}" class="progress-section">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{progress}}%"></view>
+    </view>
+    <text class="progress-text">{{progressText}}</text>
+  </view>
+
+  <!-- 结果区域 -->
+  <view wx:if="{{hasResults}}" class="section">
+    <view class="section-title">
+      <text>计算结果 ({{results.length}}条)</text>
+      <view class="title-buttons">
+        <button wx:if="{{errors.length > 0}}" class="mini-btn error-btn" size="mini" bindtap="viewErrors">
+          ⚠️ 错误({{errors.length}})
+        </button>
+        <button class="mini-btn" size="mini" bindtap="exportResults">📤 导出</button>
+      </view>
+    </view>
+
+    <!-- 结果列表 -->
+    <scroll-view class="result-list" scroll-y>
+      <view wx:for="{{results}}" wx:key="row" class="result-item">
+        <view class="result-row-num">#{{''+item.row}}</view>
+        <view class="result-content">
+          <view class="result-input">{{item.input}}</view>
+          <view class="result-arrow">→</view>
+          <view class="result-output">{{item.output}}</view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 统计信息 -->
+    <view class="stats">
+      <view class="stat-item">
+        <text class="stat-label">成功</text>
+        <text class="stat-value success">{{results.length}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">失败</text>
+        <text class="stat-value error">{{errors.length}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">总计</text>
+        <text class="stat-value">{{results.length + errors.length}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="section info-section">
+    <view class="section-title">💡 使用说明</view>
+    <view class="info-content">
+      <text class="info-text">1. 选择计算类型并设置参数</text>
+      <text class="info-text">2. 在输入框中每行输入一个数值</text>
+      <text class="info-text">3. 或从Excel复制数据后点击"导入CSV"</text>
+      <text class="info-text">4. 点击"开始批量计算"执行</text>
+      <text class="info-text">5. 完成后可导出结果为CSV格式</text>
+    </view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view style="height: 40rpx;"></view>
+  </scroll-view>
+</view>
+

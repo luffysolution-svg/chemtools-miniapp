@@ -1,8 +1,10 @@
 /**
- * 溶液配比计算页面
+ * 溶液配比计算页面（增强版）
  */
 
 const { historyService } = require('../../../services/history');
+const { generateShareCard } = require('../utils/shareHelper');
+const { getPresets } = require('../../../utils/input-presets');
 
 Page({
   data: {
@@ -16,7 +18,17 @@ Page({
     resultText: '',
     formula: '',
     hint: '',
-    historyInput: ''
+    historyInput: '',
+    // 新增：预设值
+    volumePresets: [],
+    concentrationPresets: []
+  },
+  
+  onLoad() {
+    this.setData({
+      volumePresets: getPresets('solution', 'volume'),
+      concentrationPresets: getPresets('solution', 'concentration')
+    });
   },
 
   /**
@@ -47,6 +59,25 @@ Page({
   },
 
   handleC2Input(e) {
+    this.setData({ c2: e.detail.value });
+  },
+  
+  /**
+   * 数值变化处理（预设值或历史记录选择）
+   */
+  handleV1Change(e) {
+    this.setData({ v1: e.detail.value });
+  },
+  
+  handleC1Change(e) {
+    this.setData({ c1: e.detail.value });
+  },
+  
+  handleV2Change(e) {
+    this.setData({ v2: e.detail.value });
+  },
+  
+  handleC2Change(e) {
     this.setData({ c2: e.detail.value });
   },
 
@@ -148,6 +179,45 @@ Page({
       formula: '',
       hint: ''
     });
+  },
+
+  /**
+   * 生成分享卡片 (v6.0.0新增)
+   */
+  async generateCard() {
+    const { modeIndex, modeOptions, v1, c1, v2, c2, result, formula, hint } = this.data;
+    
+    if (!result) {
+      wx.showToast({
+        title: '请先完成计算',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const mode = modeOptions[modeIndex];
+    const inputs = {
+      '计算模式': mode,
+      '溶液1体积': `${v1} mL`,
+      '溶液1浓度': `${c1} mol·L⁻¹`,
+      '溶液2体积': `${v2} mL`
+    };
+
+    if (modeIndex === 0 && c2) {
+      inputs['溶液2浓度'] = `${c2} mol·L⁻¹`;
+    }
+
+    const results = {
+      '计算结果': result
+    };
+
+    if (formula) {
+      results['公式'] = formula;
+    }
+
+    const notes = hint || '计算结果仅供参考，实际操作请遵循实验室安全规范';
+
+    await generateShareCard('溶液配制', 'solution', inputs, results, notes);
   },
 
   /**

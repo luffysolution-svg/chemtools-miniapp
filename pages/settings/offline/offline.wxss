@@ -1,0 +1,357 @@
+.container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 网络状态 */
+.network-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.network-status.online {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+}
+
+.network-status.offline {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+.status-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.status-text {
+  font-size: 28rpx;
+  color: white;
+  font-weight: 600;
+}
+
+/* 设置卡片 */
+.setting-card {
+  background: white;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+}
+
+.item-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.item-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-title {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.item-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 存储卡片 */
+.storage-card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.title-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.title-text {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.storage-info {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 24rpx;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info-value {
+  font-size: 36rpx;
+  color: #1f3c88;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.storage-bar {
+  height: 16rpx;
+  background: #e8ecf0;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1f3c88 0%, #667eea 100%);
+  transition: width 0.3s;
+}
+
+.storage-text {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+}
+
+/* 快速操作 */
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.btn-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.action-btn.info {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+}
+
+.action-btn.danger {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+}
+
+.action-btn[disabled] {
+  opacity: 0.5;
+}
+
+/* 安装进度 */
+.install-progress {
+  background: white;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.progress-bar {
+  height: 12rpx;
+  background: #e8ecf0;
+  border-radius: 6rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #56ab2f 0%, #a8e063 100%);
+  transition: width 0.3s;
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #666;
+  text-align: center;
+  display: block;
+}
+
+/* 工具列表部分 */
+.tools-section {
+  margin-bottom: 24rpx;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  background: white;
+  border-radius: 12rpx 12rpx 0 0;
+}
+
+.section-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.tool-list {
+  background: white;
+  border-radius: 0 0 12rpx 12rpx;
+}
+
+.tool-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.tool-item:first-child {
+  border-top: none;
+}
+
+.tool-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.tool-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 12rpx;
+}
+
+.tool-size {
+  font-size: 22rpx;
+  color: #999;
+  margin-right: 12rpx;
+}
+
+.tool-badge {
+  font-size: 20rpx;
+  color: #ff6b6b;
+  background: #ffe8e8;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.tool-right {
+  display: flex;
+  align-items: center;
+}
+
+.tool-status {
+  display: flex;
+  align-items: center;
+  margin-right: 12rpx;
+}
+
+.tool-status .status-icon {
+  font-size: 28rpx;
+  margin-right: 6rpx;
+}
+
+.tool-status .status-text {
+  font-size: 24rpx;
+  color: #56ab2f;
+}
+
+.tool-btn {
+  padding: 8rpx 24rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  border: none;
+}
+
+.tool-btn::after {
+  border: none;
+}
+
+.install-btn {
+  background: #1f3c88;
+  color: white;
+}
+
+.uninstall-btn {
+  background: #ff6b6b;
+  color: white;
+}
+
+/* 提示卡片 */
+.tips-card {
+  background: white;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-top: 20rpx;
+}
+
+.tip-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.tip-item {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 2;
+  padding-left: 8rpx;
+}
+

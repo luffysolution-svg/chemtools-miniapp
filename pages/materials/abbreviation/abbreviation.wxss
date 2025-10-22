@@ -1,0 +1,489 @@
+/* 化学药品缩写查询页面样式 */
+
+.abbreviation-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding-bottom: 40rpx;
+}
+
+/* 顶部信息栏 */
+.info-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 30rpx 30rpx 40rpx;
+  color: white;
+  box-shadow: 0 4rpx 20rpx rgba(102, 126, 234, 0.3);
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.banner-icon {
+  font-size: 60rpx;
+}
+
+.banner-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.banner-title {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.banner-subtitle {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.stats-btn {
+  padding: 15rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.stats-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.95);
+}
+
+.stats-icon {
+  font-size: 32rpx;
+}
+
+/* 统计面板 */
+.statistics-panel {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30rpx;
+  padding: 25rpx 20rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20rpx;
+  backdrop-filter: blur(10rpx);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.2);
+}
+
+.stat-label {
+  font-size: 20rpx;
+  opacity: 0.9;
+}
+
+/* 搜索区域 */
+.search-section {
+  padding: 30rpx;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 50rpx;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.search-icon {
+  font-size: 32rpx;
+  margin-right: 15rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.clear-btn {
+  font-size: 36rpx;
+  color: #999;
+  padding: 0 10rpx;
+  font-weight: 300;
+}
+
+/* 搜索历史 */
+.search-history {
+  margin-top: 20rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.history-title {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.history-clear {
+  font-size: 24rpx;
+  color: #667eea;
+}
+
+.history-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.history-tag {
+  background: #f0f0f0;
+  padding: 10rpx 20rpx;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 功能按钮栏 */
+.action-bar {
+  display: flex;
+  gap: 20rpx;
+  padding: 0 30rpx 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  background: white;
+  padding: 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  font-size: 26rpx;
+  color: #333;
+}
+
+.action-icon {
+  font-size: 32rpx;
+}
+
+.action-text {
+  font-size: 26rpx;
+}
+
+.action-arrow {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 分类面板 */
+.category-panel {
+  margin: 0 30rpx 20rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  max-height: 400rpx;
+  overflow-y: auto;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 10rpx;
+  transition: all 0.3s;
+}
+
+.category-item:last-child {
+  margin-bottom: 0;
+}
+
+.category-item.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.category-name {
+  font-size: 28rpx;
+}
+
+.category-count {
+  font-size: 24rpx;
+  opacity: 0.7;
+}
+
+/* 结果统计 */
+.result-summary {
+  padding: 0 30rpx 15rpx;
+}
+
+.summary-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 数据列表 */
+.data-list {
+  padding: 0 30rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+  background: white;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 数据项 */
+.data-item {
+  background: white;
+  border-radius: 20rpx;
+  padding: 25rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.data-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15rpx;
+}
+
+.abbr-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+}
+
+.abbr-text {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #667eea;
+  letter-spacing: 1rpx;
+}
+
+.category-tag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6rpx 15rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+  white-space: nowrap;
+}
+
+.item-actions {
+  display: flex;
+  gap: 15rpx;
+}
+
+.favorite-icon {
+  font-size: 40rpx;
+  color: #ddd;
+  transition: all 0.3s;
+}
+
+.favorite-icon.favorited {
+  color: #ffd700;
+  animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* 项目内容 */
+.item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.full-name,
+.chinese-name {
+  display: flex;
+  align-items: flex-start;
+  gap: 10rpx;
+  font-size: 26rpx;
+}
+
+.label {
+  color: #999;
+  font-size: 24rpx;
+  flex-shrink: 0;
+}
+
+.value {
+  flex: 1;
+  color: #333;
+  line-height: 1.6;
+}
+
+.copy-btn {
+  font-size: 28rpx;
+  padding: 0 8rpx;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+/* 物化信息 */
+.meta-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+  margin-top: 12rpx;
+  padding: 12rpx;
+  background: #f8f9fa;
+  border-radius: 10rpx;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  font-size: 22rpx;
+}
+
+.meta-label {
+  color: #999;
+  font-weight: 500;
+}
+
+.meta-value {
+  color: #667eea;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+.copy-btn-small {
+  font-size: 24rpx;
+  opacity: 0.5;
+  margin-left: 4rpx;
+}
+
+.description {
+  margin-top: 12rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.desc-text {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* 加载更多 */
+.loading-more {
+  padding: 40rpx 0;
+  text-align: center;
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.no-more {
+  padding: 30rpx 0;
+  text-align: center;
+}
+
+.no-more-text {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+/* 底部提示 */
+.footer-tips {
+  margin-top: 30rpx;
+  padding: 20rpx 30rpx 40rpx;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.tips-text {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.8;
+}
+
+/* 响应式优化 */
+@media (max-width: 320px) {
+  .abbr-text {
+    font-size: 32rpx;
+  }
+  
+  .category-tag {
+    font-size: 18rpx;
+    padding: 4rpx 12rpx;
+  }
+}
+

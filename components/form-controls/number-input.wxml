@@ -1,0 +1,33 @@
+<view class="number-input {{error ? 'error' : ''}} {{disabled ? 'disabled' : ''}}">
+  <view class="input-label" wx:if="{{label}}">
+    {{label}}
+    <text class="required-mark" wx:if="{{required}}">*</text>
+  </view>
+  <view class="input-wrapper">
+    <input
+      class="input-field"
+      type="digit"
+      value="{{value}}"
+      placeholder="{{placeholder}}"
+      placeholder-class="input-placeholder"
+      disabled="{{disabled}}"
+      focus="{{focus}}"
+      bindinput="handleInput"
+      bindblur="handleBlur"
+      bindfocus="handleFocus"
+      bindconfirm="handleConfirm"
+    />
+    <view class="unit-selector" wx:if="{{units.length > 1}}" bindtap="showUnitPicker">
+      <text class="current-unit">{{currentUnit}}</text>
+      <text class="arrow-down">▼</text>
+    </view>
+    <view class="input-unit" wx:elif="{{units.length === 1}}">{{units[0]}}</view>
+  </view>
+  <view class="error-message" wx:if="{{error}}">{{errorMessage}}</view>
+  <view class="input-hint" wx:if="{{hint && !error}}">{{hint}}</view>
+
+  <!-- 单位选择器 -->
+  <picker mode="selector" range="{{units}}" value="{{unitIndex}}" bindchange="handleUnitChange" hidden="true" id="unitPicker">
+  </picker>
+</view>
+

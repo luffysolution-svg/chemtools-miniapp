@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "BET表面积分析",
+  "usingComponents": {
+    "result-card": "/components/result-card/result-card"
+  }
+}
+

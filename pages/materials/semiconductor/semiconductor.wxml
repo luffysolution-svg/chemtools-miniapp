@@ -1,57 +1,52 @@
+<wxs module="helper" src="./helper.wxs"></wxs>
+
 <view class="semiconductor-page">
   <!-- 页面头部 -->
   <view class="page-header">
     <text class="header-icon">💡</text>
     <view class="header-content">
-      <view class="header-title">半导体数据库</view>
-      <view class="header-desc">查询半导体材料的带隙、能带位置等关键参数</view>
+      <view class="header-title">半导体数据库 v8.0</view>
+      <view class="header-desc">{{totalCount}}种材料 · 新增{{newCount}}种前沿材料（钙钛矿、2D、量子点）</view>
     </view>
   </view>
 
-  <!-- 搜索与筛选 -->
+  <!-- 学术风格搜索与筛选 -->
   <view class="section-card">
-    <view class="search-box">
-      <input 
-        class="search-input" 
-        type="text"
-        value="{{searchKeyword}}"
-        placeholder="搜索材料名称/化学式"
-        bindinput="handleSearchInput"
-      />
-      <button wx:if="{{searchKeyword}}" class="clear-btn" bindtap="clearSearch">✕</button>
-    </view>
+    <search-input
+      value="{{searchKeyword}}"
+      placeholder="搜索半导体材料名称或化学式"
+      enableHistory="{{true}}"
+      historyKey="semiconductor"
+      hotSearches="{{hotMaterials}}"
+      showHot="{{!searchKeyword}}"
+      bindinput="handleSearchInput"
+      bindsearch="handleSearch"
+      bindclear="clearSearch"
+    />
 
-    <!-- 带隙筛选 -->
-    <view class="filter-section">
-      <view class="filter-title">按带隙范围筛选：</view>
-      <scroll-view class="filter-tags" scroll-x="{{true}}">
-        <view 
-          wx:for="{{bandgapRanges}}" 
-          wx:key="label"
-          class="filter-tag {{selectedBandgapRange === item.label ? 'active' : ''}}"
-          data-label="{{item.label}}"
-          bindtap="selectBandgapRange"
-        >
-          {{item.label}}
-        </view>
-      </scroll-view>
-    </view>
+    <!-- 学术风格分类筛选 -->
+    <quick-filter
+      title="材料类别"
+      filters="{{categoryFilterOptions}}"
+      selected="{{categoryFilter}}"
+      mode="single"
+      showCount="{{false}}"
+      showClear="{{true}}"
+      bindchange="handleCategoryFilterChange"
+      bind:clear="clearCategoryFilter"
+    />
 
-    <!-- 快速选择 -->
-    <view class="quick-select">
-      <view class="quick-title">常用材料：</view>
-      <view class="quick-tags">
-        <view 
-          wx:for="{{quickSelectMaterials}}" 
-          wx:key="*this"
-          class="quick-tag"
-          bindtap="quickSelectMaterial"
-          data-name="{{item}}"
-        >
-          {{item}}
-        </view>
-      </view>
-    </view>
+    <!-- 学术风格带隙筛选 -->
+    <quick-filter
+      title="带隙范围"
+      filters="{{bandgapFilterOptions}}"
+      selected="{{selectedBandgapRange}}"
+      mode="single"
+      showCount="{{false}}"
+      showClear="{{true}}"
+      bindchange="handleBandgapFilterChange"
+      bind:clear="clearBandgapFilter"
+    />
   </view>
 
   <!-- 材料网格 -->
@@ -81,8 +76,8 @@
         </view>
         <view class="card-body">
           <view class="bandgap-badge">
-            <text class="bandgap-value">{{item.bandGap.value}} eV</text>
-            <text class="bandgap-type">{{item.bandGap.type === 'direct' ? '直接' : '间接'}}</text>
+            <text class="bandgap-value">{{helper.getBandGapValue(item)}} eV</text>
+            <text class="bandgap-type">{{helper.getBandGapTypeName(item)}}</text>
           </view>
         </view>
       </view>
@@ -118,9 +113,9 @@
         <view class="detail-section highlight">
           <view class="detail-title">带隙信息</view>
           <view class="bandgap-display">
-            <view class="bandgap-value">Eg = {{selectedMaterial.bandGap.value}} eV</view>
-            <view class="bandgap-type">{{selectedMaterial.bandGap.type === 'direct' ? '直接带隙' : '间接带隙'}}</view>
-            <view class="bandgap-temp" wx:if="{{selectedMaterial.bandGap.temperature}}">
+            <view class="bandgap-value">Eg = {{helper.getBandGapValue(selectedMaterial)}} eV</view>
+            <view class="bandgap-type">{{helper.getBandGapType(selectedMaterial) === 'direct' ? '直接带隙' : '间接带隙'}}</view>
+            <view class="bandgap-temp" wx:if="{{selectedMaterial.bandGap && selectedMaterial.bandGap.temperature}}">
               测试温度：{{selectedMaterial.bandGap.temperature}}
             </view>
           </view>

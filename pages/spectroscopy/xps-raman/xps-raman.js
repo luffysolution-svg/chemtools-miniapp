@@ -1,9 +1,17 @@
 /**
  * XPS/拉曼/IR谱学参考表页面
+ * v2.0.0 - 集成扩充数据库
  */
 
-const { listXps, listVibrational } = require('../spectroscopy');
 const { copyToClipboard } = require('../../../services/export');
+const { historyService } = require('../../../services/history');
+const { generateShareCard } = require('../utils/shareHelper');
+
+// 导入扩充数据库
+const { XPS_DATA, searchByElement: searchXPSByElement } = require('../../../utils/data/xps-extended');
+const { FTIR_DATA, searchByKeyword: searchFTIRByKeyword } = require('../../../utils/data/ftir-extended');
+const { RAMAN_DATA, searchByMaterial: searchRamanByMaterial } = require('../../../utils/data/raman-extended');
+const { SOLVENT_NMR_SHIFTS, FUNCTIONAL_GROUP_SHIFTS } = require('../../../utils/data/nmr-chemical-shifts');
 
 // 物理常数
 const SPEED_OF_LIGHT = 2.998e10; // cm/s
@@ -17,9 +25,17 @@ Page({
     spectroTypes: [
       { id: 'xps', name: 'XPS', icon: '🔬' },
       { id: 'raman-ir', name: 'Raman/IR', icon: '🎵' },
+      { id: 'nmr', name: 'NMR', icon: '🧲' },
       { id: 'converter', name: '频率转换', icon: '🔄' }
     ],
     currentType: 'xps',
+    
+    // NMR数据
+    nmrSolvents: [],
+    nmrSolventsFiltered: [],
+    nmrFunctionalGroups: [],
+    nmrFunctionalGroupsFiltered: [],
+    nmrSearchKeyword: '',
 
     // XPS数据
     xpsData: [],
@@ -48,18 +64,73 @@ Page({
     wx.showLoading({ title: '加载中...', mask: true });
     
     setTimeout(() => {
-      const xpsData = listXps();
-      const vibrationData = listVibrational();
+      const xpsData = this.getXpsData();
+      const vibrationData = this.getVibrationalData();
+      const nmrSolvents = SOLVENT_NMR_SHIFTS;
+      const nmrFunctionalGroups = FUNCTIONAL_GROUP_SHIFTS;
       
       this.setData({
         xpsData,
         xpsFiltered: xpsData,
         vibrationData,
         vibrationFiltered: vibrationData,
+        nmrSolvents,
+        nmrSolventsFiltered: nmrSolvents,
+        nmrFunctionalGroups,
+        nmrFunctionalGroupsFiltered: nmrFunctionalGroups,
         loading: false
       });
       wx.hideLoading();
     }, 500);
+  },
+
+  /**
+   * 获取XPS数据
+   */
+  getXpsData() {
+    // 使用扩充的XPS数据库
+    return XPS_DATA.map(entry => ({
+      element: entry.element,
+      orbital: entry.orbital,
+      be: entry.bindingEnergy,
+      state: entry.state,
+      compound: entry.compound,
+      note: entry.notes
+    }));
+  },
+
+  /**
+   * 获取振动光谱数据（合并FTIR和Raman）
+   */
+  getVibrationalData() {
+    // FTIR数据
+    const ftirData = FTIR_DATA.map(entry => ({
+      group: entry.functionalGroup,
+      name: entry.name,
+      wavenumber: entry.wavenumber,
+      range: entry.range,
+      type: 'FTIR',
+      intensity: entry.intensity,
+      note: entry.notes
+    }));
+
+    // Raman数据（展平为单个峰）
+    const ramanData = [];
+    RAMAN_DATA.forEach(material => {
+      material.peaks.forEach(peak => {
+        ramanData.push({
+          group: material.material,
+          name: material.name,
+          wavenumber: peak.wavenumber,
+          type: 'Raman',
+          intensity: peak.intensity,
+          assignment: peak.assignment,
+          note: peak.notes
+        });
+      });
+    });
+
+    return [...ftirData, ...ramanData];
   },
 
   /**
@@ -68,6 +139,75 @@ Page({
   switchType(e) {
     const type = e.currentTarget.dataset.type;
     this.setData({ currentType: type });
+  },
+  
+  /**
+   * NMR搜索
+   */
+  handleNmrSearch(e) {
+    const keyword = e.detail.value;
+    this.setData({ nmrSearchKeyword: keyword });
+    this.filterNmr();
+  },
+  
+  /**
+   * 清除NMR搜索
+   */
+  clearNmrSearch() {
+    this.setData({ nmrSearchKeyword: '' });
+    this.filterNmr();
+  },
+  
+  /**
+   * 筛选NMR数据
+   */
+  filterNmr() {
+    const { nmrSolvents, nmrFunctionalGroups, nmrSearchKeyword } = this.data;
+    
+    if (!nmrSearchKeyword) {
+      this.setData({ 
+        nmrSolventsFiltered: nmrSolvents,
+        nmrFunctionalGroupsFiltered: nmrFunctionalGroups
+      });
+      return;
+    }
+
+    const keyword = nmrSearchKeyword.toLowerCase();
+    
+    const filteredSolvents = nmrSolvents.filter(item => 
+      item.name.toLowerCase().includes(keyword) ||
+      item.solvent.toLowerCase().includes(keyword) ||
+      item.formula.toLowerCase().includes(keyword)
+    );
+    
+    const filteredGroups = nmrFunctionalGroups.filter(item =>
+      item.group.toLowerCase().includes(keyword) ||
+      (item.examples && item.examples.toLowerCase().includes(keyword))
+    );
+
+    this.setData({ 
+      nmrSolventsFiltered: filteredSolvents,
+      nmrFunctionalGroupsFiltered: filteredGroups
+    });
+  },
+  
+  /**
+   * 复制NMR溶剂数据
+   */
+  copyNmrSolvent(e) {
+    const item = e.currentTarget.dataset.item;
+    let text = `${item.name} (${item.formula})\n`;
+    if (item.proton) {
+      text += `¹H-NMR: δ ${item.proton.shift} ppm (${item.proton.multiplicity})\n`;
+    }
+    if (item.carbon) {
+      text += `¹³C-NMR: δ ${item.carbon.shift} ppm (${item.carbon.multiplicity})\n`;
+    }
+    if (item.waterPeak) {
+      text += `H₂O峰: δ ${item.waterPeak} ppm`;
+    }
+    
+    copyToClipboard(text, '溶剂化学位移已复制');
   },
 
   /**
@@ -121,6 +261,25 @@ Page({
   copyXpsData(e) {
     const item = e.currentTarget.dataset.item;
     const text = `${item.element} ${item.state}: ${item.be} eV (${item.note})`;
+    
+    // 添加到历史记录
+    historyService.add({
+      type: 'XPS谱学查询',
+      title: `${item.element} ${item.state} XPS查询`,
+      input: `${item.element} ${item.state}`,
+      result: `结合能: ${item.be} eV`,
+      metadata: {
+        category: '谱学查询',
+        spectroscopyType: 'XPS',
+        element: item.element,
+        state: item.state,
+        bindingEnergy: item.be,
+        note: item.note,
+        unit: 'eV',
+        dataSource: 'XPS数据库'
+      }
+    });
+    
     copyToClipboard(text, 'XPS数据已复制');
   },
 
@@ -188,6 +347,25 @@ Page({
   copyVibrationData(e) {
     const item = e.currentTarget.dataset.item;
     const text = `${item.mode} (${item.region}): ${item.pos} ${item.unit}\n范围：${item.note}`;
+    
+    // 添加到历史记录
+    historyService.add({
+      type: 'Raman/IR谱学查询',
+      title: `${item.mode}谱学查询`,
+      input: item.mode,
+      result: `${item.pos} ${item.unit} (${item.region})`,
+      metadata: {
+        category: '谱学查询',
+        spectroscopyType: item.region === 'raman' ? 'Raman' : 'IR',
+        mode: item.mode,
+        position: item.pos,
+        region: item.region,
+        note: item.note,
+        unit: item.unit,
+        dataSource: 'Raman/IR谱学数据库'
+      }
+    });
+    
     copyToClipboard(text, '峰位数据已复制');
   },
 
@@ -259,6 +437,70 @@ Page({
       converterWavelength: '',
       converterFrequency: '',
       converterEnergy: ''
+    });
+  },
+
+  /**
+   * 生成分享卡片 (v6.0.0新增)
+   */
+  async generateCard() {
+    const { currentType, converterResult, xpsFiltered, vibrationFiltered } = this.data;
+    
+    // 频率转换结果
+    if (currentType === 'converter' && converterResult) {
+      const { converterWavenumber, converterWavelength, converterFrequency, converterEnergy } = this.data;
+
+      const inputs = {
+        '输入波数': `${this.data.wavenumber} cm⁻¹`
+      };
+
+      const results = {
+        '波数': converterWavenumber,
+        '波长': converterWavelength,
+        '频率': converterFrequency,
+        '能量': converterEnergy
+      };
+
+      await generateShareCard('XPS/Raman光谱', 'xps-raman', inputs, results, '频率-波长-能量换算');
+      return;
+    }
+
+    // XPS或Raman数据查询
+    if (currentType === 'xps' && xpsFiltered.length > 0) {
+      const firstData = xpsFiltered[0];
+      const inputs = {
+        '数据类型': 'XPS峰位数据',
+        '查询结果': `${xpsFiltered.length}条`
+      };
+
+      const results = {
+        '示例': `${firstData.element} - ${firstData.peak_name}`,
+        '结合能': `${firstData.binding_energy} eV`
+      };
+
+      await generateShareCard('XPS/Raman光谱', 'xps-raman', inputs, results, `共找到${xpsFiltered.length}条XPS数据`);
+      return;
+    }
+
+    if (currentType === 'raman-ir' && vibrationFiltered.length > 0) {
+      const firstData = vibrationFiltered[0];
+      const inputs = {
+        '数据类型': 'Raman/IR峰位数据',
+        '查询结果': `${vibrationFiltered.length}条`
+      };
+
+      const results = {
+        '示例': firstData.group || '',
+        '波数范围': `${firstData.wavenumber} cm⁻¹`
+      };
+
+      await generateShareCard('XPS/Raman光谱', 'xps-raman', inputs, results, `共找到${vibrationFiltered.length}条振动光谱数据`);
+      return;
+    }
+
+    wx.showToast({
+      title: '请先完成计算或查询',
+      icon: 'none'
     });
   },
 

@@ -1,9 +1,20 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/search/search",
     "pages/favorites/favorites",
     "pages/help/help",
-    "pages/settings/settings"
+    "pages/settings/settings",
+    "pages/settings/backup/backup",
+    "pages/settings/share-card/share-card",
+    "pages/settings/offline/offline",
+    "pages/settings/statistics/statistics",
+    "pages/tools/chemical-safety/chemical-safety",
+    "pages/tools/solvent-selector/solvent-selector",
+    "pages/tools/error-propagation/error-propagation",
+    "pages/tools/literature/literature",
+    "pages/databases/experimental-constants/experimental-constants",
+    "pages/data-analysis/ligand-field/ligand-field"
   ],
   "subpackages": [
     {
@@ -13,7 +24,9 @@
         "unit/unit",
         "ph/ph",
         "solution/solution",
-        "molar/molar"
+        "molar/molar",
+        "batch/batch",
+        "formula-calculator/formula-calculator"
       ],
       "independent": false
     },
@@ -23,7 +36,14 @@
       "pages": [
         "periodic/periodic",
         "semiconductor/semiconductor",
-        "semiconductor-extras/semiconductor-extras"
+        "semiconductor-extras/semiconductor-extras",
+        "abbreviation/abbreviation",
+        "organic-materials/organic-materials",
+        "crystal-calc/crystal-calc",
+        "bet-analysis/bet-analysis",
+        "electrical-props/electrical-props",
+        "optical-props/optical-props",
+        "space-groups/space-groups"
       ],
       "independent": false
     },
@@ -32,7 +52,8 @@
       "name": "spectroscopy",
       "pages": [
         "xps-raman/xps-raman",
-        "uvvis/uvvis"
+        "uvvis/uvvis",
+        "uvvis/uvvis-enhanced"
       ],
       "independent": false
     },
@@ -40,10 +61,14 @@
       "root": "pages/advanced",
       "name": "advanced",
       "pages": [
-        "xrd/xrd",
+        "xrd-enhanced/xrd-enhanced",
         "electrochem/electrochem",
+        "battery-calc/battery-calc",
+        "photocatalysis/photocatalysis",
         "ksp/ksp",
-        "complexation/complexation"
+        "complexation/complexation",
+        "thermodynamics/thermodynamics",
+        "kinetics/kinetics"
       ],
       "independent": false
     }
@@ -55,16 +80,30 @@
     }
   },
   "window": {
-    "navigationBarTitleText": "材料化学科研工具箱",
+    "navigationBarTitleText": "材料化学科研工具箱 v8.1.0",
     "navigationBarBackgroundColor": "#1f3c88",
     "navigationBarTextStyle": "white",
     "backgroundColor": "#f2f5fa",
     "backgroundTextStyle": "light",
     "enablePullDownRefresh": false
   },
+  "usingComponents": {
+    "calculator-input": "/components/calculator-input/calculator-input",
+    "result-card": "/components/result-card/result-card",
+    "skeleton": "/components/skeleton/skeleton",
+    "search-input": "/components/search-input/search-input",
+    "quick-filter": "/components/quick-filter/quick-filter",
+    "data-card": "/components/data-card/data-card"
+  },
   "style": "v2",
   "darkmode": false,
   "lazyCodeLoading": "requiredComponents",
+  "rendererOptions": {
+    "skyline": {
+      "defaultDisplayBlock": true,
+      "disableABTest": true
+    }
+  },
   "tabBar": {
     "color": "#666666",
     "selectedColor": "#1f3c88",
@@ -78,6 +117,10 @@
       {
         "pagePath": "pages/favorites/favorites",
         "text": "收藏"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "管理"
       }
     ]
   }

@@ -1,0 +1,180 @@
+<view class="container">
+  <view class="page-title">实验常数数据库</view>
+  
+  <!-- Tab切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0">
+      <text>缓冲液pKa</text>
+    </view>
+    <view class="tab-item {{activeTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1">
+      <text>溶剂物性</text>
+    </view>
+    <view class="tab-item {{activeTab === 2 ? 'active' : ''}}" bindtap="switchTab" data-index="2">
+      <text>电极电位</text>
+    </view>
+    <view class="tab-item {{activeTab === 3 ? 'active' : ''}}" bindtap="switchTab" data-index="3">
+      <text>晶体场</text>
+    </view>
+  </view>
+  
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input class="search-input" 
+           placeholder="{{searchPlaceholders[activeTab]}}" 
+           bindinput="onSearch" 
+           value="{{searchQuery}}" />
+  </view>
+  
+  <!-- 缓冲液pKa -->
+  <scroll-view class="content-scroll" scroll-y wx:if="{{activeTab === 0}}">
+    <view class="buffer-item card" wx:for="{{displayedBuffers}}" wx:key="abbreviation">
+      <view class="item-header">
+        <text class="item-title">{{item.name}}</text>
+        <view class="tag tag-primary">{{item.abbreviation}}</view>
+      </view>
+      <view class="item-content">
+        <view class="info-row">
+          <text class="label">pKa值：</text>
+          <text class="value">{{item.pka1}}{{item.pka2 ? ', ' + item.pka2 : ''}}{{item.pka3 ? ', ' + item.pka3 : ''}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">缓冲范围：</text>
+          <text class="value">pH {{item.bufferRange}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">最适pH：</text>
+          <text class="value highlight">{{item.optimalPH}}</text>
+        </view>
+        <view class="info-row">
+          <text class="label">配制方法：</text>
+          <text class="value-block">{{item.preparation}}</text>
+        </view>
+        <view class="notes" wx:if="{{item.notes}}">
+          <text>💡 {{item.notes}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty-state" wx:if="{{displayedBuffers.length === 0}}">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">未找到相关缓冲液</text>
+    </view>
+  </scroll-view>
+  
+  <!-- 溶剂物性 -->
+  <scroll-view class="content-scroll" scroll-y wx:if="{{activeTab === 1}}">
+    <view class="solvent-item card" wx:for="{{displayedSolvents}}" wx:key="formula">
+      <view class="item-header">
+        <text class="item-title">{{item.name}}</text>
+        <text class="formula">{{item.formula}}</text>
+      </view>
+      <view class="item-content">
+        <view class="properties-grid">
+          <view class="prop-item">
+            <text class="prop-label">沸点</text>
+            <text class="prop-value">{{item.bp}}°C</text>
+          </view>
+          <view class="prop-item">
+            <text class="prop-label">熔点</text>
+            <text class="prop-value">{{item.mp}}°C</text>
+          </view>
+          <view class="prop-item">
+            <text class="prop-label">密度</text>
+            <text class="prop-value">{{item.density}} g/mL</text>
+          </view>
+          <view class="prop-item">
+            <text class="prop-label">粘度</text>
+            <text class="prop-value">{{item.viscosity}} cP</text>
+          </view>
+          <view class="prop-item">
+            <text class="prop-label">介电常数</text>
+            <text class="prop-value">{{item.dielectric}}</text>
+          </view>
+          <view class="prop-item">
+            <text class="prop-label">极性</text>
+            <text class="prop-value">{{item.polarity}}</text>
+          </view>
+        </view>
+        <view class="notes" wx:if="{{item.notes}}">
+          <text>💡 {{item.notes}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty-state" wx:if="{{displayedSolvents.length === 0}}">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">未找到相关溶剂</text>
+    </view>
+  </scroll-view>
+  
+  <!-- 电极电位 -->
+  <scroll-view class="content-scroll" scroll-y wx:if="{{activeTab === 2}}">
+    <view class="electrode-item card" wx:for="{{displayedElectrodes}}" wx:key="halfReaction">
+      <view class="reaction">{{item.halfReaction}}</view>
+      <view class="potential-value">
+        <text class="value-large">{{item.E0 > 0 ? '+' : ''}}{{item.E0}}</text>
+        <text class="unit">V (vs SHE)</text>
+      </view>
+      <view class="category-tag">{{item.category}}</view>
+      <view class="notes" wx:if="{{item.notes}}">
+        <text>{{item.notes}}</text>
+      </view>
+    </view>
+    
+    <view class="empty-state" wx:if="{{displayedElectrodes.length === 0}}">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">未找到相关电极</text>
+    </view>
+  </scroll-view>
+  
+  <!-- 晶体场 -->
+  <scroll-view class="content-scroll" scroll-y wx:if="{{activeTab === 3}}">
+    <view class="crystal-field-item card" wx:for="{{displayedCrystalFields}}" wx:key="complex">
+      <view class="item-header">
+        <text class="item-title">{{item.complex}}</text>
+        <text class="geometry-tag">{{item.geometry}}</text>
+      </view>
+      <view class="item-content">
+        <view class="delta-value">
+          <text class="label">Delta = </text>
+          <text class="value-large">{{item.delta}}</text>
+          <text class="unit">{{item.unit}}</text>
+        </view>
+        <view class="info-grid">
+          <view class="info-item">
+            <text class="info-label">金属</text>
+            <text class="info-value">{{item.metal}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">电子构型</text>
+            <text class="info-value">{{item.dn}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">颜色</text>
+            <text class="info-value color-badge">{{item.color}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">磁性</text>
+            <text class="info-value">{{item.magnetic}}</text>
+          </view>
+        </view>
+        <view class="notes" wx:if="{{item.notes}}">
+          <text>💡 {{item.notes}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty-state" wx:if="{{displayedCrystalFields.length === 0}}">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">未找到相关配合物</text>
+    </view>
+  </scroll-view>
+  
+  <!-- 底部说明 -->
+  <view class="footer-info">
+    <text class="info-title">📊 数据统计</text>
+    <text class="info-text">缓冲液：10种 | 溶剂：15种 | 电极：35个 | 晶体场：17种</text>
+    <text class="info-source">数据来源：NIST, CRC Handbook, IUPAC</text>
+  </view>
+</view>
+

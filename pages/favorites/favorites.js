@@ -12,13 +12,14 @@ Page({
     historyLoading: false,  // 新增历史记录加载状态
     
     // 收藏相关
-    categories: ['材料', '反应', '条件', '其他'],
+    categories: ['材料', '反应', '条件', '计算', '其他'],
     categoryIndex: 0,
     title: '',
     note: '',
     body: '',
     editingId: '',
     favorites: [],
+    favoritedCalculations: [],  // 收藏的计算历史
     
     // 历史记录相关
     history: [],  // 原始历史数据
@@ -34,26 +35,54 @@ Page({
     categoryFilterIndex: 0,
     dateFilters: ['全部', '今天', '最近7天', '最近30天'],
     dateFilterIndex: 0,
-    showWarningOnly: false  // 仅显示有警告的记录
+    showWarningOnly: false,  // 仅显示有警告的记录
+    showFavoritedOnly: false  // 仅显示收藏的记录
   },
 
   onLoad() {
-    this.loadFavorites();
-    this.loadHistory();
+    // 按需加载：只加载当前选项卡的数据
+    if (this.data.activeTab === 'favorites') {
+      this.loadFavorites();
+      this.loadFavoritedCalculations();
+    } else if (this.data.activeTab === 'history') {
+      this.loadHistory();
+    }
   },
 
   onShow() {
-    // 每次显示时刷新
-    this.loadFavorites();
-    this.loadHistory();
+    // 每次显示时只刷新当前标签页
+    if (this.data.activeTab === 'favorites') {
+      this.loadFavorites();
+      this.loadFavoritedCalculations();
+    } else if (this.data.activeTab === 'history') {
+      this.loadHistory();
+    }
   },
 
   /**
-   * 切换标签
+   * 切换标签 - 优化版：按需加载数据
    */
   switchTab(e) {
     const tab = e.currentTarget.dataset.tab;
+    const oldTab = this.data.activeTab;
+    
     this.setData({ activeTab: tab });
+    
+    // 切换标签时才加载对应的数据
+    if (tab !== oldTab) {
+      if (tab === 'favorites') {
+        // 切换到收藏标签时加载收藏数据
+        if (this.data.favorites.length === 0 || this.data.favoritedCalculations.length === 0) {
+          this.loadFavorites();
+          this.loadFavoritedCalculations();
+        }
+      } else if (tab === 'history') {
+        // 切换到历史标签时加载历史数据
+        if (this.data.history.length === 0) {
+          this.loadHistory();
+        }
+      }
+    }
   },
 
   // ========== 收藏相关方法 ==========
@@ -80,6 +109,33 @@ Page({
     });
     
     this.setData({ favorites: display });
+  },
+
+  /**
+   * 加载收藏的计算历史
+   */
+  loadFavoritedCalculations() {
+    const favoritedCalcs = historyService.getFavorited();
+    const display = favoritedCalcs.map(item => {
+      const date = new Date(item.timestamp);
+      const timeStr = `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+      const copyText = `${item.title}\n输入：${item.input}\n结果：${item.result}\n时间：${date.toLocaleString('zh-CN')}`;
+      
+      const hasWarning = !!(item.metadata && item.metadata.warning);
+      const warning = hasWarning ? item.metadata.warning : '';
+      
+      return {
+        ...item,
+        timeStr,
+        copyText,
+        hasWarning,
+        warning,
+        userNote: item.userNote || '',
+        tags: item.tags || []
+      };
+    });
+    
+    this.setData({ favoritedCalculations: display });
   },
 
   /**
@@ -289,12 +345,16 @@ Page({
         const hasWarning = !!(item.metadata && item.metadata.warning);
         const warning = hasWarning ? item.metadata.warning : '';
         
+        // 判断是否已收藏
+        const isFavorited = !!item.isFavorited;
+        
         return {
           ...item,
           timeStr,
           copyText,
           hasWarning,
-          warning
+          warning,
+          isFavorited
         };
       });
 
@@ -318,6 +378,33 @@ Page({
     }, () => {
       this.loadHistory();
     });
+  },
+
+  /**
+   * 切换历史记录收藏状态
+   */
+  toggleFavoriteHistory(e) {
+    const id = e.currentTarget.dataset.id;
+    const success = historyService.toggleFavorite(id);
+    
+    if (success) {
+      const isFavorited = historyService.isFavorited(id);
+      
+      wx.showToast({
+        title: isFavorited ? '已收藏' : '已取消收藏',
+        icon: 'success',
+        duration: 1500
+      });
+      
+      // 刷新数据
+      this.loadFavoritedCalculations();
+      this.loadHistory();
+    } else {
+      wx.showToast({
+        title: '操作失败',
+        icon: 'none'
+      });
+    }
   },
 
   /**

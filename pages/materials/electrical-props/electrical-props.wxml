@@ -1,0 +1,238 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view 
+      wx:for="{{tools}}" 
+      wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}"
+      bindtap="switchTool"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 四探针法 -->
+  <view wx:if="{{currentTool === 'four-probe'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📐 四探针法</text>
+      <text class="intro-desc">测量薄片样品的电导率</text>
+      <text class="intro-formula">σ = ln(2)/(π·t) × I/V</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="电压"
+        value="{{fourProbeV}}"
+        type="digit"
+        placeholder="例如：1.5"
+        unit="V"
+        icon="⚡"
+        enableHistory="{{true}}"
+        historyTool="electrical"
+        historyField="voltage"
+        touchArea="large"
+        bind:input="handleFourProbeVInput"
+        bindchange="handleVoltageChange"
+      />
+
+      <calculator-input
+        label="电流"
+        value="{{fourProbeI}}"
+        type="digit"
+        placeholder="例如：10"
+        unit="mA"
+        icon="🔌"
+        bind:input="handleFourProbeIInput"
+      />
+
+      <view class="picker-field">
+        <text class="picker-label">电流单位</text>
+        <picker mode="selector" range="{{currentUnits}}" value="{{currentUnitIndex}}" bindchange="handleCurrentUnitChange">
+          <view class="picker-value">{{currentUnits[currentUnitIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="样品厚度"
+        value="{{fourProbeT}}"
+        type="digit"
+        placeholder="例如：0.5"
+        unit="cm"
+        icon="📏"
+        bind:input="handleFourProbeTInput"
+      />
+
+      <view class="picker-field">
+        <text class="picker-label">厚度单位</text>
+        <picker mode="selector" range="{{thicknessUnits}}" value="{{thicknessUnitIndex}}" bindchange="handleThicknessUnitChange">
+          <view class="picker-value">{{thicknessUnits[thicknessUnitIndex]}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateFourProbe">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{fourProbeResultText}}" title="计算结果">
+      <view class="result-text">{{fourProbeResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 块体样品 -->
+  <view wx:if="{{currentTool === 'bulk'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🔲 块体样品（两探针法）</text>
+      <text class="intro-desc">规则形状样品的电导率</text>
+      <text class="intro-formula">σ = L/(R·A)</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="电阻"
+        value="{{bulkR}}"
+        type="digit"
+        placeholder="例如：1000"
+        unit="Ω"
+        icon="⚡"
+        bind:input="handleBulkRInput"
+      />
+
+      <calculator-input
+        label="样品长度"
+        value="{{bulkL}}"
+        type="digit"
+        placeholder="例如：2"
+        unit="cm"
+        icon="📏"
+        bind:input="handleBulkLInput"
+      />
+
+      <calculator-input
+        label="横截面积"
+        value="{{bulkA}}"
+        type="digit"
+        placeholder="例如：0.5"
+        unit="cm²"
+        icon="▢"
+        bind:input="handleBulkAInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateBulk">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{bulkResultText}}" title="计算结果">
+      <view class="result-text">{{bulkResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 薄膜样品 -->
+  <view wx:if="{{currentTool === 'film'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📄 薄膜样品（方块电阻法）</text>
+      <text class="intro-desc">透明导电薄膜等材料</text>
+      <text class="intro-formula">σ = 1/(Rs×t)</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="方块电阻"
+        value="{{filmRs}}"
+        type="digit"
+        placeholder="例如：50"
+        unit="Ω/sq"
+        icon="📐"
+        bind:input="handleFilmRsInput"
+      />
+
+      <calculator-input
+        label="薄膜厚度"
+        value="{{filmT}}"
+        type="digit"
+        placeholder="例如：300"
+        unit="nm"
+        icon="📏"
+        hint="纳米级厚度"
+        bind:input="handleFilmTInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateFilm">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{filmResultText}}" title="计算结果">
+      <view class="result-text">{{filmResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 介电常数 -->
+  <view wx:if="{{currentTool === 'dielectric'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">⚡ 介电常数计算</text>
+      <text class="intro-desc">从电容测量计算相对介电常数</text>
+      <text class="intro-formula">εr = C·d/(ε0·A)</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="电容"
+        value="{{dielectricC}}"
+        type="digit"
+        placeholder="例如：100"
+        unit="pF"
+        icon="🔌"
+        bind:input="handleDielectricCInput"
+      />
+
+      <view class="picker-field">
+        <text class="picker-label">电容单位</text>
+        <picker mode="selector" range="{{capacitanceUnits}}" value="{{capacitanceUnitIndex}}" bindchange="handleCapacitanceUnitChange">
+          <view class="picker-value">{{capacitanceUnits[capacitanceUnitIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="电极面积"
+        value="{{dielectricA}}"
+        type="digit"
+        placeholder="例如：1"
+        unit="cm²"
+        icon="▢"
+        bind:input="handleDielectricAInput"
+      />
+
+      <calculator-input
+        label="介质厚度"
+        value="{{dielectricD}}"
+        type="digit"
+        placeholder="例如：0.1"
+        unit="mm"
+        icon="📏"
+        bind:input="handleDielectricDInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateDielectric">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{dielectricResultText}}" title="计算结果">
+      <view class="result-text">{{dielectricResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 导出按钮 -->
+  <view wx:if="{{fourProbeResultText || bulkResultText || filmResultText || dielectricResultText}}" class="export-button" bindtap="exportResult">
+    <text>📤 导出结果</text>
+  </view>
+</view>
+

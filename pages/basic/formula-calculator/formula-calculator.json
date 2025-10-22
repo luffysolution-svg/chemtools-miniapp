@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "配方计算器",
+  "usingComponents": {
+    "calculator-input": "/components/calculator-input/calculator-input",
+    "result-card": "/components/result-card/result-card"
+  }
+}
+

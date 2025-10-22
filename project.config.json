@@ -1,26 +1,51 @@
 {
+  "description": "材料化学科研工具箱 - 化学计算和数据查询工具集",
   "setting": {
     "es6": true,
     "postcss": true,
     "minified": true,
     "uglifyFileName": false,
     "enhance": true,
-    "packNpmRelationList": [],
+    "useCompilerPlugins": [
+      "typescript"
+    ],
+    "minifyWXML": true,
+    "minifyWXSS": true,
+    "minifyJS": true,
+    "coverView": true,
+    "lazyCodeLoading": "requiredComponents",
+    "condition": false,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
     },
-  "useCompilerPlugins": false,
-    "minifyWXML": true,
-    "condition": false
+    "packNpmRelationList": []
   },
   "compileType": "miniprogram",
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "docs"
+      },
+      {
+        "type": "suffix",
+        "value": ".md"
+      },
+      {
+        "type": "file",
+        "value": "LICENSE"
+      }
+    ],
     "include": []
   },
   "appid": "wx6855ae091bb0e081",
-  "editorSetting": {}
+  "projectname": "chemtools-miniapp",
+  "libVersion": "3.5.2",
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  }
 }

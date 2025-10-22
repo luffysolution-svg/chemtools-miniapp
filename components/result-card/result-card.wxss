@@ -46,6 +46,7 @@
 
 .result-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12rpx;
 }
 
@@ -53,13 +54,15 @@
   display: inline-flex;
   align-items: center;
   gap: 6rpx;
-  padding: 8rpx 16rpx;
+  padding: 8rpx 12rpx;
   background: transparent;
   border: 2rpx solid #1f3c88;
   border-radius: 12rpx;
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #1f3c88;
   line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .action-btn::after {

@@ -1,23 +1,26 @@
-# WeChat Mini Program build artifacts and local configs
-# IDE
-.vscode/
-.idea/
-
-# WeChat DevTools temp/cache
-# Adjust if your devtools path differs
-*~
-*.log
-
-# Node modules (if ever used in tooling)
+# 微信小程序
+project.private.config.json
+miniprogram_npm/
 node_modules/
 
-# Output folders (if you use miniprogram-ci or custom build)
-dist/
-miniprogramDist/
+# 云函数
+cloudfunctions/**/node_modules
 
-# Private configs (keep example or template only)
-project.private.config.json
-
-# OS-specific
+# 临时文件
+*.log
 .DS_Store
 Thumbs.db
+*.tmp
+*.bak
+*.backup
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 说明：pages/test 是云函数测试页面，不应该忽略
+# 只忽略根目录的 test 文件夹
+/test/
+*.test.js

@@ -12,9 +12,45 @@
     <view class="section-description">根据离子积Q与Ksp比较判断是否沉淀</view>
     
     <view class="form-section">
-      <calculator-input label="阳离子浓度 [M^n+] (mol·L⁻¹)" type="digit" value="{{cationConc}}" placeholder="例如：0.01" bindinput="handleCationInput" />
-      <calculator-input label="阴离子浓度 [X^m-] (mol·L⁻¹)" type="digit" value="{{anionConc}}" placeholder="例如：0.01" bindinput="handleAnionInput" />
-      <calculator-input label="溶度积常数 Ksp" type="digit" value="{{kspValue}}" placeholder="例如：1e-10" hint="25°C下的Ksp值" bindinput="handleKspInput" />
+      <calculator-input 
+        label="阳离子浓度 [M^n+] (mol·L⁻¹)" 
+        type="digit" 
+        value="{{cationConc}}" 
+        placeholder="例如：0.01" 
+        enableHistory="{{true}}"
+        historyTool="ksp"
+        historyField="concentration"
+        presets="{{concentrationPresets}}"
+        touchArea="large"
+        bindinput="handleCationInput" 
+        bindchange="handleCationChange"
+      />
+      <calculator-input 
+        label="阴离子浓度 [X^m-] (mol·L⁻¹)" 
+        type="digit" 
+        value="{{anionConc}}" 
+        placeholder="例如：0.01" 
+        enableHistory="{{true}}"
+        historyTool="ksp"
+        historyField="concentration"
+        presets="{{concentrationPresets}}"
+        touchArea="large"
+        bindinput="handleAnionInput"
+        bindchange="handleAnionChange"
+      />
+      <calculator-input 
+        label="溶度积常数 Ksp" 
+        type="digit" 
+        value="{{kspValue}}" 
+        placeholder="例如：1e-10" 
+        hint="25°C下的Ksp值" 
+        enableHistory="{{true}}"
+        historyTool="ksp"
+        historyField="kspValue"
+        touchArea="large"
+        bindinput="handleKspInput"
+        bindchange="handleKspChange"
+      />
       <calculator-input label="阳离子电荷 n" type="digit" value="{{cationCharge}}" placeholder="例如：2" bindinput="handleCationChargeInput" />
       <calculator-input label="阴离子电荷 m" type="digit" value="{{anionCharge}}" placeholder="例如：1" bindinput="handleAnionChargeInput" />
       

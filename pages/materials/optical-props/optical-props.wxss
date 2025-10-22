@@ -1,0 +1,34 @@
+@import '../crystal-calc/crystal-calc.wxss';
+
+.tool-intro {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+}
+
+.tab-item.active {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+}
+
+.calc-button.primary {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  color: #333;
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #666;
+  margin: 24rpx 0 16rpx;
+  font-weight: bold;
+}
+
+.color-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.divider {
+  height: 1rpx;
+  background: #e0e0e0;
+  margin: 32rpx 0;
+}
+

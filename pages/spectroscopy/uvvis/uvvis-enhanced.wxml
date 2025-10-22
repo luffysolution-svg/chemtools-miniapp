@@ -1,0 +1,342 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view 
+      wx:for="{{tools}}" 
+      wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}"
+      bindtap="switchTool"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- Beer-Lambert 定律 -->
+  <view wx:if="{{currentTool === 'beer-lambert'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🧪 Beer-Lambert定律</text>
+      <text class="intro-desc">吸光度与浓度关系</text>
+      <text class="intro-formula">A = ε · c · l</text>
+    </view>
+
+    <view class="input-section">
+      <view class="picker-field">
+        <text class="picker-label">计算模式</text>
+        <picker mode="selector" range="{{modes}}" value="{{modeIndex}}" bindchange="handleModeChange">
+          <view class="picker-value">{{modes[modeIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        wx:if="{{modeIndex !== 0}}"
+        label="吸光度 A"
+        value="{{absorbance}}"
+        type="digit"
+        placeholder="例如：0.5"
+        icon="📊"
+        enableHistory="{{true}}"
+        historyTool="uvvis"
+        historyField="absorbance"
+        presets="{{absorbancePresets}}"
+        touchArea="large"
+        bind:input="handleAbsorbanceInput"
+        bindchange="handleAbsorbanceChange"
+      />
+
+      <calculator-input
+        wx:if="{{modeIndex !== 1}}"
+        label="浓度 c"
+        value="{{concentration}}"
+        type="digit"
+        placeholder="例如：0.001"
+        unit="mol·L⁻¹"
+        icon="⚗️"
+        bind:input="handleConcentrationInput"
+      />
+
+      <calculator-input
+        wx:if="{{modeIndex !== 2}}"
+        label="摩尔吸光系数 ε"
+        value="{{epsilon}}"
+        type="digit"
+        placeholder="例如：25000"
+        unit="L·mol⁻¹·cm⁻¹"
+        icon="✨"
+        bind:input="handleEpsilonInput"
+      />
+
+      <calculator-input
+        label="光程 l"
+        value="{{pathlength}}"
+        type="digit"
+        placeholder="例如：1"
+        unit="cm"
+        icon="📏"
+        bind:input="handlePathlengthInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateBeerLambert">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{beerResultText}}" title="计算结果">
+      <view class="result-text">{{beerResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- Tauc Plot 带隙分析 -->
+  <view wx:if="{{currentTool === 'tauc-plot'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📈 Tauc Plot带隙分析</text>
+      <text class="intro-desc">从UV-Vis光谱计算半导体带隙</text>
+      <text class="intro-formula">(αhν)ⁿ = A(hν - Eg)</text>
+    </view>
+
+    <view class="input-section">
+      <view class="picker-field">
+        <text class="picker-label">带隙类型</text>
+        <picker mode="selector" range="{{bandgapTypes}}" value="{{bandgapTypeIndex}}" bindchange="handleBandgapTypeChange">
+          <view class="picker-value">{{bandgapTypes[bandgapTypeIndex]}}</view>
+        </picker>
+      </view>
+
+      <view class="section-title">🔹 完整分析（推荐）</view>
+      <view class="textarea-field">
+        <text class="field-label">光谱数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{taucDataInput}}"
+          placeholder="{{taucDataPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleTaucDataInput"
+        />
+        <text class="field-hint">至少输入5个数据点</text>
+      </view>
+
+      <button class="calc-button primary" bindtap="calculateTaucPlot">Tauc分析</button>
+
+      <view class="divider">或</view>
+
+      <view class="section-title">🔹 快速估算</view>
+      <calculator-input
+        label="吸收边波长"
+        value="{{quickWavelength}}"
+        type="digit"
+        placeholder="例如：400"
+        unit="nm"
+        icon="🌈"
+        bind:input="handleQuickWavelengthInput"
+      />
+
+      <button class="calc-button" bindtap="quickCalculate">快速估算</button>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{taucResultText}}" title="分析结果">
+      <view class="result-text">{{taucResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- Kubelka-Munk 转换 -->
+  <view wx:if="{{currentTool === 'k-m'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🔄 Kubelka-Munk转换</text>
+      <text class="intro-desc">漫反射光谱转换为F(R)函数</text>
+      <text class="intro-formula">F(R) = (1-R)² / 2R</text>
+    </view>
+
+    <view class="input-section">
+      <view class="textarea-field">
+        <text class="field-label">反射率数据</text>
+        <textarea
+          class="textarea-input"
+          value="{{kmDataInput}}"
+          placeholder="{{kmDataPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleKmDataInput"
+        />
+        <text class="field-hint">适用于粉末样品的漫反射测量</text>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateKM">转换</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{kmResultText}}" title="转换结果">
+      <view class="result-text">{{kmResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 多峰拟合 -->
+  <view wx:if="{{currentTool === 'peak-fitting'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📊 多峰拟合</text>
+      <text class="intro-desc">高斯/洛伦兹函数拟合重叠峰</text>
+    </view>
+
+    <view class="input-section">
+      <view class="picker-field">
+        <text class="picker-label">拟合类型</text>
+        <picker mode="selector" range="{{fittingTypes}}" value="{{fittingType === 'gaussian' ? 0 : 1}}" bindchange="handleFittingTypeChange">
+          <view class="picker-value">{{fittingTypes[fittingType === 'gaussian' ? 0 : 1]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="预期峰数量"
+        value="{{numPeaks}}"
+        type="number"
+        placeholder="例如：2"
+        touchArea="large"
+        bind:input="handleNumPeaksInput"
+      />
+
+      <view class="textarea-field">
+        <view class="field-header">
+          <text class="field-label">光谱数据（波长,吸光度）</text>
+          <text class="field-example-btn" bindtap="fillPeakFittingExample">填充示例</text>
+        </view>
+        <textarea
+          class="textarea-input"
+          value="{{peakFittingData}}"
+          placeholder="{{peakFittingDataPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handlePeakFittingDataInput"
+        />
+        <view class="field-hint-block">
+          <text class="hint-title">格式：波长(nm),吸光度</text>
+          <text class="hint-example">400,0.5</text>
+          <text class="hint-example">450,0.8</text>
+          <text class="hint-line">至少5个数据点</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculatePeakFitting">拟合</button>
+      <button class="calc-button" bindtap="resetPeakFitting">清空</button>
+    </view>
+
+    <result-card wx:if="{{peakFittingResultText}}" title="拟合结果">
+      <view class="result-text">{{peakFittingResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 激子峰识别 -->
+  <view wx:if="{{currentTool === 'exciton'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">💫 激子峰识别</text>
+      <text class="intro-desc">自动识别激子吸收峰并计算结合能</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="带隙 Eg (eV)"
+        value="{{excitonBandgap}}"
+        type="digit"
+        placeholder="例如：3.2"
+        required="{{true}}"
+        touchArea="large"
+        bind:input="handleExcitonBandgapInput"
+      />
+
+      <view class="textarea-field">
+        <view class="field-header">
+          <text class="field-label">吸收光谱数据（波长,吸光度）</text>
+          <text class="field-example-btn" bindtap="fillExcitonExample">填充示例</text>
+        </view>
+        <textarea
+          class="textarea-input"
+          value="{{excitonData}}"
+          placeholder="{{excitonDataPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleExcitonDataInput"
+        />
+        <view class="field-hint-block">
+          <text class="hint-title">格式：波长(nm),吸光度</text>
+          <text class="hint-example">350,0.3</text>
+          <text class="hint-example">400,0.6</text>
+          <text class="hint-line">需包含吸收边附近数据，至少5个点</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateExciton">识别</button>
+      <button class="calc-button" bindtap="resetExciton">清空</button>
+    </view>
+
+    <result-card wx:if="{{excitonResultText}}" title="激子峰识别结果">
+      <view class="result-text">{{excitonResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- Urbach能计算 -->
+  <view wx:if="{{currentTool === 'urbach'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📉 Urbach能计算</text>
+      <text class="intro-desc">评估材料无序度和晶体质量</text>
+      <text class="intro-formula">α(E) = α₀ × exp((E-E₀)/Eu)</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="带隙 Eg (eV，可选)"
+        value="{{urbachBandgap}}"
+        type="digit"
+        placeholder="可选，用于优化拟合范围"
+        touchArea="large"
+        bind:input="handleUrbachBandgapInput"
+      />
+
+      <view class="textarea-field">
+        <view class="field-header">
+          <text class="field-label">吸收光谱数据（波长,吸光度）</text>
+          <text class="field-example-btn" bindtap="fillUrbachExample">填充示例</text>
+        </view>
+        <textarea
+          class="textarea-input"
+          value="{{urbachData}}"
+          placeholder="{{urbachDataPlaceholder}}"
+          maxlength="-1"
+          auto-height
+          bindinput="handleUrbachDataInput"
+        />
+        <view class="field-hint-block">
+          <text class="hint-title">格式：波长(nm),吸光度</text>
+          <text class="hint-example">400,0.2</text>
+          <text class="hint-example">450,0.4</text>
+          <text class="hint-line">需吸收边以下数据，至少5个点</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateUrbach">计算</button>
+      <button class="calc-button" bindtap="resetUrbach">清空</button>
+    </view>
+
+    <result-card wx:if="{{urbachResultText}}" title="Urbach能结果">
+      <view class="result-text">{{urbachResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 导出按钮（底部浮动） -->
+  <view wx:if="{{beerResultText || taucResultText || kmResultText || peakFittingResultText || excitonResultText || urbachResultText}}" class="export-button" bindtap="exportResult">
+    <text>📤 导出结果</text>
+  </view>
+</view>
+

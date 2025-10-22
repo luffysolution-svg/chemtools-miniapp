@@ -599,7 +599,26 @@ class ExportService {
 // 导出单例
 const exportService = new ExportService();
 
+// 便捷函数导出（用于直接调用）
+const copyToClipboard = (text, message) => {
+  return exportService.copyToClipboard(text, { 
+    successMessage: message || '已复制到剪贴板',
+    showToast: true 
+  });
+};
+
+const formatResult = (params) => {
+  return exportService.formatResult(params);
+};
+
+const exportReport = (results, title, options) => {
+  return exportService.exportReport(results, title, options);
+};
+
 module.exports = {
-  exportService
+  exportService,
+  copyToClipboard,
+  formatResult,
+  exportReport
 };
 

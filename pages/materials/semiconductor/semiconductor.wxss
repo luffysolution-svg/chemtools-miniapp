@@ -64,21 +64,33 @@
 .search-box {
   position: relative;
   margin-bottom: 24rpx;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
+  flex: 1;
   width: 100%;
-  padding: 24rpx 80rpx 24rpx 28rpx;
+  height: 88rpx;
+  padding: 24rpx 80rpx 24rpx 24rpx;
   background: #f7f9fc;
   border: 2rpx solid #d7dce5;
   border-radius: 20rpx;
-  font-size: 32rpx;
+  font-size: 28rpx;
   color: #2d3142;
   box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.search-placeholder {
+  color: #9aa4b2;
+  font-size: 26rpx;
 }
 
 .search-input::placeholder {
   color: #9aa4b2;
+  font-size: 26rpx;
 }
 
 .clear-btn {
@@ -340,39 +352,49 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 32rpx;
+  padding: 20rpx 24rpx;
   border-bottom: 2rpx solid #e5e7eb;
 }
 
 .material-preview {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  gap: 6rpx;
 }
 
 .preview-name {
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: 700;
   color: #2d3142;
+  line-height: 1.3;
 }
 
 .preview-formula {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #6c757d;
   font-family: 'Courier New', monospace;
+  line-height: 1.4;
 }
 
 .close-btn {
-  width: 56rpx;
-  height: 56rpx;
+  width: 52rpx;
+  height: 52rpx;
   background: #f3f4f6;
   border-radius: 50%;
-  font-size: 32rpx;
+  font-size: 28rpx;
   color: #6c757d;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.close-btn:active {
+  background: #e5e7eb;
+  transform: scale(0.95);
 }
 
 .close-btn::after {
@@ -382,11 +404,17 @@
 .modal-body {
   flex: 1;
   overflow-y: auto;
-  padding: 32rpx;
+  padding: 0 24rpx 24rpx 24rpx;
 }
 
 .detail-section {
-  margin-bottom: 32rpx;
+  margin-bottom: 20rpx;
+  padding: 24rpx;
+  border-radius: 16rpx;
+}
+
+.detail-section:first-child {
+  margin-top: 24rpx;
 }
 
 .detail-section:last-child {
@@ -395,17 +423,13 @@
 
 .detail-section.highlight {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  padding: 24rpx;
-  border-radius: 16rpx;
 }
 
 .detail-title {
   font-size: 28rpx;
   font-weight: 600;
   color: #2d3142;
-  margin-bottom: 20rpx;
-  padding-bottom: 12rpx;
-  border-bottom: 2rpx solid #e5e7eb;
+  margin-bottom: 16rpx;
 }
 
 /* 带隙信息 */
@@ -413,25 +437,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12rpx;
+  gap: 10rpx;
 }
 
 .bandgap-value {
   font-size: 40rpx;
   font-weight: 700;
   color: #be123c;
+  line-height: 1.2;
 }
 
 .bandgap-type {
-  font-size: 26rpx;
+  font-size: 24rpx;
   color: #6c757d;
-  padding: 8rpx 16rpx;
-  background: #ffffff;
+  padding: 6rpx 16rpx;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 40rpx;
 }
 
 .bandgap-temp {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #9aa4b2;
 }
 
@@ -439,7 +464,7 @@
 .band-diagram {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
 .band-item {
@@ -447,67 +472,58 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16rpx;
-  padding: 28rpx 20rpx;
+  gap: 10rpx;
+  padding: 20rpx 16rpx;
   background: #f7f9fc;
-  border-radius: 16rpx;
-  min-height: 140rpx;
-  overflow: hidden;
+  border-radius: 12rpx;
+  min-height: 100rpx;
 }
 
 .band-label {
-  font-size: 26rpx;
+  font-size: 24rpx;
   color: #6c757d;
   text-align: center;
-  white-space: nowrap;
   font-weight: 500;
+  line-height: 1.4;
 }
 
 .band-value {
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: 700;
   color: #2d3142;
   font-family: 'Courier New', monospace;
   text-align: center;
-  max-width: 100%;
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
+  line-height: 1.3;
 }
 
 /* 属性列表 */
 .property-list {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 10rpx;
 }
 
 .property-item {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
-  padding: 24rpx 28rpx;
+  gap: 6rpx;
+  padding: 16rpx;
   background: #f7f9fc;
-  border-radius: 12rpx;
-  min-height: 88rpx;
+  border-radius: 10rpx;
 }
 
 .prop-label {
-  font-size: 26rpx;
+  font-size: 24rpx;
   color: #6c757d;
   font-weight: 500;
-  text-align: left;
   line-height: 1.4;
 }
 
 .prop-value {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #2d3142;
-  text-align: left;
   word-wrap: break-word;
-  word-break: break-all;
-  overflow-wrap: anywhere;
   line-height: 1.6;
-  max-width: 100%;
 }
 
 /* 应用和别名 */
@@ -515,30 +531,35 @@
 .aliases {
   font-size: 26rpx;
   color: #2d3142;
-  line-height: 1.6;
+  line-height: 1.8;
   padding: 16rpx;
   background: #f7f9fc;
-  border-radius: 12rpx;
+  border-radius: 10rpx;
   word-wrap: break-word;
-  word-break: break-all;
-  overflow-wrap: anywhere;
 }
 
 .modal-footer {
   display: flex;
-  gap: 20rpx;
-  padding: 24rpx 32rpx;
+  gap: 12rpx;
+  padding: 20rpx 24rpx;
   border-top: 2rpx solid #e5e7eb;
+  flex-shrink: 0;
 }
 
 .btn-primary,
 .btn-secondary {
   flex: 1;
-  padding: 24rpx;
-  border-radius: 16rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0;
+  border-radius: 12rpx;
   font-size: 28rpx;
   font-weight: 600;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
@@ -546,14 +567,24 @@
   color: #ffffff;
 }
 
-.btn-primary::after,
-.btn-secondary::after {
-  border: none;
+.btn-primary:active {
+  background: #9f1239;
+  transform: scale(0.98);
 }
 
 .btn-secondary {
   background: transparent;
   border: 2rpx solid #be123c;
   color: #be123c;
+}
+
+.btn-secondary:active {
+  background: #fef2f2;
+  transform: scale(0.98);
+}
+
+.btn-primary::after,
+.btn-secondary::after {
+  border: none;
 }
 

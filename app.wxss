@@ -1,32 +1,239 @@
-/* 
- * 全局样式 - 性能优化版
- * 只包含最基础的样式，其他样式按需在页面中引入
- * 优化策略：减少首次加载，提升启动速度
+/**
+ * 全局样式 - v8.0.0
+ * 材料化学科研工具箱
  */
 
+/* ====== CSS变量定义 ====== */
 page {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  /* 主题色 */
+  --primary-color: #1f3c88;
+  --primary-light: #3b5ab3;
+  --primary-dark: #152958;
+  
+  /* 辅助色 */
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #ff4444;
+  --info-color: #17a2b8;
+  
+  /* 文字颜色 */
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-disabled: #cccccc;
+  --text-white: #ffffff;
+  
+  /* 背景色 */
+  --bg-page: #f2f5fa;
+  --bg-card: #ffffff;
+  --bg-hover: #f5f5f5;
+  --bg-disabled: #f5f5f5;
+  --bg-mask: rgba(0, 0, 0, 0.5);
+  
+  /* 边框色 */
+  --border-color: #e0e0e0;
+  --border-light: #f0f0f0;
+  --border-dark: #cccccc;
+  
+  /* 阴影 */
+  --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.16);
+  
+  /* 尺寸 */
+  --input-height: 88rpx;
+  --button-height: 88rpx;
+  --card-radius: 12rpx;
+  --input-radius: 8rpx;
+  
+  /* 间距 */
+  --spacing-xs: 8rpx;
+  --spacing-sm: 12rpx;
+  --spacing-md: 24rpx;
+  --spacing-lg: 32rpx;
+  --spacing-xl: 48rpx;
+  
+  /* 字号 */
+  --font-xs: 24rpx;
+  --font-sm: 26rpx;
+  --font-md: 28rpx;
+  --font-lg: 30rpx;
+  --font-xl: 32rpx;
+  --font-xxl: 36rpx;
+  --font-title: 40rpx;
+}
+
+/* ====== 全局重置 ====== */
+page {
   background-color: #f2f5fa;
-  color: #2d3142;
   font-size: 28rpx;
-  line-height: 1.6;
+  color: #333333;
+  line-height: 1.5;
 }
 
-view, text, button, input {
-  box-sizing: border-box;
+/* ====== 通用容器 ====== */
+.container {
+  padding: 24rpx;
 }
 
-button {
-  background: transparent;
-  border: none;
-  padding: 0;
-  font: inherit;
+.card {
+  background: #ffffff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
 }
 
-/* 
- * 高级样式按需引入：
- * - animations.wxss: 需要动画的页面引入
- * - responsive.wxss: 需要响应式的页面引入
- * - accessibility.wxss: 需要无障碍的页面引入
- * - dark-mode.wxss: 需要深色模式的页面引入
- */
+/* ====== 按钮样式 ====== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88rpx;
+  padding: 0 32rpx;
+  font-size: 30rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: #1f3c88;
+  color: #ffffff;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ====== Flex布局 ====== */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* ====== 文本工具类 ====== */
+.text-primary {
+  color: #333333;
+}
+
+.text-secondary {
+  color: #666666;
+}
+
+.text-tertiary {
+  color: #999999;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: 600;
+}
+
+/* ====== 间距工具类 ====== */
+.mt-sm {
+  margin-top: 12rpx;
+}
+
+.mt-md {
+  margin-top: 24rpx;
+}
+
+.mt-lg {
+  margin-top: 32rpx;
+}
+
+.mb-sm {
+  margin-bottom: 12rpx;
+}
+
+.mb-md {
+  margin-bottom: 24rpx;
+}
+
+.mb-lg {
+  margin-bottom: 32rpx;
+}
+
+/* ====== 表单样式 ====== */
+.form-group {
+  margin-bottom: 24rpx;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333333;
+  margin-bottom: 12rpx;
+  font-weight: 500;
+}
+
+.form-input {
+  min-height: 88rpx;
+  padding: 0 24rpx;
+  font-size: 30rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  background: #ffffff;
+  transition: all 0.3s;
+}
+
+.form-input:focus {
+  border-color: #1f3c88;
+}
+
+.form-textarea {
+  min-height: 180rpx;
+  padding: 12rpx 24rpx;
+  line-height: 1.8;
+}
+
+/* ====== 加载动画 ====== */
+.loading-spinner {
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #1f3c88;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ====== 空状态 ====== */
+.empty-state {
+  padding: 48rpx 24rpx;
+  text-align: center;
+  color: #999999;
+}
+
+/* ====== 工具类 ====== */
+.hidden {
+  display: none;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

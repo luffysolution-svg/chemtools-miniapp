@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "空间群数据库",
+  "usingComponents": {
+    "search-input": "/components/search-input/search-input",
+    "quick-filter": "/components/quick-filter/quick-filter",
+    "data-card": "/components/data-card/data-card"
+  }
+}
+

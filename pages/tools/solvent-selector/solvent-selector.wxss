@@ -1,0 +1,292 @@
+.container {
+  padding: 20rpx;
+}
+
+/* 搜索和筛选区 */
+.search-section {
+  margin-bottom: 20rpx;
+}
+
+.search-box {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.search-input {
+  background: #f5f7fa;
+  padding: 28rpx 24rpx;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  min-height: 80rpx;
+  font-weight: 500;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 16rpx;
+}
+
+.filter-btn {
+  flex: 1;
+  height: 70rpx;
+  line-height: 70rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 35rpx;
+  font-size: 26rpx;
+  border: none;
+}
+
+.filter-btn.reset {
+  background: #f5f7fa;
+  color: #666;
+}
+
+.filter-btn::after {
+  border: none;
+}
+
+/* 溶剂列表 */
+.solvent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.solvent-card {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.solvent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+
+.solvent-names {
+  flex: 1;
+}
+
+.solvent-name-cn {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.solvent-name-en {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.safety-badge {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+.safety-badge.low {
+  background: #26de81;
+}
+
+.safety-badge.medium {
+  background: #ffa502;
+}
+
+.safety-badge.high {
+  background: #ff4757;
+}
+
+.solvent-props {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 12rpx;
+}
+
+.prop-item {
+  flex: 1;
+  background: #f5f7fa;
+  padding: 12rpx;
+  border-radius: 8rpx;
+  text-align: center;
+}
+
+.prop-label {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 4rpx;
+}
+
+.prop-value {
+  display: block;
+  font-size: 26rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.solvent-formula {
+  font-size: 24rpx;
+  color: #666;
+  font-family: monospace;
+}
+
+/* 详情弹窗 */
+.detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.detail-content {
+  width: 90%;
+  max-height: 80%;
+  background: #fff;
+  border-radius: 16rpx;
+  overflow-y: auto;
+}
+
+.detail-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 32rpx;
+  color: #fff;
+  border-radius: 16rpx 16rpx 0 0;
+}
+
+.detail-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.detail-subtitle {
+  display: block;
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.detail-body {
+  padding: 24rpx;
+}
+
+.detail-section {
+  margin-bottom: 32rpx;
+}
+
+.section-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.prop-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.prop-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+}
+
+.prop-name {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.prop-val {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.app-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.app-tag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 10rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+}
+
+.safety-level {
+  display: block;
+  font-size: 26rpx;
+  color: #ff4757;
+  font-weight: bold;
+  margin-bottom: 12rpx;
+}
+
+.notes {
+  display: block;
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.8;
+  background: #fff3cd;
+  padding: 16rpx;
+  border-radius: 8rpx;
+  border-left: 4rpx solid #ffc107;
+}
+
+.detail-buttons {
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx 32rpx;
+}
+
+.detail-button {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  border: none;
+}
+
+.detail-button.export {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.detail-button.close {
+  background: #f5f7fa;
+  color: #666;
+}
+
+.detail-button::after {
+  border: none;
+}
+

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "分享统计",
+  "navigationBarBackgroundColor": "#1f3c88",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f5f7fa",
+  "enablePullDownRefresh": true,
+  "usingComponents": {}
+}
+

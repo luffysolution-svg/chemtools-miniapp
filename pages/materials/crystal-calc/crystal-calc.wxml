@@ -1,0 +1,293 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view 
+      wx:for="{{tools}}" 
+      wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}"
+      bindtap="switchTool"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 理论密度计算 -->
+  <view wx:if="{{currentTool === 'density'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">⚖️ 理论密度计算</text>
+      <text class="intro-desc">从晶体结构计算材料理论密度</text>
+      <text class="intro-formula">ρ = (Z × M) / (N_A × V)</text>
+    </view>
+
+    <view class="input-section">
+      <calculator-input
+        label="化学式"
+        value="{{formula}}"
+        type="text"
+        placeholder="例如：TiO2"
+        icon="🧬"
+        bind:input="handleFormulaInput"
+      />
+
+      <calculator-input
+        label="Z值"
+        value="{{zValue}}"
+        type="number"
+        placeholder="例如：4"
+        icon="🔢"
+        hint="每个晶胞中的分子数"
+        bind:input="handleZValueInput"
+      />
+
+      <view class="picker-field">
+        <text class="picker-label">晶系</text>
+        <picker mode="selector" range="{{crystalSystems}}" value="{{crystalIndex}}" bindchange="handleCrystalSystemChange">
+          <view class="picker-value">{{crystalSystems[crystalIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="晶格参数 a"
+        value="{{latticeA}}"
+        type="digit"
+        placeholder="例如：4.593"
+        unit="Å"
+        icon="📏"
+        enableHistory="{{true}}"
+        historyTool="crystal"
+        historyField="latticeParameter"
+        presets="{{latticePresets}}"
+        touchArea="large"
+        bind:input="handleLatticeAInput"
+        bindchange="handleLatticeAChange"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex >= 2}}"
+        label="晶格参数 b"
+        value="{{latticeB}}"
+        type="digit"
+        placeholder="同a"
+        unit="Å"
+        icon="📏"
+        hint="正交/单斜/三斜晶系需要"
+        bind:input="handleLatticeBInput"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex >= 1}}"
+        label="晶格参数 c"
+        value="{{latticeC}}"
+        type="digit"
+        placeholder="同a"
+        unit="Å"
+        icon="📏"
+        hint="四方及以上晶系需要"
+        bind:input="handleLatticeCInput"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex === 5}}"
+        label="角度 α"
+        value="{{alpha}}"
+        type="digit"
+        placeholder="90"
+        unit="°"
+        icon="∠"
+        hint="三斜晶系需要"
+        bind:input="handleAlphaInput"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex >= 4}}"
+        label="角度 β"
+        value="{{beta}}"
+        type="digit"
+        placeholder="90"
+        unit="°"
+        icon="∠"
+        hint="单斜/三斜晶系需要"
+        bind:input="handleBetaInput"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex === 5}}"
+        label="角度 γ"
+        value="{{gamma}}"
+        type="digit"
+        placeholder="90"
+        unit="°"
+        icon="∠"
+        hint="三斜晶系需要"
+        bind:input="handleGammaInput"
+      />
+
+      <view class="divider-line"></view>
+
+      <calculator-input
+        label="实测密度（可选）"
+        value="{{measuredDensity}}"
+        type="digit"
+        placeholder="例如：4.23"
+        unit="g/cm³"
+        icon="⚗️"
+        hint="输入后将计算致密度"
+        bind:input="handleMeasuredDensityInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateDensity">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{densityResultText}}" title="计算结果">
+      <view class="result-text">{{densityResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 晶胞体积计算 -->
+  <view wx:if="{{currentTool === 'volume'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🔷 晶胞体积计算</text>
+      <text class="intro-desc">根据晶格参数计算晶胞体积</text>
+    </view>
+
+    <view class="input-section">
+      <view class="picker-field">
+        <text class="picker-label">晶系</text>
+        <picker mode="selector" range="{{crystalSystems}}" value="{{crystalIndex}}" bindchange="handleCrystalSystemChange">
+          <view class="picker-value">{{crystalSystems[crystalIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="晶格参数 a"
+        value="{{volumeLatticeA}}"
+        type="digit"
+        placeholder="例如：5.0"
+        unit="Å"
+        icon="📏"
+        bind:input="handleVolumeLatticeAInput"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex >= 2}}"
+        label="晶格参数 b"
+        value="{{volumeLatticeB}}"
+        type="digit"
+        placeholder="同a"
+        unit="Å"
+        icon="📏"
+        bind:input="handleVolumeLatticeBInput"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex >= 1}}"
+        label="晶格参数 c"
+        value="{{volumeLatticeC}}"
+        type="digit"
+        placeholder="同a"
+        unit="Å"
+        icon="📏"
+        bind:input="handleVolumeLatticeCInput"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex >= 4}}"
+        label="角度 β"
+        value="{{volumeBeta}}"
+        type="digit"
+        placeholder="90"
+        unit="°"
+        icon="∠"
+        hint="单斜晶系需要"
+        bind:input="handleVolumeBetaInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateVolume">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{volumeResultText}}" title="计算结果">
+      <view class="result-text">{{volumeResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- d间距计算 -->
+  <view wx:if="{{currentTool === 'd-spacing'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">📏 晶面间距计算</text>
+      <text class="intro-desc">计算指定晶面的d间距</text>
+    </view>
+
+    <view class="input-section">
+      <view class="picker-field">
+        <text class="picker-label">晶系</text>
+        <picker mode="selector" range="{{crystalSystems}}" value="{{crystalIndex}}" bindchange="handleCrystalSystemChange">
+          <view class="picker-value">{{crystalSystems[crystalIndex]}}</view>
+        </picker>
+      </view>
+
+      <view class="miller-inputs">
+        <text class="field-label">Miller指数 (hkl)</text>
+        <view class="miller-row">
+          <input class="miller-input" type="number" value="{{millerH}}" placeholder="h" bindinput="handleMillerHInput" />
+          <input class="miller-input" type="number" value="{{millerK}}" placeholder="k" bindinput="handleMillerKInput" />
+          <input class="miller-input" type="number" value="{{millerL}}" placeholder="l" bindinput="handleMillerLInput" />
+        </view>
+      </view>
+
+      <calculator-input
+        label="晶格参数 a"
+        value="{{dLatticeA}}"
+        type="digit"
+        placeholder="例如：5.0"
+        unit="Å"
+        icon="📏"
+        bind:input="handleDLatticeAInput"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex >= 2}}"
+        label="晶格参数 b"
+        value="{{dLatticeB}}"
+        type="digit"
+        placeholder="同a"
+        unit="Å"
+        icon="📏"
+        bind:input="handleDLatticeBInput"
+      />
+
+      <calculator-input
+        wx:if="{{crystalIndex >= 1}}"
+        label="晶格参数 c"
+        value="{{dLatticeC}}"
+        type="digit"
+        placeholder="同a"
+        unit="Å"
+        icon="📏"
+        bind:input="handleDLatticeCInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateD">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{dResultText}}" title="计算结果">
+      <view class="result-text">{{dResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 导出按钮 -->
+  <view wx:if="{{densityResultText || volumeResultText || dResultText}}" class="export-button" bindtap="exportResult">
+    <text>📤 导出结果</text>
+  </view>
+</view>
+

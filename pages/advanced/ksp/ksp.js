@@ -3,9 +3,12 @@
  */
 
 const { historyService } = require('../../../services/history');
+const { generateShareCard } = require('../utils/shareHelper');
+const { getPresets } = require('../../../utils/input-presets');
 
 Page({
   data: {
+    concentrationPresets: [],
     cationConc: '',
     anionConc: '',
     kspValue: '',
@@ -15,16 +18,34 @@ Page({
     resultText: '',
     hint: ''
   },
+  
+  onLoad() {
+    this.setData({
+      concentrationPresets: getPresets('ksp', 'concentration')
+    });
+  },
 
   handleCationInput(e) {
+    this.setData({ cationConc: e.detail.value });
+  },
+  
+  handleCationChange(e) {
     this.setData({ cationConc: e.detail.value });
   },
 
   handleAnionInput(e) {
     this.setData({ anionConc: e.detail.value });
   },
+  
+  handleAnionChange(e) {
+    this.setData({ anionConc: e.detail.value });
+  },
 
   handleKspInput(e) {
+    this.setData({ kspValue: e.detail.value });
+  },
+  
+  handleKspChange(e) {
     this.setData({ kspValue: e.detail.value });
   },
 
@@ -97,6 +118,43 @@ Page({
       resultText: '',
       hint: ''
     });
+  },
+
+  /**
+   * 生成分享卡片 (v6.0.0新增)
+   */
+  async generateCard() {
+    const { cationConc, anionConc, kspValue, cationCharge, anionCharge, result, hint } = this.data;
+    
+    if (!result) {
+      wx.showToast({
+        title: '请先完成计算',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const cC = Number(cationConc);
+    const aC = Number(anionConc);
+    const ksp = this.parseScientific(kspValue);
+    const n = Number(cationCharge);
+    const m = Number(anionCharge);
+    const Q = Math.pow(cC, n) * Math.pow(aC, m);
+
+    const inputs = {
+      '阳离子浓度': `${cationConc} mol·L⁻¹`,
+      '阴离子浓度': `${anionConc} mol·L⁻¹`,
+      '溶度积Ksp': ksp.toExponential(2),
+      '电荷': `M^${n}+ X^${m}-`
+    };
+
+    const results = {
+      '沉淀判断': result,
+      '离子积Q': Q.toExponential(3),
+      'Q/Ksp比值': (Q / ksp).toFixed(2)
+    };
+
+    await generateShareCard('溶度积计算', 'ksp', inputs, results, hint);
   },
 
   onShareAppMessage() {

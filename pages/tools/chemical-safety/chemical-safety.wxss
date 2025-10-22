@@ -1,0 +1,643 @@
+/* 化学品安全速查 - v6.4.0 全新重构 */
+
+/* ========== 容器 ========== */
+.container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* ========== 页面标题 ========== */
+.page-header {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  padding: 40rpx 32rpx;
+  text-align: center;
+}
+
+.page-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 12rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ========== 搜索区域 ========== */
+.search-section {
+  padding: 24rpx 32rpx;
+  background: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: #f5f7fa;
+  border-radius: 48rpx;
+  padding: 24rpx 32rpx;
+  gap: 16rpx;
+}
+
+.search-icon {
+  font-size: 36rpx;
+  color: #999;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
+  background: transparent;
+  border: none;
+}
+
+.search-input::placeholder {
+  color: #999;
+  font-size: 28rpx;
+}
+
+.clear-icon {
+  font-size: 32rpx;
+  color: #999;
+  padding: 8rpx;
+}
+
+/* ========== 筛选区域 ========== */
+.filter-section {
+  background: #fff;
+  padding: 0 20rpx 24rpx;
+}
+
+.filter-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.filter-tabs {
+  display: inline-flex;
+  gap: 16rpx;
+}
+
+.filter-tab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  padding: 16rpx 28rpx;
+  background: #f5f7fa;
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  color: #666;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.filter-tab.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: bold;
+  transform: scale(1.05);
+}
+
+.filter-tab.active.danger {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+.filter-tab.active.warning {
+  background: linear-gradient(135deg, #ffa502 0%, #ff6348 100%);
+}
+
+.filter-tab.active.safe {
+  background: linear-gradient(135deg, #26de81 0%, #20bf6b 100%);
+}
+
+.filter-count {
+  display: block;
+  font-size: 20rpx;
+  opacity: 0.8;
+}
+
+/* ========== 结果头部 ========== */
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  background: #fff;
+  margin-top: 2rpx;
+}
+
+.result-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.sort-options {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.sort-btn {
+  font-size: 26rpx;
+  color: #999;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+  transition: all 0.3s;
+}
+
+.sort-btn.active {
+  background: #667eea;
+  color: #fff;
+}
+
+.sort-divider {
+  color: #ddd;
+}
+
+/* ========== 化学品列表 ========== */
+.chemical-list {
+  padding: 16rpx 32rpx;
+}
+
+.chemical-card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  transition: all 0.3s;
+}
+
+.chemical-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+
+.chemical-names {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.chemical-name {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.chemical-formula {
+  display: inline-block;
+  font-size: 26rpx;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 6rpx 16rpx;
+  border-radius: 12rpx;
+  align-self: flex-start;
+}
+
+.hazard-badge {
+  padding: 10rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.hazard-badge.high {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
+}
+
+.hazard-badge.medium {
+  background: linear-gradient(135deg, #ffa502 0%, #ff6348 100%);
+  box-shadow: 0 4rpx 12rpx rgba(255, 165, 2, 0.3);
+}
+
+.hazard-badge.low {
+  background: linear-gradient(135deg, #26de81 0%, #20bf6b 100%);
+  box-shadow: 0 4rpx 12rpx rgba(38, 222, 129, 0.3);
+}
+
+.card-content {
+  margin-bottom: 16rpx;
+}
+
+.chemical-en {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+  font-style: italic;
+}
+
+.chemical-meta {
+  display: flex;
+  gap: 24rpx;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.card-footer {
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+  text-align: right;
+}
+
+.view-detail {
+  font-size: 26rpx;
+  color: #667eea;
+  font-weight: bold;
+}
+
+/* ========== 空状态 ========== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.3;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* ========== 详情弹窗 ========== */
+.detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.detail-container {
+  width: 92%;
+  max-height: 85%;
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100rpx);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ========== 详情头部 ========== */
+.detail-header {
+  position: relative;
+  padding: 48rpx 32rpx 32rpx;
+  color: #fff;
+}
+
+.detail-header.high {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+.detail-header.medium {
+  background: linear-gradient(135deg, #ffa502 0%, #ff6348 100%);
+}
+
+.detail-header.low {
+  background: linear-gradient(135deg, #26de81 0%, #20bf6b 100%);
+}
+
+.detail-close {
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+}
+
+.detail-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  margin-bottom: 12rpx;
+}
+
+.detail-subtitle {
+  display: block;
+  font-size: 26rpx;
+  opacity: 0.9;
+  margin-bottom: 24rpx;
+  font-style: italic;
+}
+
+.detail-basic {
+  display: flex;
+  gap: 32rpx;
+}
+
+.basic-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.basic-label {
+  font-size: 20rpx;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+.basic-value {
+  font-size: 26rpx;
+  font-weight: bold;
+}
+
+/* ========== 详情内容 ========== */
+.detail-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.detail-section {
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-icon {
+  font-size: 32rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 危险性分类 */
+.danger-section {
+  background: linear-gradient(to bottom, rgba(255, 107, 107, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.hazard-codes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.hazard-code {
+  background: #ff6b6b;
+  color: #fff;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  font-weight: bold;
+}
+
+.hazard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.hazard-item {
+  display: flex;
+  gap: 12rpx;
+  line-height: 1.6;
+}
+
+.hazard-dot {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.hazard-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 防护措施 */
+.precaution-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.precaution-item {
+  display: flex;
+  gap: 16rpx;
+  align-items: flex-start;
+}
+
+.precaution-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40rpx;
+  height: 40rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 20rpx;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.precaution-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+  padding-top: 6rpx;
+}
+
+/* 不相容物质 */
+.incompatible-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.incompatible-tag {
+  background: #f5f7fa;
+  color: #666;
+  padding: 12rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  border: 2rpx solid #e0e0e0;
+}
+
+/* 储存条件 */
+.storage-text {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.8;
+  background: #f5f7fa;
+  padding: 20rpx;
+  border-radius: 12rpx;
+}
+
+/* 急救措施 */
+.emergency-section {
+  background: linear-gradient(to bottom, rgba(102, 126, 234, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.first-aid-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.aid-card {
+  background: #fff;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.aid-icon {
+  font-size: 32rpx;
+}
+
+.aid-label {
+  font-size: 24rpx;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.aid-content {
+  font-size: 22rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 特别提示 */
+.note-section {
+  background: linear-gradient(to bottom, rgba(255, 165, 2, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.note-box {
+  background: #fff3e0;
+  border-left: 4rpx solid #ffa502;
+  padding: 20rpx;
+  border-radius: 8rpx;
+}
+
+.note-text {
+  font-size: 26rpx;
+  color: #e65100;
+  line-height: 1.8;
+  font-weight: 500;
+}
+
+/* ========== 底部操作 ========== */
+.detail-actions {
+  display: flex;
+  gap: 16rpx;
+  padding: 24rpx 32rpx;
+  background: #fff;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  border: none;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.export-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.share-btn {
+  background: #f5f7fa;
+  color: #666;
+  border: 2rpx solid #e0e0e0;
+}
+
+.btn-icon {
+  font-size: 32rpx;
+}

@@ -3,6 +3,7 @@
  */
 
 const { historyService } = require('../../../services/history');
+const { generateShareCard } = require('../utils/shareHelper');
 
 Page({
   data: {
@@ -183,6 +184,49 @@ Page({
       hint: '',
       historyInput: ''
     });
+  },
+
+  /**
+   * 生成分享卡片 (v6.0.0新增)
+   */
+  async generateCard() {
+    const { modeIndex, modes, absorbance, epsilon, concentration, pathlength, result, hint } = this.data;
+    
+    if (!result) {
+      wx.showToast({
+        title: '请先完成计算',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const mode = modes[modeIndex];
+    const inputs = {
+      '计算模式': mode
+    };
+
+    // 根据不同模式添加参数
+    if (modeIndex === 0) {
+      inputs['摩尔吸光系数ε'] = `${epsilon} L·mol⁻¹·cm⁻¹`;
+      inputs['浓度c'] = `${concentration} mol·L⁻¹`;
+      inputs['光程l'] = `${pathlength} cm`;
+    } else if (modeIndex === 1) {
+      inputs['吸光度A'] = absorbance;
+      inputs['摩尔吸光系数ε'] = `${epsilon} L·mol⁻¹·cm⁻¹`;
+      inputs['光程l'] = `${pathlength} cm`;
+    } else if (modeIndex === 2) {
+      inputs['吸光度A'] = absorbance;
+      inputs['浓度c'] = `${concentration} mol·L⁻¹`;
+      inputs['光程l'] = `${pathlength} cm`;
+    }
+
+    const results = {
+      '计算结果': result
+    };
+
+    const notes = hint || 'Beer-Lambert定律: A = ε·c·l';
+
+    await generateShareCard('UV-Vis计算', 'uvvis', inputs, results, notes);
   },
 
   /**

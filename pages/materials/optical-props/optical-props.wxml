@@ -1,0 +1,213 @@
+<view class="container">
+  <!-- 工具选择 Tab -->
+  <view class="tool-tabs">
+    <view 
+      wx:for="{{tools}}" 
+      wx:key="id"
+      class="tab-item {{currentTool === item.id ? 'active' : ''}}"
+      data-tool="{{item.id}}"
+      bindtap="switchTool"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 颜色空间转换 -->
+  <view wx:if="{{currentTool === 'color-convert'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">🎨 颜色空间转换</text>
+      <text class="intro-desc">RGB与HSV互相转换</text>
+    </view>
+
+    <view class="input-section">
+      <view class="picker-field">
+        <text class="picker-label">转换模式</text>
+        <picker mode="selector" range="{{conversionModes}}" value="{{conversionIndex}}" bindchange="handleConversionModeChange">
+          <view class="picker-value">{{conversionModes[conversionIndex]}}</view>
+        </picker>
+      </view>
+
+      <view wx:if="{{conversionIndex === 0}}">
+        <text class="section-title">RGB输入 (0-255)</text>
+        <view class="color-inputs">
+          <calculator-input
+            label="R (红)"
+            value="{{rgb_r}}"
+            type="number"
+            placeholder="0-255"
+            icon="🔴"
+            enableHistory="{{true}}"
+            historyTool="optical"
+            historyField="rgb"
+            touchArea="large"
+            bind:input="handleRgbRInput"
+          />
+          <calculator-input
+            label="G (绿)"
+            value="{{rgb_g}}"
+            type="number"
+            placeholder="0-255"
+            icon="🟢"
+            bind:input="handleRgbGInput"
+          />
+          <calculator-input
+            label="B (蓝)"
+            value="{{rgb_b}}"
+            type="number"
+            placeholder="0-255"
+            icon="🔵"
+            bind:input="handleRgbBInput"
+          />
+        </view>
+      </view>
+
+      <view wx:else>
+        <text class="section-title">HSV输入</text>
+        <calculator-input
+          label="H (色相)"
+          value="{{hsv_h}}"
+          type="digit"
+          placeholder="0-360"
+          unit="°"
+          icon="🌈"
+          bind:input="handleHsvHInput"
+        />
+        <calculator-input
+          label="S (饱和度)"
+          value="{{hsv_s}}"
+          type="digit"
+          placeholder="0-100"
+          unit="%"
+          icon="📊"
+          bind:input="handleHsvSInput"
+        />
+        <calculator-input
+          label="V (明度)"
+          value="{{hsv_v}}"
+          type="digit"
+          placeholder="0-100"
+          unit="%"
+          icon="💡"
+          bind:input="handleHsvVInput"
+        />
+      </view>
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="convertColor">转换</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{colorResultText}}" title="转换结果">
+      <view class="result-text">{{colorResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 荧光量子产率 -->
+  <view wx:if="{{currentTool === 'quantum-yield'}}" class="tool-content">
+    <view class="tool-intro">
+      <text class="intro-title">💡 荧光量子产率</text>
+      <text class="intro-desc">相对法计算</text>
+      <text class="intro-formula">Φs = Φr × (As/Ar) × (Is/Ir) × (ηs/ηr)²</text>
+    </view>
+
+    <view class="input-section">
+      <text class="section-title">样品数据</text>
+      
+      <calculator-input
+        label="吸光度"
+        value="{{sampleAbs}}"
+        type="digit"
+        placeholder="例如：0.05"
+        icon="📊"
+        hint="建议<0.1"
+        bind:input="handleSampleAbsInput"
+      />
+
+      <calculator-input
+        label="荧光强度"
+        value="{{sampleIntensity}}"
+        type="digit"
+        placeholder="例如：5000"
+        icon="💡"
+        hint="积分强度"
+        bind:input="handleSampleIntensityInput"
+      />
+
+      <calculator-input
+        label="溶剂折射率"
+        value="{{sampleRI}}"
+        type="digit"
+        placeholder="1.33"
+        icon="🔍"
+        hint="水：1.33，乙醇：1.36"
+        bind:input="handleSampleRIInput"
+      />
+
+      <view class="divider"></view>
+
+      <text class="section-title">参照物数据</text>
+
+      <view class="picker-field">
+        <text class="picker-label">标准参照物</text>
+        <picker mode="selector" range="{{fluorStandards}}" value="{{standardIndex}}" bindchange="handleStandardChange">
+          <view class="picker-value">{{fluorStandards[standardIndex]}}</view>
+        </picker>
+      </view>
+
+      <calculator-input
+        label="吸光度"
+        value="{{refAbs}}"
+        type="digit"
+        placeholder="例如：0.05"
+        icon="📊"
+        bind:input="handleRefAbsInput"
+      />
+
+      <calculator-input
+        label="荧光强度"
+        value="{{refIntensity}}"
+        type="digit"
+        placeholder="例如：6000"
+        icon="💡"
+        bind:input="handleRefIntensityInput"
+      />
+
+      <calculator-input
+        label="折射率"
+        value="{{refRI}}"
+        type="digit"
+        placeholder="1.33"
+        icon="🔍"
+        hint="自动填充"
+        bind:input="handleRefRIInput"
+      />
+
+      <calculator-input
+        label="量子产率Φr"
+        value="{{refQY}}"
+        type="digit"
+        placeholder="0.546"
+        icon="⭐"
+        hint="自动填充"
+        bind:input="handleRefQYInput"
+      />
+    </view>
+
+    <view class="button-group">
+      <button class="calc-button primary" bindtap="calculateQY">计算</button>
+      <button class="calc-button" bindtap="clearResult">清空</button>
+    </view>
+
+    <result-card wx:if="{{qyResultText}}" title="计算结果">
+      <view class="result-text">{{qyResultText}}</view>
+    </result-card>
+  </view>
+
+  <!-- 导出按钮 -->
+  <view wx:if="{{colorResultText || qyResultText}}" class="export-button" bindtap="exportResult">
+    <text>📤 导出结果</text>
+  </view>
+</view>
+

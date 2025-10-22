@@ -1,0 +1,140 @@
+<view class="container">
+  <!-- 网络状态提示 -->
+  <view class="network-status {{isOnline ? 'online' : 'offline'}}">
+    <text class="status-icon">{{isOnline ? '📡' : '📵'}}</text>
+    <text class="status-text">{{isOnline ? '网络已连接' : '离线模式'}}</text>
+  </view>
+
+  <!-- 离线模式开关 -->
+  <view class="setting-card">
+    <view class="setting-item">
+      <view class="item-left">
+        <text class="item-icon">🔌</text>
+        <view class="item-info">
+          <text class="item-title">启用离线模式</text>
+          <text class="item-desc">无网络时使用已下载的工具</text>
+        </view>
+      </view>
+      <switch 
+        checked="{{offlineEnabled}}" 
+        bindchange="toggleOfflineMode"
+        color="#1f3c88"
+      />
+    </view>
+  </view>
+
+  <!-- 存储统计 -->
+  <view class="storage-card">
+    <view class="card-title">
+      <text class="title-icon">💾</text>
+      <text class="title-text">存储空间</text>
+    </view>
+    
+    <view class="storage-info">
+      <view class="info-item">
+        <text class="info-value">{{stats.installedCount}}/{{stats.totalTools}}</text>
+        <text class="info-label">已安装工具</text>
+      </view>
+      <view class="info-item">
+        <text class="info-value">{{stats.percentage}}%</text>
+        <text class="info-label">空间使用</text>
+      </view>
+    </view>
+
+    <view class="storage-bar">
+      <view class="bar-fill" style="width: {{stats.percentage}}%"></view>
+    </view>
+    
+    <view class="storage-text">
+      已用 {{stats.storageUsed}}KB / 共 {{stats.maxStorage}}KB
+    </view>
+  </view>
+
+  <!-- 快速操作 -->
+  <view class="quick-actions">
+    <button class="action-btn primary" bindtap="installEssential" disabled="{{installing}}">
+      <text class="btn-icon">⚡</text>
+      <text class="btn-text">一键安装必需工具</text>
+    </button>
+    
+    <button class="action-btn info" bindtap="checkUpdate">
+      <text class="btn-icon">🔄</text>
+      <text class="btn-text">检查更新</text>
+    </button>
+    
+    <button class="action-btn danger" bindtap="clearAllData">
+      <text class="btn-icon">🗑️</text>
+      <text class="btn-text">清空所有数据</text>
+    </button>
+  </view>
+
+  <!-- 安装进度 -->
+  <view class="install-progress" wx:if="{{installing}}">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{installProgress}}%"></view>
+    </view>
+    <text class="progress-text">安装中... {{installProgress}}%</text>
+  </view>
+
+  <!-- 工具列表 -->
+  <view class="tools-section" wx:for="{{categories}}" wx:key="id">
+    <view class="section-header">
+      <text class="section-icon">{{item.icon}}</text>
+      <text class="section-title">{{item.name}}</text>
+    </view>
+
+    <view class="tool-list">
+      <view 
+        class="tool-item" 
+        wx:for="{{tools}}" 
+        wx:for-item="tool"
+        wx:key="id"
+        wx:if="{{tool.category === item.id}}"
+      >
+        <view class="tool-left">
+          <text class="tool-name">{{tool.name}}</text>
+          <text class="tool-size">{{tool.size}}KB</text>
+          <text class="tool-badge" wx:if="{{tool.essential}}">必需</text>
+        </view>
+
+        <view class="tool-right">
+          <view class="tool-status" wx:if="{{tool.installed}}">
+            <text class="status-icon">✅</text>
+            <text class="status-text">已安装</text>
+          </view>
+
+          <button 
+            wx:if="{{!tool.installed}}"
+            class="tool-btn install-btn" 
+            data-id="{{tool.id}}"
+            bindtap="installTool"
+            size="mini"
+          >
+            下载
+          </button>
+
+          <button 
+            wx:if="{{tool.installed}}"
+            class="tool-btn uninstall-btn" 
+            data-id="{{tool.id}}"
+            data-name="{{tool.name}}"
+            bindtap="uninstallTool"
+            size="mini"
+          >
+            卸载
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 说明文字 -->
+  <view class="tips-card">
+    <view class="tip-title">💡 使用说明</view>
+    <view class="tip-item">• 下载工具后可在无网络时使用</view>
+    <view class="tip-item">• 必需工具包含最常用的计算功能</view>
+    <view class="tip-item">• 定期检查更新以获取最新数据</view>
+    <view class="tip-item">• 离线数据总容量限制为10MB</view>
+  </view>
+</view>
+

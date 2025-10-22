@@ -1,0 +1,226 @@
+<view class="container">
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-text">加载中...</view>
+  </view>
+
+  <!-- 无数据提示 -->
+  <view class="empty-container" wx:if="{{!loading && !hasData}}">
+    <view class="empty-icon">📊</view>
+    <view class="empty-text">暂无统计数据</view>
+    <view class="empty-desc">开始分享计算结果后将显示统计信息</view>
+  </view>
+
+  <!-- 有数据时显示 -->
+  <view wx:if="{{!loading && hasData}}">
+    <!-- 统计概览 -->
+    <view class="overview-card">
+      <view class="card-title">
+        <text class="title-icon">📈</text>
+        <text class="title-text">统计概览</text>
+      </view>
+
+      <view class="overview-grid">
+        <view class="grid-item">
+          <view class="item-value">{{overview.totalShares}}</view>
+          <view class="item-label">总分享次数</view>
+        </view>
+        <view class="grid-item">
+          <view class="item-value">{{overview.recentShares7Days}}</view>
+          <view class="item-label">最近7天</view>
+        </view>
+        <view class="grid-item">
+          <view class="item-value">{{overview.recentShares30Days}}</view>
+          <view class="item-label">最近30天</view>
+        </view>
+        <view class="grid-item">
+          <view class="item-value">{{overview.avgSharesPerDay}}</view>
+          <view class="item-label">平均每日</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 周月对比 -->
+    <view class="trend-cards">
+      <view class="trend-card" wx:if="{{weeklyStats}}">
+        <view class="trend-label">本周分享</view>
+        <view class="trend-value">{{weeklyStats.thisWeek}}</view>
+        <view class="trend-change {{weeklyStats.trend}}">
+          <text class="change-icon">{{weeklyStats.trend === 'up' ? '📈' : weeklyStats.trend === 'down' ? '📉' : '➡️'}}</text>
+          <text class="change-text">{{weeklyStats.change}}%</text>
+        </view>
+        <view class="trend-compare">上周: {{weeklyStats.lastWeek}}</view>
+      </view>
+
+      <view class="trend-card" wx:if="{{monthlyStats}}">
+        <view class="trend-label">本月分享</view>
+        <view class="trend-value">{{monthlyStats.thisMonth}}</view>
+        <view class="trend-change {{monthlyStats.trend}}">
+          <text class="change-icon">{{monthlyStats.trend === 'up' ? '📈' : monthlyStats.trend === 'down' ? '📉' : '➡️'}}</text>
+          <text class="change-text">{{monthlyStats.change}}%</text>
+        </view>
+        <view class="trend-compare">上月: {{monthlyStats.lastMonth}}</view>
+      </view>
+    </view>
+
+    <!-- 热门工具 TOP 10 -->
+    <view class="section-card">
+      <view class="section-header" bindtap="toggleSection" data-section="TopTools">
+        <view class="header-left">
+          <text class="header-icon">🔥</text>
+          <text class="header-title">热门工具 TOP 10</text>
+        </view>
+        <text class="toggle-icon">{{showTopTools ? '▼' : '▶'}}</text>
+      </view>
+
+      <view class="section-content" wx:if="{{showTopTools}}">
+        <view class="rank-list">
+          <view class="rank-item" wx:for="{{topTools}}" wx:key="tool">
+            <view class="rank-left">
+              <text class="rank-number">{{index + 1}}</text>
+              <text class="rank-name">{{item.toolName}}</text>
+            </view>
+            <view class="rank-right">
+              <text class="rank-count">{{item.count}}次</text>
+              <view class="rank-bar">
+                <view class="bar-fill" style="width: {{item.percentage}}%"></view>
+              </view>
+              <text class="rank-percent">{{item.percentage}}%</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分享渠道分布 -->
+    <view class="section-card">
+      <view class="section-header" bindtap="toggleSection" data-section="Channels">
+        <view class="header-left">
+          <text class="header-icon">📤</text>
+          <text class="header-title">分享渠道分布</text>
+        </view>
+        <text class="toggle-icon">{{showChannels ? '▼' : '▶'}}</text>
+      </view>
+
+      <view class="section-content" wx:if="{{showChannels}}">
+        <view class="channel-list">
+          <view class="channel-item" wx:for="{{channelDistribution}}" wx:key="channel">
+            <view class="channel-info">
+              <text class="channel-name">{{item.channelName}}</text>
+              <text class="channel-count">{{item.count}}次</text>
+            </view>
+            <view class="channel-bar">
+              <view class="bar-fill" style="width: {{item.percentage}}%"></view>
+            </view>
+            <text class="channel-percent">{{item.percentage}}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 使用时段分布 -->
+    <view class="section-card">
+      <view class="section-header" bindtap="toggleSection" data-section="Hourly">
+        <view class="header-left">
+          <text class="header-icon">🕐</text>
+          <text class="header-title">使用时段分布</text>
+        </view>
+        <text class="toggle-icon">{{showHourly ? '▼' : '▶'}}</text>
+      </view>
+
+      <view class="section-content" wx:if="{{showHourly}}">
+        <!-- 高峰时段 -->
+        <view class="peak-hours">
+          <text class="peak-title">📍 高峰时段 TOP 5</text>
+          <view class="peak-list">
+            <view class="peak-item" wx:for="{{peakHours}}" wx:key="hour">
+              <text class="peak-hour">{{item.hourLabel}}</text>
+              <text class="peak-period">({{item.period}})</text>
+              <text class="peak-count">{{item.count}}次</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 24小时分布图 -->
+        <view class="hourly-chart">
+          <view class="chart-item" wx:for="{{hourlyDistribution}}" wx:key="hour">
+            <view class="chart-bar">
+              <view class="bar-fill" style="height: {{item.percentage > 0 ? item.percentage : 2}}%">
+                <text class="bar-value" wx:if="{{item.count > 0}}">{{item.count}}</text>
+              </view>
+            </view>
+            <text class="chart-label">{{item.hour}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 每日趋势（最近7天） -->
+    <view class="section-card">
+      <view class="section-header" bindtap="toggleSection" data-section="Daily">
+        <view class="header-left">
+          <text class="header-icon">📅</text>
+          <text class="header-title">每日趋势（最近7天）</text>
+        </view>
+        <text class="toggle-icon">{{showDaily ? '▼' : '▶'}}</text>
+      </view>
+
+      <view class="section-content" wx:if="{{showDaily}}">
+        <view class="daily-chart">
+          <view class="chart-item" wx:for="{{dailyTrend}}" wx:key="date">
+            <view class="chart-bar">
+              <view class="bar-fill" style="height: {{item.count * 10 > 100 ? 100 : item.count * 10}}%">
+                <text class="bar-value" wx:if="{{item.count > 0}}">{{item.count}}</text>
+              </view>
+            </view>
+            <text class="chart-label">{{item.dateLabel}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 用户偏好分析 -->
+    <view class="preference-card" wx:if="{{userPreferences}}">
+      <view class="card-title">
+        <text class="title-icon">💡</text>
+        <text class="title-text">偏好分析</text>
+      </view>
+
+      <view class="preference-content">
+        <view class="pref-item" wx:if="{{userPreferences.favoriteTools.length > 0}}">
+          <text class="pref-label">最常用工具：</text>
+          <text class="pref-value">{{userPreferences.favoriteTools[0].toolName}}</text>
+        </view>
+
+        <view class="pref-item" wx:if="{{userPreferences.preferredChannel}}">
+          <text class="pref-label">偏好渠道：</text>
+          <text class="pref-value">{{userPreferences.preferredChannel.channelName}}</text>
+        </view>
+
+        <view class="pref-item" wx:if="{{userPreferences.activeHours.length > 0}}">
+          <text class="pref-label">活跃时段：</text>
+          <text class="pref-value">{{userPreferences.activeHours[0].hourLabel}} ({{userPreferences.activeHours[0].period}})</text>
+        </view>
+
+        <view class="pref-item" wx:if="{{userPreferences.usagePattern}}">
+          <text class="pref-label">使用模式：</text>
+          <text class="pref-value">{{userPreferences.usagePattern.pattern === 'morning' ? '早起型' : userPreferences.usagePattern.pattern === 'evening' ? '夜猫型' : '均衡型'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button class="action-btn primary" bindtap="exportReport">
+        <text class="btn-icon">📤</text>
+        <text class="btn-text">导出报告</text>
+      </button>
+
+      <button class="action-btn danger" bindtap="clearStatistics">
+        <text class="btn-icon">🗑️</text>
+        <text class="btn-text">清空统计</text>
+      </button>
+    </view>
+  </view>
+</view>
+

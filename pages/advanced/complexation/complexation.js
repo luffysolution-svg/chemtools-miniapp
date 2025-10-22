@@ -3,9 +3,12 @@
  */
 
 const { historyService } = require('../../../services/history');
+const { generateShareCard } = require('../utils/shareHelper');
+const { getPresets } = require('../../../utils/input-presets');
 
 Page({
   data: {
+    coordinationNumberPresets: [],
     logBeta: '',
     ligandConc: '',
     metalConc: '',
@@ -13,6 +16,12 @@ Page({
     result: '',
     resultText: '',
     hint: ''
+  },
+  
+  onLoad() {
+    this.setData({
+      coordinationNumberPresets: getPresets('complexation', 'coordinationNumber')
+    });
   },
 
   handleLogBetaInput(e) {
@@ -87,6 +96,35 @@ Page({
       resultText: '',
       hint: ''
     });
+  },
+
+  /**
+   * 生成分享卡片 (v6.0.0新增)
+   */
+  async generateCard() {
+    const { logBeta, ligandConc, metalConc, pH, result, hint } = this.data;
+    
+    if (!result) {
+      wx.showToast({
+        title: '请先完成计算',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const inputs = {
+      '稳定常数logβ': logBeta,
+      '配体浓度': `${ligandConc} mol·L⁻¹`,
+      '金属离子浓度': `${metalConc} mol·L⁻¹`,
+      'pH值': pH
+    };
+
+    const results = {
+      '络合程度': result,
+      '评估': hint
+    };
+
+    await generateShareCard('络合计算', 'complexation', inputs, results, '简化模型估算，实际需考虑副反应系数');
   },
 
   onShareAppMessage() {

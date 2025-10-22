@@ -24,6 +24,99 @@
     </view>
   </view>
 
+  <!-- NMR化学位移表 -->
+  <view wx:if="{{currentType === 'nmr'}}" class="spectro-content">
+    <!-- 搜索 -->
+    <view class="section-card">
+      <view class="search-box">
+        <input 
+          class="search-input" 
+          type="text"
+          value="{{nmrSearchKeyword}}"
+          placeholder="搜索溶剂/官能团/化合物"
+          placeholder-class="search-placeholder"
+          bindinput="handleNmrSearch"
+        />
+        <button wx:if="{{nmrSearchKeyword}}" class="clear-btn" bindtap="clearNmrSearch">✕</button>
+      </view>
+    </view>
+
+    <!-- NMR溶剂化学位移表 -->
+    <view class="section-card">
+      <view class="section-title">🧪 NMR 溶剂化学位移</view>
+      <view class="section-description">常用氘代溶剂的残留质子和碳峰位置（vs TMS，ppm）</view>
+
+      <view class="nmr-solvent-list">
+        <view 
+          wx:for="{{nmrSolventsFiltered}}" 
+          wx:key="solvent"
+          class="nmr-solvent-card"
+          bindtap="copyNmrSolvent"
+          data-item="{{item}}"
+        >
+          <view class="solvent-header">
+            <view class="solvent-name">{{item.name}}</view>
+            <view class="solvent-formula">{{item.formula}}</view>
+          </view>
+          <view class="solvent-shifts">
+            <view class="shift-row" wx:if="{{item.proton}}">
+              <text class="shift-label">¹H-NMR:</text>
+              <text class="shift-value">δ {{item.proton.shift}} ({{item.proton.multiplicity}})</text>
+            </view>
+            <view class="shift-row" wx:if="{{item.carbon}}">
+              <text class="shift-label">¹³C-NMR:</text>
+              <text class="shift-value">δ {{item.carbon.shift}} ({{item.carbon.multiplicity}})</text>
+            </view>
+            <view class="shift-row" wx:if="{{item.waterPeak}}">
+              <text class="shift-label">H2O峰:</text>
+              <text class="shift-value">δ {{item.waterPeak}}</text>
+            </view>
+          </view>
+          <text class="solvent-notes">{{item.notes}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 官能团化学位移表 -->
+    <view class="section-card">
+      <view class="section-title">🔬 官能团化学位移范围</view>
+      
+      <view class="functional-group-list">
+        <view 
+          wx:for="{{nmrFunctionalGroupsFiltered}}" 
+          wx:key="group"
+          class="fg-card"
+        >
+          <view class="fg-header">{{item.group}}</view>
+          <view class="fg-shift">
+            <text class="fg-label">¹H:</text>
+            <text class="fg-range">{{item.protonRange || '—'}}</text>
+          </view>
+          <view class="fg-shift">
+            <text class="fg-label">¹³C:</text>
+            <text class="fg-range">{{item.carbonRange || '—'}}</text>
+          </view>
+          <text class="fg-example">{{item.examples}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提示 -->
+    <view class="tip-card">
+      <view class="tip-header">
+        <text class="tip-icon">💡</text>
+        <text>使用提示</text>
+      </view>
+      <view class="tip-content">
+        <text>• TMS (四甲基硅烷)：δ = 0 ppm (标准参考)</text>
+        <text>• 化学位移受溶剂、温度、浓度影响</text>
+        <text>• ¹H-NMR积分面积与质子数成正比</text>
+        <text>• 耦合常数J可以确定原子间关系</text>
+        <text>• 化学交换可导致峰变宽或消失</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 骨架屏 -->
   <skeleton wx:if="{{loading}}" type="table" rows="10"></skeleton>
 
@@ -37,6 +130,7 @@
           type="text"
           value="{{xpsSearchKeyword}}"
           placeholder="搜索元素/能级"
+          placeholder-class="search-placeholder"
           bindinput="handleXpsSearch"
         />
         <button wx:if="{{xpsSearchKeyword}}" class="clear-btn" bindtap="clearXpsSearch">✕</button>
@@ -126,6 +220,7 @@
           type="text"
           value="{{vibrationSearchKeyword}}"
           placeholder="搜索官能团/峰位"
+          placeholder-class="search-placeholder"
           bindinput="handleVibrationSearch"
         />
         <button wx:if="{{vibrationSearchKeyword}}" class="clear-btn" bindtap="clearVibrationSearch">✕</button>

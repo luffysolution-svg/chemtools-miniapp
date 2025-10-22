@@ -1,0 +1,132 @@
+<view class="container">
+  <!-- 学术风格搜索 -->
+  <view class="search-section">
+    <search-input
+      value="{{searchQuery}}"
+      placeholder="搜索溶剂名称、CAS号或分子式"
+      enableHistory="{{true}}"
+      historyKey="solvent-selector"
+      hotSearches="{{hotSolvents}}"
+      showHot="{{!searchQuery}}"
+      bindinput="handleSearchInput"
+      bindsearch="handleSearch"
+      bindclear="clearSearch"
+    />
+    
+    <!-- 学术风格筛选 -->
+    <quick-filter
+      title="极性范围"
+      filters="{{polarityFilters}}"
+      selected="{{selectedPolarity}}"
+      mode="single"
+      bindchange="handlePolarityChange"
+    />
+  </view>
+
+  <!-- 溶剂列表 -->
+  <view class="solvent-list">
+    <view 
+      wx:for="{{filteredSolvents}}" 
+      wx:key="cas"
+      class="solvent-card"
+      data-index="{{index}}"
+      bindtap="viewDetail"
+    >
+      <view class="solvent-header">
+        <view class="solvent-names">
+          <text class="solvent-name-cn">{{item.name}}</text>
+          <text class="solvent-name-en">{{item.nameEn}}</text>
+        </view>
+        <view class="safety-badge {{item.safety}}">
+          {{item.safety === 'low' ? '✓' : item.safety === 'medium' ? '⚠' : '⚠⚠'}}
+        </view>
+      </view>
+
+      <view class="solvent-props">
+        <view class="prop-item">
+          <text class="prop-label">极性</text>
+          <text class="prop-value">{{item.polarity}}</text>
+        </view>
+        <view class="prop-item">
+          <text class="prop-label">沸点</text>
+          <text class="prop-value">{{item.boilingPoint}}°C</text>
+        </view>
+        <view class="prop-item">
+          <text class="prop-label">密度</text>
+          <text class="prop-value">{{item.density}}</text>
+        </view>
+      </view>
+
+      <text class="solvent-formula">{{item.formula}}</text>
+    </view>
+  </view>
+
+  <!-- 详情弹窗 -->
+  <view wx:if="{{showDetail}}" class="detail-modal" bindtap="closeDetail">
+    <view class="detail-content" catchtap="doNothing">
+      <view class="detail-header">
+        <text class="detail-title">{{selectedSolvent.name}}</text>
+        <text class="detail-subtitle">{{selectedSolvent.nameEn}} ({{selectedSolvent.formula}})</text>
+      </view>
+
+      <view class="detail-body">
+        <view class="detail-section">
+          <text class="section-title">📋 物理性质</text>
+          <view class="prop-grid">
+            <view class="prop-row">
+              <text class="prop-name">极性指数：</text>
+              <text class="prop-val">{{selectedSolvent.polarity}}</text>
+            </view>
+            <view class="prop-row">
+              <text class="prop-name">沸点：</text>
+              <text class="prop-val">{{selectedSolvent.boilingPoint}} °C</text>
+            </view>
+            <view class="prop-row">
+              <text class="prop-name">熔点：</text>
+              <text class="prop-val">{{selectedSolvent.meltingPoint}} °C</text>
+            </view>
+            <view class="prop-row">
+              <text class="prop-name">密度：</text>
+              <text class="prop-val">{{selectedSolvent.density}} g/mL</text>
+            </view>
+            <view class="prop-row">
+              <text class="prop-name">粘度：</text>
+              <text class="prop-val">{{selectedSolvent.viscosity}} cP</text>
+            </view>
+            <view class="prop-row">
+              <text class="prop-name">介电常数：</text>
+              <text class="prop-val">{{selectedSolvent.dielectricConstant}}</text>
+            </view>
+            <view class="prop-row">
+              <text class="prop-name">折射率：</text>
+              <text class="prop-val">{{selectedSolvent.refractiveIndex}}</text>
+            </view>
+            <view class="prop-row">
+              <text class="prop-name">UV截止：</text>
+              <text class="prop-val">{{selectedSolvent.uvCutoff}} nm</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="detail-section">
+          <text class="section-title">🔬 应用领域</text>
+          <view class="app-tags">
+            <text wx:for="{{selectedSolvent.applications}}" wx:key="*this" class="app-tag">{{item}}</text>
+          </view>
+        </view>
+
+        <view class="detail-section">
+          <text class="section-title">⚠️ 安全提示</text>
+          <text class="safety-level">危险等级：{{selectedSolvent.safety === 'low' ? '低危' : selectedSolvent.safety === 'medium' ? '中危' : '高危'}}</text>
+          <text class="notes">{{selectedSolvent.notes}}</text>
+        </view>
+      </view>
+
+      <view class="detail-buttons">
+        <button class="detail-button export" bindtap="exportSolvent">导出</button>
+        <button class="detail-button close" bindtap="closeDetail">关闭</button>
+      </view>
+    </view>
+  </view>
+</view>
+

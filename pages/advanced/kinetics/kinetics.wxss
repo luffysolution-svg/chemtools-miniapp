@@ -1,0 +1,32 @@
+/* pages/advanced/kinetics/kinetics.wxss */
+@import "../thermodynamics/thermodynamics.wxss";
+
+.header {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.tab-item.active {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.calc-btn {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.result-card {
+  border-left: 6rpx solid #4facfe;
+}
+
+.result-value.highlight {
+  color: #4facfe;
+}
+
+.picker {
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #f5f7fa;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+}
+

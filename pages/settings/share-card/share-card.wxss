@@ -1,0 +1,172 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 模板选择器 */
+.template-selector {
+  background: white;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.selector-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.selector-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background: #f5f7fa;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  color: #1f3c88;
+}
+
+.icon-arrow {
+  font-size: 40rpx;
+  color: #999;
+}
+
+/* Canvas容器 */
+.canvas-container {
+  position: relative;
+  background: white;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.share-canvas {
+  width: 100%;
+  border-radius: 12rpx;
+  display: block;
+}
+
+/* 生成中遮罩 */
+.generating-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16rpx;
+}
+
+.loading-text {
+  font-size: 32rpx;
+  color: #1f3c88;
+  font-weight: 600;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* 模板描述 */
+.template-desc {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+}
+
+.desc-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.desc-text {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.3s;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.action-btn[disabled] {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.btn-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.btn-text {
+  font-size: 30rpx;
+}
+
+/* 按钮颜色 */
+.primary-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.success-btn {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+  color: white;
+}
+
+.info-btn {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+}
+
+/* 提示信息 */
+.tips {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12rpx;
+  padding: 24rpx;
+}
+
+.tip-item {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 2;
+  padding-left: 8rpx;
+}
+

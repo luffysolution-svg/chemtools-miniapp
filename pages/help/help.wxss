@@ -376,26 +376,30 @@
 
 /* 免责声明 */
 .disclaimer-card {
-  border: 4rpx solid #ffd700;
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
+  border: 6rpx solid #f59e0b;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  box-shadow: 0 8rpx 24rpx rgba(245, 158, 11, 0.25);
 }
 
 .disclaimer-text {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
-  font-size: 26rpx;
-  color: #666;
-  line-height: 1.8;
+  gap: 20rpx;
+  font-size: 30rpx;
+  color: #78350f;
+  font-weight: 500;
+  line-height: 2;
 }
 
 .disclaimer-important {
-  color: #f5576c;
-  font-weight: bold;
-  padding: 16rpx;
-  background: rgba(245, 87, 108, 0.1);
-  border-radius: 12rpx;
-  border-left: 4rpx solid #f5576c;
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 32rpx;
+  padding: 24rpx;
+  background: #fef2f2;
+  border-radius: 16rpx;
+  border-left: 8rpx solid #dc2626;
+  box-shadow: 0 4rpx 12rpx rgba(220, 38, 38, 0.15);
 }
 
 /* 常见问题 */

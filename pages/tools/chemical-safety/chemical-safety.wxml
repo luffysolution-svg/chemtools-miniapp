@@ -1,0 +1,268 @@
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">🧪 化学品安全速查</text>
+    <text class="page-subtitle">GHS全球化学品统一分类标准</text>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-section">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        type="text" 
+        value="{{searchQuery}}"
+        placeholder="搜索化学品名称、CAS号、分子式"
+        bindinput="handleSearchInput"
+        bindconfirm="handleSearch"
+      />
+      <text wx:if="{{searchQuery}}" class="clear-icon" bindtap="clearSearch">✕</text>
+    </view>
+  </view>
+
+  <!-- 快速筛选 -->
+  <view class="filter-section">
+    <scroll-view class="filter-scroll" scroll-x>
+      <view class="filter-tabs">
+        <view 
+          class="filter-tab {{filterType === 'all' ? 'active' : ''}}"
+          data-type="all"
+          bindtap="switchFilter"
+        >
+          <text>全部</text>
+          <text class="filter-count">{{allChemicals.length}}</text>
+        </view>
+        <view 
+          class="filter-tab {{filterType === 'high' ? 'active danger' : ''}}"
+          data-type="high"
+          bindtap="switchFilter"
+        >
+          <text>⚠️ 高危</text>
+        </view>
+        <view 
+          class="filter-tab {{filterType === 'medium' ? 'active warning' : ''}}"
+          data-type="medium"
+          bindtap="switchFilter"
+        >
+          <text>⚡ 中危</text>
+        </view>
+        <view 
+          class="filter-tab {{filterType === 'low' ? 'active safe' : ''}}"
+          data-type="low"
+          bindtap="switchFilter"
+        >
+          <text>✓ 低危</text>
+        </view>
+        <view 
+          class="filter-tab {{filterType === 'acid' ? 'active' : ''}}"
+          data-type="acid"
+          bindtap="switchFilter"
+        >
+          <text>酸类</text>
+        </view>
+        <view 
+          class="filter-tab {{filterType === 'base' ? 'active' : ''}}"
+          data-type="base"
+          bindtap="switchFilter"
+        >
+          <text>碱类</text>
+        </view>
+        <view 
+          class="filter-tab {{filterType === 'solvent' ? 'active' : ''}}"
+          data-type="solvent"
+          bindtap="switchFilter"
+        >
+          <text>有机溶剂</text>
+        </view>
+        <view 
+          class="filter-tab {{filterType === 'oxidizer' ? 'active' : ''}}"
+          data-type="oxidizer"
+          bindtap="switchFilter"
+        >
+          <text>氧化剂</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 结果统计 -->
+  <view class="result-header">
+    <text class="result-text">找到 {{filteredChemicals.length}} 种化学品</text>
+    <view class="sort-options">
+      <text class="sort-btn {{sortBy === 'name' ? 'active' : ''}}" data-sort="name" bindtap="changeSort">名称</text>
+      <text class="sort-divider">|</text>
+      <text class="sort-btn {{sortBy === 'danger' ? 'active' : ''}}" data-sort="danger" bindtap="changeSort">危险度</text>
+    </view>
+  </view>
+
+  <!-- 化学品列表 -->
+  <view class="chemical-list">
+    <view 
+      wx:for="{{filteredChemicals}}" 
+      wx:key="cas"
+      class="chemical-card"
+      data-cas="{{item.cas}}"
+      bindtap="selectChemical"
+    >
+      <view class="card-header">
+        <view class="chemical-names">
+          <text class="chemical-name">{{item.name}}</text>
+          <text class="chemical-formula">{{item.formula}}</text>
+        </view>
+        <view class="hazard-badge {{item.hazardLevel}}">
+          <text wx:if="{{item.hazardLevel === 'high'}}">⚠️ 高危</text>
+          <text wx:elif="{{item.hazardLevel === 'medium'}}">⚡ 中危</text>
+          <text wx:else>✓ 低危</text>
+        </view>
+      </view>
+      
+      <view class="card-content">
+        <text class="chemical-en">{{item.nameEn}}</text>
+        <view class="chemical-meta">
+          <text class="meta-item">📋 CAS: {{item.cas}}</text>
+        </view>
+      </view>
+
+      <view class="card-footer">
+        <text class="view-detail">查看详情 →</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{filteredChemicals.length === 0}}" class="empty-state">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">未找到相关化学品</text>
+      <text class="empty-hint">试试搜索其他关键词</text>
+    </view>
+  </view>
+
+  <!-- 详情弹窗 -->
+  <view wx:if="{{showDetail}}" class="detail-modal" bindtap="closeDetail">
+    <view class="detail-container" catchtap="doNothing">
+      <!-- 详情头部 -->
+      <view class="detail-header {{selectedChemical.hazardLevel}}">
+        <view class="detail-close" bindtap="closeDetail">✕</view>
+        <text class="detail-title">{{selectedChemical.name}}</text>
+        <text class="detail-subtitle">{{selectedChemical.nameEn}}</text>
+        <view class="detail-basic">
+          <view class="basic-item">
+            <text class="basic-label">CAS</text>
+            <text class="basic-value">{{selectedChemical.cas}}</text>
+          </view>
+          <view class="basic-item">
+            <text class="basic-label">分子式</text>
+            <text class="basic-value">{{selectedChemical.formula}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 详情内容 -->
+      <scroll-view class="detail-scroll" scroll-y>
+        <!-- GHS危险性 -->
+        <view class="detail-section danger-section">
+          <view class="section-header">
+            <text class="section-icon">⚠️</text>
+            <text class="section-title">GHS危险性分类</text>
+          </view>
+          <view class="hazard-codes">
+            <text wx:for="{{selectedChemical.ghsHazards}}" wx:key="*this" class="hazard-code">{{item}}</text>
+          </view>
+          <view class="hazard-list">
+            <view wx:for="{{selectedChemical.hazardStatements}}" wx:key="*this" class="hazard-item">
+              <text class="hazard-dot">●</text>
+              <text class="hazard-text">{{item}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 防护措施 -->
+        <view class="detail-section">
+          <view class="section-header">
+            <text class="section-icon">🛡️</text>
+            <text class="section-title">防护措施</text>
+          </view>
+          <view class="precaution-list">
+            <view wx:for="{{selectedChemical.precautions}}" wx:key="*this" class="precaution-item">
+              <text class="precaution-number">{{index + 1}}</text>
+              <text class="precaution-text">{{item}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 不相容物质 -->
+        <view class="detail-section">
+          <view class="section-header">
+            <text class="section-icon">🚫</text>
+            <text class="section-title">不相容物质</text>
+          </view>
+          <view class="incompatible-tags">
+            <text wx:for="{{selectedChemical.incompatible}}" wx:key="*this" class="incompatible-tag">{{item}}</text>
+          </view>
+        </view>
+
+        <!-- 储存条件 -->
+        <view class="detail-section">
+          <view class="section-header">
+            <text class="section-icon">📦</text>
+            <text class="section-title">储存条件</text>
+          </view>
+          <text class="storage-text">{{selectedChemical.storage}}</text>
+        </view>
+
+        <!-- 急救措施 -->
+        <view class="detail-section emergency-section">
+          <view class="section-header">
+            <text class="section-icon">🚑</text>
+            <text class="section-title">急救措施</text>
+          </view>
+          <view class="first-aid-grid">
+            <view class="aid-card">
+              <text class="aid-icon">👋</text>
+              <text class="aid-label">皮肤接触</text>
+              <text class="aid-content">{{selectedChemical.firstAid.skin}}</text>
+            </view>
+            <view class="aid-card">
+              <text class="aid-icon">👁️</text>
+              <text class="aid-label">眼睛接触</text>
+              <text class="aid-content">{{selectedChemical.firstAid.eyes}}</text>
+            </view>
+            <view class="aid-card">
+              <text class="aid-icon">👃</text>
+              <text class="aid-label">吸入</text>
+              <text class="aid-content">{{selectedChemical.firstAid.inhalation}}</text>
+            </view>
+            <view class="aid-card">
+              <text class="aid-icon">👄</text>
+              <text class="aid-label">食入</text>
+              <text class="aid-content">{{selectedChemical.firstAid.ingestion}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 特别提示 -->
+        <view wx:if="{{selectedChemical.notes}}" class="detail-section note-section">
+          <view class="section-header">
+            <text class="section-icon">💡</text>
+            <text class="section-title">特别提示</text>
+          </view>
+          <view class="note-box">
+            <text class="note-text">{{selectedChemical.notes}}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <!-- 底部操作按钮 -->
+      <view class="detail-actions">
+        <button class="action-btn export-btn" bindtap="exportSafety">
+          <text class="btn-icon">📤</text>
+          <text>导出</text>
+        </button>
+        <button class="action-btn share-btn" bindtap="shareSafety">
+          <text class="btn-icon">📋</text>
+          <text>分享</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

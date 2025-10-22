@@ -1,0 +1,163 @@
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <view class="header-title">💎 空间群数据库</view>
+    <view class="header-desc">230个国际空间群完整查询</view>
+    <view class="header-stats">
+      共 {{totalCount}} 个空间群 · 7个晶系
+    </view>
+  </view>
+
+  <!-- 搜索框 -->
+  <search-input
+    value="{{searchValue}}"
+    placeholder="{{searchPlaceholder}}"
+    enableHistory="{{false}}"
+    bind:input="onSearchInput"
+  />
+
+  <!-- 晶系筛选 -->
+  <quick-filter
+    title="按晶系筛选"
+    filters="{{crystalSystems}}"
+    selected="{{selectedSystem}}"
+    mode="single"
+    showCount="{{true}}"
+    showClear="{{true}}"
+    bindchange="onFilterSelect"
+    bind:clear="onFilterClear"
+  />
+
+  <!-- 结果统计 -->
+  <view class="result-stats">
+    找到 {{displayList.length}} 个空间群
+  </view>
+
+  <!-- 空间群列表 -->
+  <view class="space-group-list">
+    <data-card
+      wx:for="{{displayList}}"
+      wx:key="number"
+      title="No. {{item.number}} · {{item.symbol}}"
+      subtitle="{{item.system}} · {{item.pointGroup}}"
+      badge="{{item.centrosymmetric ? '有心' : '无心'}}"
+      badgeType="{{item.centrosymmetric ? 'success' : 'info'}}"
+      showBadge="{{true}}"
+      indicator="primary"
+      data-number="{{item.number}}"
+      bind:tap="selectSpaceGroup"
+    >
+      <view slot="content" class="card-content">
+        <view class="info-row">
+          <text class="info-label">Laue类：</text>
+          <text class="info-value">{{item.laueClass}}</text>
+        </view>
+        <view class="info-row" wx:if="{{item.schoenflies}}">
+          <text class="info-label">Schoenflies：</text>
+          <text class="info-value">{{item.schoenflies}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">一般位置数：</text>
+          <text class="info-value">{{item.generalPositions}}</text>
+        </view>
+      </view>
+    </data-card>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{displayList.length === 0}}" class="empty-state">
+    <text class="empty-icon">🔍</text>
+    <text class="empty-text">未找到匹配的空间群</text>
+    <text class="empty-hint">尝试搜索编号(1-230)或符号</text>
+  </view>
+
+  <!-- 详情弹窗 -->
+  <view wx:if="{{selectedGroup}}" class="detail-modal" catchtap="closeDetail">
+    <view class="detail-content" catchtap="tap">
+      <view class="detail-header">
+        <view class="detail-title">
+          空间群 No. {{selectedGroup.number}}
+        </view>
+        <view class="detail-symbol">{{selectedGroup.symbol}}</view>
+      </view>
+
+      <view class="detail-body">
+        <!-- 基本信息 -->
+        <view class="detail-section">
+          <view class="section-title">📊 基本信息</view>
+          <view class="detail-item">
+            <text class="detail-label">Hermann-Mauguin符号</text>
+            <text class="detail-value">{{selectedGroup.symbol}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{selectedGroup.schoenflies}}">
+            <text class="detail-label">Schoenflies符号</text>
+            <text class="detail-value">{{selectedGroup.schoenflies}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">晶系</text>
+            <text class="detail-value">{{selectedGroup.system}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">Laue类</text>
+            <text class="detail-value">{{selectedGroup.laueClass}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">点群</text>
+            <text class="detail-value">{{selectedGroup.pointGroup}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">对称中心</text>
+            <text class="detail-value">{{selectedGroup.centrosymmetric ? '有' : '无'}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">一般位置数</text>
+            <text class="detail-value">{{selectedGroup.generalPositions}}</text>
+          </view>
+        </view>
+
+        <!-- 消光规则 -->
+        <view wx:if="{{selectedGroup.extinction && selectedGroup.extinction.length > 0}}" class="detail-section">
+          <view class="section-title">🚫 消光规则</view>
+          <view wx:for="{{selectedGroup.extinction}}" wx:key="*this" class="extinction-item">
+            • {{item}}
+          </view>
+        </view>
+
+        <!-- 对称元素 -->
+        <view wx:if="{{selectedGroup.symmetryElements && selectedGroup.symmetryElements.length > 0}}" class="detail-section">
+          <view class="section-title">🔄 对称元素</view>
+          <view wx:for="{{selectedGroup.symmetryElements}}" wx:key="*this" class="symmetry-item">
+            • {{item}}
+          </view>
+        </view>
+
+        <!-- 等效位置 -->
+        <view wx:if="{{selectedGroup.equivalentPositions && selectedGroup.equivalentPositions.length > 0 && selectedGroup.equivalentPositions.length <= 8}}" class="detail-section">
+          <view class="section-title">📐 等效位置</view>
+          <view wx:for="{{selectedGroup.equivalentPositions}}" wx:key="*this" class="position-item">
+            {{index + 1}}. {{item}}
+          </view>
+        </view>
+
+        <!-- 典型实例 -->
+        <view wx:if="{{selectedGroup.examples && selectedGroup.examples.length > 0}}" class="detail-section">
+          <view class="section-title">📚 典型实例</view>
+          <view wx:for="{{selectedGroup.examples}}" wx:key="*this" class="example-item">
+            • {{item}}
+          </view>
+        </view>
+
+        <!-- 说明 -->
+        <view wx:if="{{selectedGroup.notes}}" class="detail-section">
+          <view class="section-title">💡 说明</view>
+          <text class="notes-text">{{selectedGroup.notes}}</text>
+        </view>
+      </view>
+
+      <view class="detail-footer">
+        <button class="action-button secondary" bindtap="closeDetail">关闭</button>
+        <button class="action-button primary" bindtap="copyInfo">复制信息</button>
+      </view>
+    </view>
+  </view>
+</view>

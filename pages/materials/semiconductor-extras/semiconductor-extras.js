@@ -4,6 +4,7 @@
 
 const { historyService } = require('../../../services/history');
 const { copyToClipboard } = require('../../../services/export');
+const { getPresets } = require('../../../utils/input-presets');
 
 Page({
   data: {
@@ -14,6 +15,21 @@ Page({
       { id: 'parameters', name: '常用参数', icon: '📋' }
     ],
     currentTool: 'eg-lambda',
+    
+    // 预设值
+    bandgapPresets: [
+      { label: '1.0 eV', value: '1.0' },
+      { label: '1.5 eV', value: '1.5' },
+      { label: '2.0 eV', value: '2.0' },
+      { label: '2.5 eV', value: '2.5' },
+      { label: '3.0 eV', value: '3.0' }
+    ],
+    wavelengthPresets: [
+      { label: '400 nm', value: '400' },
+      { label: '500 nm', value: '500' },
+      { label: '600 nm', value: '600' },
+      { label: '700 nm', value: '700' }
+    ],
 
     // Eg-λ转换
     egLambdaMode: 'eg-to-lambda',
@@ -95,6 +111,20 @@ Page({
    */
   handleLambdaInput(e) {
     this.setData({ lambdaValue: e.detail.value });
+  },
+  
+  handleEgChange(e) {
+    this.setData({ egValue: e.detail.value });
+    if (e.detail.value) {
+      this.calculateEgLambda();
+    }
+  },
+  
+  handleLambdaChange(e) {
+    this.setData({ lambdaValue: e.detail.value });
+    if (e.detail.value) {
+      this.calculateEgLambda();
+    }
   },
 
   /**

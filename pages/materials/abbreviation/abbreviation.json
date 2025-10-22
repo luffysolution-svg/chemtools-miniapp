@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "化学药品缩写查询",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#f5f7fa",
+  "backgroundTextStyle": "dark",
+  "onReachBottomDistance": 50,
+  "usingComponents": {}
+}
+

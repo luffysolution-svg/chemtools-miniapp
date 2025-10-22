@@ -1,0 +1,96 @@
+/* ===== 学术风格快捷筛选组件 ===== */
+
+.quick-filter-container {
+  margin-bottom: 24rpx;
+}
+
+/* ===== 筛选标题 ===== */
+.filter-title {
+  margin-bottom: 16rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--academic-text-secondary, #4f5d75);
+}
+
+/* ===== 筛选按钮滚动容器 ===== */
+.filter-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.filter-buttons {
+  display: inline-flex;
+  gap: 12rpx;
+  padding: 4rpx 0;
+}
+
+/* ===== 筛选按钮 ===== */
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120rpx;
+  height: 64rpx;
+  padding: 0 24rpx;
+  background: #ffffff;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: var(--academic-text-secondary, #4f5d75);
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.filter-btn:active {
+  transform: scale(0.95);
+}
+
+/* ===== 选中状态 ===== */
+.filter-btn.selected {
+  background: var(--academic-primary, #1f3c88);
+  border-color: var(--academic-primary, #1f3c88);
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ===== 筛选标签和计数 ===== */
+.filter-label {
+  line-height: 1;
+}
+
+.filter-count {
+  margin-left: 8rpx;
+  padding: 4rpx 8rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  line-height: 1;
+}
+
+.filter-btn.selected .filter-count {
+  background: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+/* ===== 清除按钮 ===== */
+.clear-all-btn {
+  background: #f5f7fa;
+  border-color: #d0d0d0;
+  color: var(--academic-text-tertiary, #6c757d);
+}
+
+.clear-all-btn:active {
+  background: #e8ecf0;
+}
+
+.clear-icon {
+  margin-right: 6rpx;
+  font-size: 20rpx;
+}
+
+/* ===== 学术风格样式 ===== */
+.academic-style {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+

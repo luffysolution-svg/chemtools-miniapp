@@ -1,0 +1,76 @@
+<view class="container">
+  <!-- 模板选择 -->
+  <view class="template-selector">
+    <view class="selector-label">选择模板</view>
+    <picker 
+      mode="selector" 
+      range="{{templateNames}}"
+      value="{{currentTemplateIndex}}"
+      bindchange="handleTemplateChange"
+    >
+      <view class="selector-value">
+        {{templateNames[currentTemplateIndex]}}
+        <text class="icon-arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- Canvas画布 -->
+  <view class="canvas-container">
+    <canvas 
+      type="2d" 
+      id="shareCanvas" 
+      class="share-canvas"
+      style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+    ></canvas>
+    
+    <!-- 生成中遮罩 -->
+    <view class="generating-mask" wx:if="{{generating}}">
+      <view class="loading-text">生成中...</view>
+    </view>
+  </view>
+
+  <!-- 模板描述 -->
+  <view class="template-desc" wx:if="{{templates[currentTemplateIndex]}}">
+    <text class="desc-icon">💡</text>
+    <text class="desc-text">{{templates[currentTemplateIndex].description}}</text>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button 
+      class="action-btn primary-btn" 
+      bindtap="generateCard"
+      disabled="{{generating}}"
+    >
+      <text class="btn-icon">🎨</text>
+      <text class="btn-text">重新生成</text>
+    </button>
+    
+    <button 
+      class="action-btn success-btn" 
+      bindtap="saveToAlbum"
+      disabled="{{!generated}}"
+    >
+      <text class="btn-icon">💾</text>
+      <text class="btn-text">保存相册</text>
+    </button>
+    
+    <button 
+      class="action-btn info-btn" 
+      open-type="share"
+      disabled="{{!generated}}"
+    >
+      <text class="btn-icon">📤</text>
+      <text class="btn-text">分享好友</text>
+    </button>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="tips">
+    <view class="tip-item">• 选择喜欢的模板风格</view>
+    <view class="tip-item">• 点击"保存相册"可保存到手机</view>
+    <view class="tip-item">• 点击"分享好友"可分享到微信</view>
+  </view>
+</view>
+

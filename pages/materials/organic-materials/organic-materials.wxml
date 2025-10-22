@@ -1,0 +1,190 @@
+<!--pages/materials/organic-materials/organic-materials.wxml-->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="title">有机材料数据库</text>
+    <text class="subtitle">导电聚合物 • 有机半导体 • MOF材料</text>
+  </view>
+
+  <!-- 学术风格搜索 -->
+  <view class="search-section">
+    <search-input
+      value="{{searchKeyword}}"
+      placeholder="搜索有机材料名称、缩写或化学式"
+      enableHistory="{{true}}"
+      historyKey="organic-materials"
+      hotSearches="{{hotMaterials}}"
+      showHot="{{!searchKeyword}}"
+      bindinput="onSearchInput"
+      bindsearch="onSearch"
+      bindclear="clearSearch"
+    />
+    
+    <!-- 学术风格分类筛选 -->
+    <quick-filter
+      title="材料类别"
+      filters="{{categoryFilters}}"
+      selected="{{selectedCategory}}"
+      mode="single"
+      showCount="{{false}}"
+      bindchange="onCategoryFilterChange"
+    />
+  </view>
+
+  <!-- 材料列表 -->
+  <scroll-view class="material-list" scroll-y>
+    <view 
+      wx:for="{{displayMaterials}}" 
+      wx:key="id"
+      class="material-card"
+      data-material="{{item}}"
+      bindtap="showMaterialDetail"
+    >
+      <view class="material-header">
+        <text class="material-name">{{item.name}}</text>
+        <text class="material-abbr">{{item.abbreviation}}</text>
+      </view>
+      <view class="material-formula">{{item.formula}}</view>
+      <view class="material-category">{{item.category}}</view>
+      <view class="material-apps">
+        <text wx:for="{{item.applications}}" wx:key="index" class="app-tag">{{item}}</text>
+      </view>
+    </view>
+    
+    <view wx:if="{{displayMaterials.length === 0}}" class="empty">
+      <text>暂无数据</text>
+    </view>
+  </scroll-view>
+
+  <!-- 详情弹窗 - 优化版 -->
+  <view wx:if="{{showDetail}}" class="detail-modal" bindtap="closeDetail">
+    <view class="detail-content" catchtap="{{null}}">
+      <!-- 头部 -->
+      <view class="detail-header">
+        <view class="header-top">
+          <text class="detail-title">{{selectedMaterial.name}}</text>
+          <text class="detail-close" bindtap="closeDetail">✕</text>
+        </view>
+        <view class="header-info">
+          <text class="header-abbr">{{selectedMaterial.abbreviation}}</text>
+          <text class="header-category">{{selectedMaterial.category}}</text>
+        </view>
+      </view>
+      
+      <scroll-view class="detail-body" scroll-y="{{true}}" enable-flex="{{true}}">
+        <!-- 基本信息卡片 -->
+        <view class="info-card">
+          <view class="card-title">
+            <text class="title-icon">📋</text>
+            <text class="title-text">基本信息</text>
+          </view>
+          <view class="info-grid">
+            <view class="info-item">
+              <text class="info-label">英文名</text>
+              <text class="info-value">{{selectedMaterial.englishName}}</text>
+            </view>
+            <view class="info-item" data-text="{{selectedMaterial.formula}}" bindtap="copyInfo">
+              <text class="info-label">化学式</text>
+              <text class="info-value formula">{{selectedMaterial.formula}}</text>
+              <text class="copy-hint">点击复制</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">材料ID</text>
+              <text class="info-value">{{selectedMaterial.id}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 性能参数卡片 -->
+        <view class="info-card">
+          <view class="card-title">
+            <text class="title-icon">⚡</text>
+            <text class="title-text">性能参数</text>
+          </view>
+          <view class="performance-grid">
+            <view wx:if="{{selectedMaterial.conductivity}}" class="perf-item">
+              <text class="perf-label">电导率</text>
+              <text class="perf-value">{{selectedMaterial.conductivity}}</text>
+            </view>
+            <view wx:if="{{selectedMaterial.bandgap}}" class="perf-item">
+              <text class="perf-label">带隙</text>
+              <text class="perf-value">{{selectedMaterial.bandgap}} eV</text>
+            </view>
+            <view wx:if="{{selectedMaterial.mobility}}" class="perf-item">
+              <text class="perf-label">迁移率</text>
+              <text class="perf-value">{{selectedMaterial.mobility}}</text>
+            </view>
+            <view wx:if="{{selectedMaterial.HOMO}}" class="perf-item">
+              <text class="perf-label">HOMO</text>
+              <text class="perf-value">{{selectedMaterial.HOMO}}</text>
+            </view>
+            <view wx:if="{{selectedMaterial.LUMO}}" class="perf-item">
+              <text class="perf-label">LUMO</text>
+              <text class="perf-value">{{selectedMaterial.LUMO}}</text>
+            </view>
+            <view wx:if="{{selectedMaterial.quantumYield}}" class="perf-item">
+              <text class="perf-label">量子效率</text>
+              <text class="perf-value">{{selectedMaterial.quantumYield}}</text>
+            </view>
+            <view wx:if="{{selectedMaterial.emission}}" class="perf-item">
+              <text class="perf-label">发射波长</text>
+              <text class="perf-value">{{selectedMaterial.emission}}</text>
+            </view>
+            <view wx:if="{{selectedMaterial.seebeckCoeff}}" class="perf-item">
+              <text class="perf-label">塞贝克系数</text>
+              <text class="perf-value">{{selectedMaterial.seebeckCoeff}}</text>
+            </view>
+            <view wx:if="{{selectedMaterial.surfaceArea}}" class="perf-item">
+              <text class="perf-label">比表面积</text>
+              <text class="perf-value">{{selectedMaterial.surfaceArea}}</text>
+            </view>
+            <view wx:if="{{selectedMaterial.poreSize}}" class="perf-item">
+              <text class="perf-label">孔径</text>
+              <text class="perf-value">{{selectedMaterial.poreSize}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 应用领域卡片 -->
+        <view class="info-card">
+          <view class="card-title">
+            <text class="title-icon">🎯</text>
+            <text class="title-text">应用领域</text>
+          </view>
+          <view class="app-grid">
+            <view wx:for="{{selectedMaterial.applications}}" wx:key="index" class="app-chip">
+              <text class="app-dot">•</text>
+              <text class="app-text">{{item}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 材料特性卡片 -->
+        <view class="info-card">
+          <view class="card-title">
+            <text class="title-icon">✨</text>
+            <text class="title-text">材料特性</text>
+          </view>
+          <view class="properties-list">
+            <view wx:for="{{selectedMaterial.properties}}" wx:for-item="value" wx:for-index="key" wx:key="key" class="prop-row">
+              <view class="prop-left">
+                <text class="prop-dot"></text>
+                <text class="prop-key">{{key}}</text>
+              </view>
+              <text class="prop-value">{{value}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="action-buttons">
+          <button class="action-btn" data-text="{{selectedMaterial.name}}\n{{selectedMaterial.englishName}}\n{{selectedMaterial.formula}}\n类别：{{selectedMaterial.category}}" bindtap="copyInfo">
+            <text class="btn-icon">📋</text>
+            <text class="btn-text">复制全部信息</text>
+          </button>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>
+

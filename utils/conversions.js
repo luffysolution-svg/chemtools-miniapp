@@ -87,6 +87,50 @@ const conversions = {
     分钟: { factor: 60, symbol: 'min', definition: '60秒' },
     小时: { factor: 3600, symbol: 'h', definition: '3600秒' },
     天: { factor: 86400, symbol: 'd', definition: '86400秒' }
+  },
+  粘度: {
+    帕秒: { factor: 1, symbol: 'Pa·s', definition: 'SI单位（动力粘度）' },
+    厘泊: { factor: 0.001, symbol: 'cP', definition: '10⁻³ Pa·s' },
+    泊: { factor: 0.1, symbol: 'P', definition: '0.1 Pa·s' },
+    毫帕秒: { factor: 0.001, symbol: 'mPa·s', definition: '10⁻³ Pa·s = 1 cP' }
+  },
+  电导率: {
+    西每米: { factor: 1, symbol: 'S/m', definition: 'SI单位' },
+    西每厘米: { factor: 100, symbol: 'S/cm', definition: '100 S/m' },
+    毫西每厘米: { factor: 0.1, symbol: 'mS/cm', definition: '0.1 S/m' },
+    微西每厘米: { factor: 1e-4, symbol: 'μS/cm', definition: '10⁻⁴ S/m' }
+  },
+  电阻率: {
+    欧姆米: { factor: 1, symbol: 'Ω·m', definition: 'SI单位' },
+    欧姆厘米: { factor: 0.01, symbol: 'Ω·cm', definition: '0.01 Ω·m' },
+    微欧姆厘米: { factor: 1e-8, symbol: 'μΩ·cm', definition: '10⁻⁸ Ω·m' }
+  },
+  磁场强度: {
+    特斯拉: { factor: 1, symbol: 'T', definition: 'SI单位（磁感应强度）' },
+    高斯: { factor: 1e-4, symbol: 'G', definition: '10⁻⁴ T（CGS单位）' },
+    毫特斯拉: { factor: 0.001, symbol: 'mT', definition: '10⁻³ T' },
+    微特斯拉: { factor: 1e-6, symbol: 'μT', definition: '10⁻⁶ T' }
+  },
+  磁场强度H: {
+    安每米: { factor: 1, symbol: 'A/m', definition: 'SI单位' },
+    奥斯特: { factor: 79.5775, symbol: 'Oe', definition: '79.5775 A/m（CGS单位）' }
+  },
+  原子能量: {
+    电子伏: { factor: 1, symbol: 'eV', definition: '1.602176634×10⁻¹⁹ J' },
+    千焦每摩尔: { factor: 96.485, symbol: 'kJ/mol', definition: '96.485 eV' },
+    千卡每摩尔: { factor: 23.06, symbol: 'kcal/mol', definition: '23.06 eV' },
+    哈特里: { factor: 27.211, symbol: 'Hartree', definition: '27.211 eV（原子单位）' },
+    里德堡: { factor: 13.606, symbol: 'Ry', definition: '13.606 eV' },
+    波数: { factor: 0.00012398, symbol: 'cm⁻¹', definition: '0.00012398 eV' }
+  },
+  功率密度: {
+    瓦每平方米: { factor: 1, symbol: 'W/m²', definition: 'SI单位' },
+    毫瓦每平方厘米: { factor: 10, symbol: 'mW/cm²', definition: '10 W/m²' },
+    瓦每平方厘米: { factor: 10000, symbol: 'W/cm²', definition: '10⁴ W/m²' }
+  },
+  比表面积: {
+    平方米每克: { factor: 1, symbol: 'm²/g', definition: '标准单位' },
+    平方米每千克: { factor: 0.001, symbol: 'm²/kg', definition: '0.001 m²/g' }
   }
 };
 

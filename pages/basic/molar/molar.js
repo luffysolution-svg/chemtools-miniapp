@@ -4,6 +4,8 @@
 
 const { periodicElements } = require('../../../utils/periodic');
 const { historyService } = require('../../../services/history');
+const { generateShareCard } = require('../utils/shareHelper');
+const { getPresets } = require('../../../utils/input-presets');
 
 // 从旧页面复制的工具函数
 const SUBSCRIPT_DIGITS = {
@@ -88,7 +90,11 @@ Page({
     mass: '',
     moles: '',
     convertResult: '',
-    convertResultText: ''
+    convertResultText: '',
+    // 新增：预设值
+    formulaPresets: [],
+    massPresets: [],
+    molesPresets: []
   },
 
   onLoad() {
@@ -99,6 +105,13 @@ Page({
       this.massMap[el.symbol] = el.atomicMass;
       this.numberMap[el.symbol] = el.number;
     });
+    
+    // 加载预设值
+    this.setData({
+      formulaPresets: getPresets('molar', 'formula'),
+      massPresets: getPresets('molar', 'mass'),
+      molesPresets: getPresets('molar', 'moles')
+    });
   },
 
   /**
@@ -106,6 +119,16 @@ Page({
    */
   handleFormulaInput(e) {
     this.setData({ formula: e.detail.value });
+  },
+  
+  /**
+   * 化学式变化（选择预设值或历史记录）
+   */
+  handleFormulaChange(e) {
+    this.setData({ formula: e.detail.value });
+    if (e.detail.value) {
+      this.calculateMolar();
+    }
   },
 
   /**
@@ -197,12 +220,32 @@ Page({
   handleMassInput(e) {
     this.setData({ mass: e.detail.value });
   },
+  
+  /**
+   * 质量变化（选择预设值或历史记录）
+   */
+  handleMassChange(e) {
+    this.setData({ mass: e.detail.value });
+    if (e.detail.value && this.data.molarMass) {
+      this.massToMoles();
+    }
+  },
 
   /**
    * 物质的量输入
    */
   handleMolesInput(e) {
     this.setData({ moles: e.detail.value });
+  },
+  
+  /**
+   * 物质的量变化（选择预设值或历史记录）
+   */
+  handleMolesChange(e) {
+    this.setData({ moles: e.detail.value });
+    if (e.detail.value && this.data.molarMass) {
+      this.molesToMass();
+    }
   },
 
   /**
@@ -291,6 +334,42 @@ Page({
       convertResult: '',
       convertResultText: ''
     });
+  },
+
+  /**
+   * 生成分享卡片 (v6.0.0新增)
+   */
+  async generateCard() {
+    const { formula, molarMass, breakdown, convertResult } = this.data;
+    
+    if (!molarMass) {
+      wx.showToast({
+        title: '请先计算摩尔质量',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const inputs = {
+      '化学式': formula
+    };
+
+    const results = {
+      '摩尔质量': `${molarMass} g·mol⁻¹`
+    };
+
+    if (breakdown && breakdown.length > 0) {
+      const breakdownText = breakdown
+        .map(item => `${item.symbol}${item.count > 1 ? '×' + item.count : ''}: ${item.mass} g·mol⁻¹`)
+        .join(', ');
+      results['元素组成'] = breakdownText;
+    }
+
+    if (convertResult) {
+      results['换算结果'] = convertResult;
+    }
+
+    await generateShareCard('分子质量计算', 'molar', inputs, results, '基于IUPAC标准原子量');
   },
 
   /**

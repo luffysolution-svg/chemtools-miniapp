@@ -1,0 +1,29 @@
+<view class="standard-input {{error ? 'error' : ''}} {{disabled ? 'disabled' : ''}}">
+  <view class="input-label" wx:if="{{label}}">
+    {{label}}
+    <text class="required-mark" wx:if="{{required}}">*</text>
+  </view>
+  <view class="input-wrapper">
+    <input
+      class="input-field"
+      type="{{type}}"
+      value="{{value}}"
+      placeholder="{{placeholder}}"
+      placeholder-class="input-placeholder"
+      disabled="{{disabled}}"
+      maxlength="{{maxlength}}"
+      focus="{{focus}}"
+      bindinput="handleInput"
+      bindblur="handleBlur"
+      bindfocus="handleFocus"
+      bindconfirm="handleConfirm"
+    />
+    <view class="input-unit" wx:if="{{unit}}">{{unit}}</view>
+    <view class="clear-btn" wx:if="{{value && clearable && !disabled}}" bindtap="handleClear">
+      <text class="icon-clear">×</text>
+    </view>
+  </view>
+  <view class="error-message" wx:if="{{error}}">{{errorMessage}}</view>
+  <view class="input-hint" wx:if="{{hint && !error}}">{{hint}}</view>
+</view>
+

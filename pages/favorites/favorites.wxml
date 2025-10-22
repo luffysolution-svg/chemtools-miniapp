@@ -46,15 +46,16 @@
 
     <!-- 收藏列表 -->
     <view class="favorite-list">
+      <!-- 手动添加的收藏 -->
       <view class="list-header">
-        <text class="list-title">我的收藏 ({{favorites.length}})</text>
+        <text class="list-title">💬 笔记收藏 ({{favorites.length}})</text>
         <text class="clear-all" wx:if="{{favorites.length > 0}}" bindtap="clearAllFavorites">清空全部</text>
       </view>
 
       <view wx:if="{{favorites.length === 0}}" class="empty-state">
         <text class="empty-icon">📌</text>
-        <text class="empty-text">还没有收藏内容</text>
-        <text class="empty-hint">可以保存常用的材料、反应或计算结果</text>
+        <text class="empty-text">还没有笔记收藏</text>
+        <text class="empty-hint">可以保存常用的材料、反应或笔记</text>
       </view>
 
       <view wx:for="{{favorites}}" wx:key="id" class="favorite-item">
@@ -74,6 +75,47 @@
           </button>
           <button class="action-btn danger" bindtap="deleteFavorite" data-id="{{item.id}}">
             <text class="btn-icon">🗑️</text> 删除
+          </button>
+        </view>
+      </view>
+      
+      <!-- 收藏的计算历史 -->
+      <view class="list-header" style="margin-top: 30rpx;">
+        <text class="list-title">⭐ 收藏的计算 ({{favoritedCalculations.length}})</text>
+      </view>
+
+      <view wx:if="{{favoritedCalculations.length === 0}}" class="empty-state">
+        <text class="empty-icon">⭐</text>
+        <text class="empty-text">还没有收藏的计算</text>
+        <text class="empty-hint">在历史记录页面点击⭐可以收藏重要的计算</text>
+      </view>
+
+      <view wx:for="{{favoritedCalculations}}" wx:key="id" class="favorite-item calculation-item">
+        <view class="item-header">
+          <view class="item-category">{{item.title}}</view>
+          <view class="item-time">{{item.timeStr}}</view>
+        </view>
+        <view class="history-content">
+          <view class="history-input">输入：{{item.input}}</view>
+          <view class="history-result">结果：{{item.result}}</view>
+          <view wx:if="{{item.userNote}}" class="user-note">
+            <text class="note-icon">📝</text>
+            <text class="note-text">{{item.userNote}}</text>
+          </view>
+          <view wx:if="{{item.warning}}" class="history-warning">
+            <text class="warning-icon">⚠️</text>
+            <text class="warning-text">{{item.warning}}</text>
+          </view>
+          <view wx:if="{{item.tags && item.tags.length > 0}}" class="tags">
+            <text wx:for="{{item.tags}}" wx:key="*this" class="tag">{{item}}</text>
+          </view>
+        </view>
+        <view class="item-actions">
+          <button class="action-btn" bindtap="copyHistory" data-text="{{item.copyText}}">
+            <text class="btn-icon">📋</text> 复制
+          </button>
+          <button class="action-btn danger" bindtap="toggleFavoriteHistory" data-id="{{item.id}}">
+            <text class="btn-icon">💔</text> 取消收藏
           </button>
         </view>
       </view>
@@ -191,9 +233,12 @@
         <text class="empty-hint">试试调整筛选条件</text>
       </view>
 
-      <view wx:for="{{filteredHistory}}" wx:key="id" class="history-item {{item.hasWarning ? 'has-warning' : ''}}">
+      <view wx:for="{{filteredHistory}}" wx:key="id" class="history-item {{item.hasWarning ? 'has-warning' : ''}} {{item.isFavorited ? 'is-favorited' : ''}}">
         <view class="history-header">
-          <view class="history-type">{{item.title}}</view>
+          <view class="history-type">
+            {{item.title}}
+            <text wx:if="{{item.isFavorited}}" class="favorited-badge">⭐</text>
+          </view>
           <view class="history-time">{{item.timeStr}}</view>
         </view>
         <view class="history-content">
@@ -205,6 +250,9 @@
           </view>
         </view>
         <view class="history-actions">
+          <button class="action-btn-small {{item.isFavorited ? 'favorited' : ''}}" bindtap="toggleFavoriteHistory" data-id="{{item.id}}">
+            <text class="btn-icon">{{item.isFavorited ? '⭐' : '☆'}}</text> {{item.isFavorited ? '已收藏' : '收藏'}}
+          </button>
           <button class="action-btn-small" bindtap="copyHistory" data-text="{{item.copyText}}">
             <text class="btn-icon">📋</text> 复制
           </button>

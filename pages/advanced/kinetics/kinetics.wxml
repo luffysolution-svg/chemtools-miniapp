@@ -1,0 +1,126 @@
+<!--pages/advanced/kinetics/kinetics.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">动力学计算</text>
+  </view>
+
+  <scroll-view class="tabs" scroll-x>
+    <view wx:for="{{tabs}}" wx:key="index" class="tab-item {{activeTab === index ? 'active' : ''}}" data-index="{{index}}" bindtap="onTabChange">
+      {{item}}
+    </view>
+  </scroll-view>
+
+  <scroll-view class="content" scroll-y>
+    <!-- Arrhenius方程 -->
+    <view wx:if="{{activeTab === 0}}" class="calc-section">
+      <view class="input-group">
+        <text class="label">指前因子 A</text>
+        <input class="input" type="digit" value="{{A}}" data-field="A" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">活化能 Ea (kJ/mol)</text>
+        <input class="input" type="digit" value="{{Ea}}" data-field="Ea" bindinput="onInput"/>
+      </view>
+      <calculator-input
+        label="温度 T (K)"
+        type="digit"
+        value="{{T}}"
+        placeholder="例如：298"
+        enableHistory="{{true}}"
+        historyTool="kinetics"
+        historyField="temperature"
+        presets="{{temperaturePresets}}"
+        touchArea="large"
+        bindinput="onInput"
+        data-field="T"
+      />
+      <button class="calc-btn" bindtap="calculateArrhenius">计算</button>
+      
+      <view wx:if="{{arrheniusResult}}" class="result-card">
+        <view class="result-title">计算结果</view>
+        <view class="result-item">
+          <text class="result-label">速率常数 k</text>
+          <text class="result-value">{{arrheniusResult.k}}</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">ln(k)</text>
+          <text class="result-value">{{arrheniusResult.lnK}}</text>
+        </view>
+        <view class="result-formula">k = A × exp(-Ea/RT)</view>
+      </view>
+    </view>
+
+    <!-- 活化能计算 -->
+    <view wx:if="{{activeTab === 1}}" class="calc-section">
+      <view class="input-group">
+        <text class="label">速率常数 k₁</text>
+        <input class="input" type="digit" value="{{k1}}" data-field="k1" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">温度 T₁ (K)</text>
+        <input class="input" type="digit" value="{{T1}}" data-field="T1" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">速率常数 k₂</text>
+        <input class="input" type="digit" value="{{k2}}" data-field="k2" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">温度 T₂ (K)</text>
+        <input class="input" type="digit" value="{{T2}}" data-field="T2" bindinput="onInput"/>
+      </view>
+      <button class="calc-btn" bindtap="calculateEa">计算</button>
+      
+      <view wx:if="{{eaResult}}" class="result-card">
+        <view class="result-title">计算结果</view>
+        <view class="result-item">
+          <text class="result-label">活化能 Ea</text>
+          <text class="result-value">{{eaResult.Ea}} kJ/mol</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">指前因子 A</text>
+          <text class="result-value">{{eaResult.A}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 反应级数 -->
+    <view wx:if="{{activeTab === 2}}" class="calc-section">
+      <view class="input-group">
+        <text class="label">初始浓度 [A]₀ (mol/L)</text>
+        <input class="input" type="digit" value="{{A0}}" data-field="A0" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">速率常数 k</text>
+        <input class="input" type="digit" value="{{k_value}}" data-field="k_value" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">时间 t (s)</text>
+        <input class="input" type="digit" value="{{time}}" data-field="time" bindinput="onInput"/>
+      </view>
+      <view class="input-group">
+        <text class="label">反应级数</text>
+        <picker mode="selector" range="{{[0, 1, 2]}}" value="{{order}}" bindchange="onOrderChange">
+          <view class="picker">{{order}}级反应</view>
+        </picker>
+      </view>
+      <button class="calc-btn" bindtap="calculateReaction">计算</button>
+      
+      <view wx:if="{{reactionResult}}" class="result-card">
+        <view class="result-title">计算结果</view>
+        <view class="result-item">
+          <text class="result-label">[A]t</text>
+          <text class="result-value">{{reactionResult.A_t}} mol/L</text>
+        </view>
+        <view class="result-item">
+          <text class="result-label">半衰期 t₁/₂</text>
+          <text class="result-value">{{reactionResult.half_life}} s</text>
+        </view>
+        <view wx:if="{{reactionResult.completion}}" class="result-item">
+          <text class="result-label">完成度</text>
+          <text class="result-value highlight">{{reactionResult.completion}}%</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+

@@ -1,245 +1,94 @@
-<view class="home-page">
-  <!-- 顶部横幅 -->
-  <view class="hero-banner">
-    <view class="hero-title">材料化学科研工具箱</view>
-    <view class="hero-subtitle">专业的化学计算与数据查询工具</view>
-  </view>
-
-  <!-- 搜索框 -->
+<view class="home-container">
+  <!-- 顶部搜索栏 -->
   <view class="search-section">
-    <view class="search-box">
+    <view class="search-bar" bindtap="navigateToSearch">
       <text class="search-icon">🔍</text>
-      <input 
-        class="search-input" 
-        placeholder="搜索工具或功能..." 
-        value="{{searchQuery}}"
-        bindinput="handleSearch"
-        bindconfirm="handleSearchConfirm"
-      />
-      <text wx:if="{{searchQuery}}" class="clear-search-btn" bindtap="clearSearch">✕</text>
-    </view>
-    
-    <!-- 搜索历史 -->
-    <view wx:if="{{!isSearching && searchQuery === '' && searchHistory.length > 0}}" class="search-history">
-      <view class="history-header">
-        <text class="history-title">搜索历史</text>
-        <text class="history-clear" bindtap="clearSearchHistory">清空</text>
-      </view>
-      <view class="history-tags">
-        <view 
-          wx:for="{{searchHistory}}" 
-          wx:key="*this" 
-          class="history-tag"
-          bindtap="useHistorySearch"
-          data-query="{{item}}"
-        >
-          <text class="history-tag-text">{{item}}</text>
-          <text 
-            class="history-tag-delete" 
-            catchtap="deleteSearchHistory" 
-            data-query="{{item}}"
-          >✕</text>
-        </view>
-      </view>
-    </view>
-    
-    <!-- 搜索结果 -->
-    <view wx:if="{{isSearching}}" class="search-results">
-      <view class="search-results-header">
-        <text class="search-count">找到 {{filteredTools.length}} 个相关工具</text>
-      </view>
-      <view wx:if="{{filteredTools.length > 0}}" class="results-list">
-        <view 
-          wx:for="{{filteredTools}}" 
-          wx:key="id" 
-          class="result-item"
-          data-path="{{item.path}}"
-          bindtap="navigateTo"
-        >
-          <text class="result-icon">{{item.icon}}</text>
-          <view class="result-content">
-            <view class="result-name">{{item.name}}</view>
-            <view class="result-desc">{{item.description}}</view>
-            <view class="result-category">{{item.category}}</view>
-          </view>
-          <text class="result-arrow">›</text>
-        </view>
-      </view>
-      <view wx:else class="search-empty">
-        <text class="empty-icon">🔍</text>
-        <text class="empty-text">未找到 "{{searchQuery}}" 相关的工具</text>
-        <text class="empty-hint">试试其他关键词吧</text>
-      </view>
+      <text class="search-placeholder">搜索工具、化学品、材料...</text>
     </view>
   </view>
 
-  <!-- 快捷入口（最近使用/推荐） -->
-  <view class="quick-access" wx:if="{{recentTools.length > 0}}">
-    <view class="section-title">
-      <text>最近使用</text>
-      <text class="clear-btn" bindtap="clearRecent">清空</text>
+  <!-- 快捷搜索标签 -->
+  <view class="quick-tags" wx:if="{{!isSearching}}">
+    <view class="quick-tag" wx:for="{{quickSearchTags}}" wx:key="*this" 
+          data-tag="{{item}}" bindtap="onQuickSearchTag">
+      {{item}}
     </view>
-    <scroll-view class="quick-scroll" scroll-x>
-      <view class="quick-item" wx:for="{{recentTools}}" wx:key="id" bindtap="navigateTo" data-path="{{item.path}}">
-        <text class="quick-icon">{{item.icon}}</text>
-        <text class="quick-name">{{item.name}}</text>
+  </view>
+
+  <!-- 最近使用 -->
+  <view class="section recent-section" wx:if="{{recentTools.length > 0 && !isSearching}}">
+    <view class="section-header">
+      <text class="section-title">⏱️ 最近使用</text>
+    </view>
+    <scroll-view class="recent-scroll" scroll-x>
+      <view class="recent-tools">
+        <view class="recent-tool" wx:for="{{recentTools}}" wx:key="id"
+              data-path="{{item.path}}" data-id="{{item.id}}" bindtap="navigateToTool">
+          <text class="tool-icon">{{item.icon}}</text>
+          <text class="tool-name">{{item.name}}</text>
+        </view>
       </view>
     </scroll-view>
   </view>
 
-  <!-- 工具分类 -->
-  <view class="tools-section">
-    <!-- 基础计算 -->
-    <view class="category">
-      <view class="category-header">
-        <text class="category-icon">🧮</text>
-        <text class="category-title">基础计算</text>
-      </view>
-      <view class="tool-grid">
-        <tool-card
-          icon="🔁"
-          title="单位换算"
-          description="长度、质量、温度等单位转换"
-          path="/pages/basic/unit/unit"
-          size="normal"
-        />
-        <tool-card
-          icon="🧪"
-          title="pH计算"
-          description="酸碱溶液pH值计算"
-          path="/pages/basic/ph/ph"
-          size="normal"
-        />
-        <tool-card
-          icon="⚗️"
-          title="溶液配比"
-          description="溶液混合与稀释计算"
-          path="/pages/basic/solution/solution"
-          size="normal"
-        />
-        <tool-card
-          icon="🧬"
-          title="分子质量"
-          description="化学式摩尔质量计算"
-          path="/pages/basic/molar/molar"
-          size="normal"
-        />
+  <!-- 搜索结果 -->
+  <view class="search-results" wx:if="{{isSearching}}">
+    <view class="search-header">
+      <text class="result-count">找到 {{filteredTools.length}} 个工具</text>
+      <text class="clear-search" bindtap="clearSearch">清除</text>
+    </view>
+    
+    <view class="tool-grid">
+      <view class="tool-card-wrapper" wx:for="{{filteredTools}}" wx:key="id"
+            data-path="{{item.path}}" data-id="{{item.id}}" bindtap="navigateToTool">
+        <view class="tool-card">
+          <text class="card-icon">{{item.icon}}</text>
+          <view class="card-content">
+            <text class="card-title">{{item.name}}</text>
+            <text class="card-desc">{{item.description}}</text>
+            <text class="card-category">{{item.category}}</text>
+          </view>
+        </view>
       </view>
     </view>
-
-    <!-- 材料分析 -->
-    <view class="category">
-      <view class="category-header">
-        <text class="category-icon">🔬</text>
-        <text class="category-title">材料分析</text>
-      </view>
-      <view class="tool-grid">
-        <tool-card
-          icon="🧮"
-          title="元素周期表"
-          description="查询元素性质与参数"
-          path="/pages/materials/periodic/periodic"
-          size="normal"
-        />
-        <tool-card
-          icon="💡"
-          title="半导体数据库"
-          description="50+种半导体材料查询"
-          path="/pages/materials/semiconductor/semiconductor"
-          size="normal"
-        />
-        <tool-card
-          icon="🔦"
-          title="半导体小工具"
-          description="Eg↔λ互算、少子估算"
-          path="/pages/materials/semiconductor-extras/semiconductor-extras"
-          size="normal"
-        />
-      </view>
+    
+    <view class="empty-result" wx:if="{{filteredTools.length === 0}}">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">未找到相关工具</text>
     </view>
+  </view>
 
-    <!-- 谱学工具 -->
-    <view class="category">
-      <view class="category-header">
-        <text class="category-icon">📊</text>
-        <text class="category-title">谱学工具</text>
+  <!-- v8.0.0 按科研标准分类的工具导航 -->
+  <view class="categories-container" wx:if="{{!isSearching && showTools}}">
+    <view class="category-section" wx:for="{{categories}}" wx:key="id">
+      <view class="category-header" style="border-left-color: {{item.color}}">
+        <text class="category-icon">{{item.icon}}</text>
+        <text class="category-title">{{item.name}}</text>
+        <text class="tool-count">{{toolsByCategory[item.id].length}}个</text>
       </view>
+      
       <view class="tool-grid">
-        <tool-card
-          icon="📊"
-          title="XPS/Raman/IR"
-          description="谱学峰位查询参考"
-          path="/pages/spectroscopy/xps-raman/xps-raman"
-          size="normal"
-        />
-        <tool-card
-          icon="🌈"
-          title="Beer-Lambert"
-          description="UV-Vis吸光度计算"
-          path="/pages/spectroscopy/uvvis/uvvis"
-          size="normal"
-        />
-      </view>
-    </view>
-
-    <!-- 高级计算 -->
-    <view class="category">
-      <view class="category-header">
-        <text class="category-icon">⚡</text>
-        <text class="category-title">高级计算</text>
-      </view>
-      <view class="tool-grid">
-        <tool-card
-          icon="📐"
-          title="XRD 计算"
-          description="d-2θ互算、晶系d(hkl)"
-          path="/pages/advanced/xrd/xrd"
-          size="normal"
-        />
-        <tool-card
-          icon="⚡"
-          title="电化学"
-          description="电极电位换算与Nernst"
-          path="/pages/advanced/electrochem/electrochem"
-          size="normal"
-        />
-        <tool-card
-          icon="💧"
-          title="溶度积/沉淀"
-          description="Ksp计算、沉淀判断"
-          path="/pages/advanced/ksp/ksp"
-          size="normal"
-        />
-        <tool-card
-          icon="🧷"
-          title="络合/掩蔽估算"
-          description="条件稳定常数、络合分数"
-          path="/pages/advanced/complexation/complexation"
-          size="normal"
-        />
+        <view class="tool-card-wrapper" 
+              wx:for="{{toolsByCategory[item.id]}}" 
+              wx:key="id"
+              wx:for-item="tool"
+              data-path="{{tool.path}}" 
+              data-id="{{tool.id}}" 
+              bindtap="navigateToTool">
+          <view class="tool-card">
+            <text class="card-icon">{{tool.icon}}</text>
+            <view class="card-content">
+              <text class="card-title">{{tool.name}}</text>
+              <text class="card-desc">{{tool.description}}</text>
+            </view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
 
-  <!-- 底部信息 -->
-  <view class="footer-section">
-    <view class="footer-info">
-      <text class="footer-text">💡 提示：点击卡片进入工具，长按可添加到快捷入口</text>
-    </view>
-    <view class="footer-links">
-      <view class="footer-link" bindtap="goToHelp">
-        <text class="link-icon">📖</text>
-        <text class="link-text">使用帮助</text>
-      </view>
-      <view class="footer-link" bindtap="goToDataSource">
-        <text class="link-icon">📊</text>
-        <text class="link-text">数据来源</text>
-      </view>
-      <view class="footer-link" bindtap="goToFAQ">
-        <text class="link-icon">❓</text>
-        <text class="link-text">常见问题</text>
-      </view>
-    </view>
+  <!-- 底部提示 -->
+  <view class="footer-tip" wx:if="{{!isSearching}}">
+    <text class="tip-badge">72种化学品 · 172种半导体 · 200+实验常数</text>
   </view>
 </view>
-

@@ -1,10 +1,14 @@
 /**
  * 工具卡片组件
  * 用于首页功能导航
+ * v3.11.0 性能优化版
  */
 Component({
   options: {
-    styleIsolation: 'shared'
+    addGlobalClass: true, // 接受全局样式，减少样式隔离开销
+    multipleSlots: false, // 禁用多slot，提升性能
+    pureDataPattern: /^_/, // 纯数据字段不参与渲染
+    virtualHost: true // 虚拟化组件节点，减少DOM层级
   },
 
   properties: {

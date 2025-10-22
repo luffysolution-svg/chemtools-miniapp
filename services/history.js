@@ -82,13 +82,13 @@ class HistoryService {
     tags.add(this._getCategoryByType(type));
     
     // 从标题提取关键词
-    const titleWords = title.split(/[\s、，,]/);
+    const titleWords = (title || '').toString().split(/[\s、，,]/);
     titleWords.forEach(word => {
       if (word.length > 1) tags.add(word);
     });
     
     // 从输入提取关键词
-    const inputWords = input.split(/[\s→=:：]/);
+    const inputWords = (input || '').toString().split(/[\s→=:：]/);
     inputWords.forEach(word => {
       const cleaned = word.trim().replace(/[()（）]/g, '');
       if (cleaned && cleaned.length > 1) tags.add(cleaned);
@@ -352,6 +352,132 @@ class HistoryService {
   }
 
   /**
+   * 收藏历史记录
+   * @param {string} id - 记录ID
+   * @returns {boolean} 是否成功
+   */
+  toggleFavorite(id) {
+    const history = storageService.getHistory();
+    const item = history.find(h => h.id === id);
+    
+    if (!item) {
+      return false;
+    }
+    
+    // 切换收藏状态
+    item.isFavorited = !item.isFavorited;
+    item.favoritedAt = item.isFavorited ? Date.now() : null;
+    
+    return storageService.set('chemtools:history', history);
+  }
+  
+  /**
+   * 检查记录是否已收藏
+   * @param {string} id - 记录ID
+   * @returns {boolean} 是否已收藏
+   */
+  isFavorited(id) {
+    const history = storageService.getHistory();
+    const item = history.find(h => h.id === id);
+    return item ? !!item.isFavorited : false;
+  }
+  
+  /**
+   * 获取收藏的历史记录
+   * @param {object} options - 查询选项
+   * @returns {array} 收藏的记录列表
+   */
+  getFavorited(options = {}) {
+    const {
+      sortBy = 'favoritedAt',
+      sortOrder = 'desc',
+      limit = 100
+    } = options;
+    
+    let history = storageService.getHistory();
+    
+    // 只返回收藏的记录
+    history = history.filter(item => item.isFavorited);
+    
+    // 排序
+    history.sort((a, b) => {
+      let comparison = 0;
+      
+      switch (sortBy) {
+        case 'favoritedAt':
+          comparison = (a.favoritedAt || 0) - (b.favoritedAt || 0);
+          break;
+        case 'timestamp':
+          comparison = a.timestamp - b.timestamp;
+          break;
+        case 'type':
+          comparison = a.type.localeCompare(b.type);
+          break;
+        default:
+          comparison = (a.favoritedAt || 0) - (b.favoritedAt || 0);
+          break;
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+    
+    return history.slice(0, limit);
+  }
+  
+  /**
+   * 为收藏的记录添加标签
+   * @param {string} id - 记录ID
+   * @param {array} tags - 标签数组
+   * @returns {boolean} 是否成功
+   */
+  addTags(id, tags) {
+    if (!Array.isArray(tags) || tags.length === 0) {
+      return false;
+    }
+    
+    const history = storageService.getHistory();
+    const item = history.find(h => h.id === id);
+    
+    if (!item) {
+      return false;
+    }
+    
+    // 初始化标签数组
+    if (!item.tags) {
+      item.tags = [];
+    }
+    
+    // 添加标签（去重）
+    tags.forEach(tag => {
+      if (!item.tags.includes(tag)) {
+        item.tags.push(tag);
+      }
+    });
+    
+    return storageService.set('chemtools:history', history);
+  }
+  
+  /**
+   * 为记录添加备注
+   * @param {string} id - 记录ID
+   * @param {string} note - 备注内容
+   * @returns {boolean} 是否成功
+   */
+  addNote(id, note) {
+    const history = storageService.getHistory();
+    const item = history.find(h => h.id === id);
+    
+    if (!item) {
+      return false;
+    }
+    
+    item.userNote = note;
+    item.noteUpdatedAt = Date.now();
+    
+    return storageService.set('chemtools:history', history);
+  }
+
+  /**
    * 获取统计信息（增强版）
    * @returns {object} 统计数据
    */
@@ -359,6 +485,7 @@ class HistoryService {
     const history = storageService.getHistory();
     const stats = {
       total: history.length,
+      favorited: 0,
       byType: {},
       byCategory: {},
       byDate: {},
@@ -377,6 +504,11 @@ class HistoryService {
 
     // 按类型和类别统计
     history.forEach(item => {
+      // 收藏统计
+      if (item.isFavorited) {
+        stats.favorited++;
+      }
+      
       // 类型统计
       if (!stats.byType[item.type]) {
         stats.byType[item.type] = 0;

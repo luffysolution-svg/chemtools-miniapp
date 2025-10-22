@@ -1,10 +1,9 @@
-/**
- * 单位换算页面
- * 重构版本，采用新架构和组件
- */
+// 单位换算工具
 
 const { conversions } = require('../../../utils/conversions');
 const { historyService } = require('../../../services/history');
+const { generateShareCard } = require('../utils/shareHelper');
+const { getPresets } = require('../../../utils/input-presets');
 
 Page({
   data: {
@@ -19,12 +18,23 @@ Page({
     formula: '',
     hint: '',
     historyInput: '',
-    validationError: ''
+    validationError: '',
+    // 新增：预设值
+    valuePresets: []
   },
 
   onLoad() {
     this.initCategories();
     this.updateUnits();
+    this.loadPresets();
+  },
+  
+  /**
+   * 加载预设值
+   */
+  loadPresets() {
+    const presets = getPresets('unit', 'value');
+    this.setData({ valuePresets: presets });
   },
 
   /**
@@ -73,6 +83,28 @@ Page({
     this.setData({ 
       inputValue: e.detail.value 
     });
+  },
+  
+  /**
+   * 数值变化（历史记录或预设值选择）
+   */
+  handleValueChange(e) {
+    this.setData({ 
+      inputValue: e.detail.value 
+    });
+    // 自动触发计算
+    if (e.detail.value) {
+      this.convert();
+    }
+  },
+  
+  /**
+   * 实时计算
+   */
+  handleRealtimeCalculate(e) {
+    if (e.detail.value) {
+      this.convert();
+    }
   },
 
   /**
@@ -153,18 +185,35 @@ Page({
       result = this.convertTemperature(value, fromUnit, toUnit);
       formula = this.getTemperatureFormula(fromUnit, toUnit);
     } else {
-      const base = value * conversions[category][fromUnit];
-      result = base / conversions[category][toUnit];
+      // 从对象结构中获取factor
+      const fromFactor = conversions[category][fromUnit]?.factor || conversions[category][fromUnit];
+      const toFactor = conversions[category][toUnit]?.factor || conversions[category][toUnit];
+      
+      if (typeof fromFactor === 'undefined' || typeof toFactor === 'undefined') {
+        wx.showToast({ title: '单位数据错误', icon: 'none' });
+        return;
+      }
+      
+      const base = value * fromFactor;
+      result = base / toFactor;
     }
 
     const precision = Math.abs(result) < 1 ? 6 : 4;
     const resultText = `${value} ${fromUnit} = ${result.toFixed(precision)} ${toUnit}`;
     
+    // 计算倍率
+    let ratio = '';
+    if (category !== '温度') {
+      const fromFactor = conversions[category][fromUnit]?.factor || conversions[category][fromUnit];
+      const toFactor = conversions[category][toUnit]?.factor || conversions[category][toUnit];
+      ratio = (fromFactor / toFactor).toExponential(3);
+    }
+    
     this.setData({
       result: result.toFixed(precision),
       resultText,
       formula,
-      hint: category === '温度' ? '温度换算使用专用公式' : `倍率：1 ${fromUnit} = ${(conversions[category][fromUnit] / conversions[category][toUnit]).toExponential(3)} ${toUnit}`,
+      hint: category === '温度' ? '温度换算使用专用公式' : `倍率：1 ${fromUnit} = ${ratio} ${toUnit}`,
       historyInput: `${value} ${fromUnit} → ${toUnit}`
     });
 
@@ -182,8 +231,12 @@ Page({
    */
   convertTemperature(value, fromUnit, toUnit) {
     const { conversions: conv } = require('../../../utils/conversions');
-    const fromSymbol = conv['温度'][fromUnit];
-    const toSymbol = conv['温度'][toUnit];
+    const fromData = conv['温度'][fromUnit];
+    const toData = conv['温度'][toUnit];
+    
+    // 获取温度类型（兼容新旧数据结构）
+    const fromSymbol = fromData?.type || fromData;
+    const toSymbol = toData?.type || toData;
     
     let celsius;
     if (fromSymbol === 'C') {
@@ -227,6 +280,43 @@ Page({
       fromUnitIndex: 0,
       toUnitIndex: this.data.units.length > 1 ? 1 : 0
     });
+  },
+
+  /**
+   * 生成分享卡片 (v6.0.0新增)
+   */
+  async generateCard() {
+    const { categoryIndex, categories, inputValue, result, units, fromUnitIndex, toUnitIndex, formula, hint } = this.data;
+    
+    if (!result) {
+      wx.showToast({
+        title: '请先进行换算',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const category = categories[categoryIndex];
+    const fromUnit = units[fromUnitIndex];
+    const toUnit = units[toUnitIndex];
+
+    const inputs = {
+      '换算类别': category,
+      '输入值': `${inputValue} ${fromUnit}`,
+      '目标单位': toUnit
+    };
+
+    const results = {
+      '换算结果': `${result} ${toUnit}`,
+      '完整表达': `${inputValue} ${fromUnit} = ${result} ${toUnit}`
+    };
+
+    let notes = hint || '';
+    if (formula) {
+      notes = `公式: ${formula}\n${notes}`;
+    }
+
+    await generateShareCard('单位换算', 'unit', inputs, results, notes);
   },
 
   /**
