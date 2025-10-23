@@ -1,5 +1,5 @@
 /**
- * 全局搜索服务 v3.9.3
+ * 全局搜索服务 v3.9.4
  * 提供跨页面、跨数据库的统一搜索功能
  * 支持：工具、缩写、半导体、元素、光谱、Ksp、参比电极、X射线源
  */
@@ -10,6 +10,93 @@ let indexBuilt = false;
 
 // 搜索历史（轻量级，最多20条）
 const MAX_SEARCH_HISTORY = 20;
+
+/**
+ * 获取常用化学缩写（轻量级，避免分包引用）
+ */
+function getCommonAbbreviations() {
+  return [
+    // 有机溶剂
+    { abbr: 'DMF', full: 'N,N-Dimethylformamide', chinese: 'N,N-二甲基甲酰胺', category: '有机溶剂' },
+    { abbr: 'DMSO', full: 'Dimethyl sulfoxide', chinese: '二甲基亚砜', category: '有机溶剂' },
+    { abbr: 'THF', full: 'Tetrahydrofuran', chinese: '四氢呋喃', category: '有机溶剂' },
+    { abbr: 'DCM', full: 'Dichloromethane', chinese: '二氯甲烷', category: '有机溶剂' },
+    { abbr: 'EA', full: 'Ethyl acetate', chinese: '乙酸乙酯', category: '有机溶剂' },
+    { abbr: 'MeOH', full: 'Methanol', chinese: '甲醇', category: '有机溶剂' },
+    { abbr: 'EtOH', full: 'Ethanol', chinese: '乙醇', category: '有机溶剂' },
+    { abbr: 'ACN', full: 'Acetonitrile', chinese: '乙腈', category: '有机溶剂' },
+    { abbr: 'NMP', full: 'N-Methyl-2-pyrrolidone', chinese: 'N-甲基吡咯烷酮', category: '有机溶剂' },
+    { abbr: 'DMAc', full: 'N,N-Dimethylacetamide', chinese: 'N,N-二甲基乙酰胺', category: '有机溶剂' },
+    
+    // 碱和催化剂
+    { abbr: 'TEA', full: 'Triethylamine', chinese: '三乙胺', category: '碱' },
+    { abbr: 'DIPEA', full: 'N,N-Diisopropylethylamine', chinese: 'N,N-二异丙基乙胺', category: '碱' },
+    { abbr: 'DBU', full: '1,8-Diazabicyclo[5.4.0]undec-7-ene', chinese: '1,8-二氮杂双环[5.4.0]十一碳-7-烯', category: '碱' },
+    { abbr: 'DMAP', full: '4-Dimethylaminopyridine', chinese: '4-二甲氨基吡啶', category: '催化剂' },
+    { abbr: 'Py', full: 'Pyridine', chinese: '吡啶', category: '碱' },
+    
+    // 缩合剂和偶联剂
+    { abbr: 'DCC', full: 'N,N-Dicyclohexylcarbodiimide', chinese: 'N,N-二环己基碳二亚胺', category: '缩合剂' },
+    { abbr: 'EDC', full: '1-Ethyl-3-(3-dimethylaminopropyl)carbodiimide', chinese: '1-乙基-3-(3-二甲氨基丙基)碳二亚胺', category: '缩合剂' },
+    { abbr: 'HATU', full: 'Hexafluorophosphate Azabenzotriazole Tetramethyl Uronium', chinese: '六氟磷酸氮唑苯并三唑四甲基脲', category: '缩合剂' },
+    { abbr: 'HOBt', full: 'Hydroxybenzotriazole', chinese: '羟基苯并三唑', category: '缩合剂' },
+    
+    // 保护基
+    { abbr: 'Boc', full: 'tert-Butoxycarbonyl', chinese: '叔丁氧羰基', category: '保护基' },
+    { abbr: 'Fmoc', full: 'Fluorenylmethyloxycarbonyl', chinese: '芴甲氧羰基', category: '保护基' },
+    { abbr: 'Cbz', full: 'Benzyloxycarbonyl', chinese: '苄氧羰基', category: '保护基' },
+    { abbr: 'TBS', full: 'tert-Butyldimethylsilyl', chinese: '叔丁基二甲基硅基', category: '保护基' },
+    { abbr: 'TIPS', full: 'Triisopropylsilyl', chinese: '三异丙基硅基', category: '保护基' },
+    
+    // 氧化剂和还原剂
+    { abbr: 'mCPBA', full: 'meta-Chloroperoxybenzoic acid', chinese: '间氯过氧苯甲酸', category: '氧化剂' },
+    { abbr: 'PCC', full: 'Pyridinium chlorochromate', chinese: '氯铬酸吡啶盐', category: '氧化剂' },
+    { abbr: 'PDC', full: 'Pyridinium dichromate', chinese: '重铬酸吡啶盐', category: '氧化剂' },
+    { abbr: 'NaBH4', full: 'Sodium borohydride', chinese: '硼氢化钠', category: '还原剂' },
+    { abbr: 'LiAlH4', full: 'Lithium aluminium hydride', chinese: '氢化铝锂', category: '还原剂' },
+    { abbr: 'DIBAL-H', full: 'Diisobutylaluminium hydride', chinese: '二异丁基氢化铝', category: '还原剂' },
+    
+    // 试剂
+    { abbr: 'LDA', full: 'Lithium diisopropylamide', chinese: '二异丙基氨基锂', category: '试剂' },
+    { abbr: 'NBS', full: 'N-Bromosuccinimide', chinese: 'N-溴代琥珀酰亚胺', category: '试剂' },
+    { abbr: 'TFA', full: 'Trifluoroacetic acid', chinese: '三氟乙酸', category: '酸' },
+    { abbr: 'TFAA', full: 'Trifluoroacetic anhydride', chinese: '三氟乙酸酐', category: '试剂' },
+    { abbr: 'Ac2O', full: 'Acetic anhydride', chinese: '乙酸酐', category: '试剂' },
+    
+    // 表征技术
+    { abbr: 'NMR', full: 'Nuclear Magnetic Resonance', chinese: '核磁共振', category: '表征' },
+    { abbr: 'FTIR', full: 'Fourier Transform Infrared Spectroscopy', chinese: '傅里叶变换红外光谱', category: '表征' },
+    { abbr: 'XRD', full: 'X-Ray Diffraction', chinese: 'X射线衍射', category: '表征' },
+    { abbr: 'XPS', full: 'X-ray Photoelectron Spectroscopy', chinese: 'X射线光电子能谱', category: '表征' },
+    { abbr: 'SEM', full: 'Scanning Electron Microscopy', chinese: '扫描电子显微镜', category: '表征' },
+    { abbr: 'TEM', full: 'Transmission Electron Microscopy', chinese: '透射电子显微镜', category: '表征' },
+    { abbr: 'TGA', full: 'Thermogravimetric Analysis', chinese: '热重分析', category: '表征' },
+    { abbr: 'DSC', full: 'Differential Scanning Calorimetry', chinese: '差示扫描量热法', category: '表征' },
+    { abbr: 'GC', full: 'Gas Chromatography', chinese: '气相色谱', category: '表征' },
+    { abbr: 'HPLC', full: 'High Performance Liquid Chromatography', chinese: '高效液相色谱', category: '表征' },
+    { abbr: 'MS', full: 'Mass Spectrometry', chinese: '质谱', category: '表征' },
+    { abbr: 'ESI-MS', full: 'Electrospray Ionization Mass Spectrometry', chinese: '电喷雾电离质谱', category: '表征' },
+    { abbr: 'MALDI-TOF', full: 'Matrix-Assisted Laser Desorption/Ionization Time-of-Flight', chinese: '基质辅助激光解吸电离飞行时间质谱', category: '表征' },
+    
+    // 材料化学
+    { abbr: 'MOF', full: 'Metal-Organic Framework', chinese: '金属有机框架', category: '材料' },
+    { abbr: 'COF', full: 'Covalent Organic Framework', chinese: '共价有机框架', category: '材料' },
+    { abbr: 'PVA', full: 'Polyvinyl alcohol', chinese: '聚乙烯醇', category: '材料' },
+    { abbr: 'PVP', full: 'Polyvinylpyrrolidone', chinese: '聚乙烯吡咯烷酮', category: '材料' },
+    { abbr: 'PEDOT', full: 'Poly(3,4-ethylenedioxythiophene)', chinese: '聚3,4-乙撑二氧噻吩', category: '材料' },
+    { abbr: 'PSS', full: 'Poly(styrene sulfonate)', chinese: '聚苯乙烯磺酸', category: '材料' },
+    { abbr: 'PCBM', full: '[6,6]-Phenyl-C61-butyric acid methyl ester', chinese: '[6,6]-苯基-C61-丁酸甲酯', category: '材料' },
+    { abbr: 'P3HT', full: 'Poly(3-hexylthiophene)', chinese: '聚3-己基噻吩', category: '材料' },
+    { abbr: 'ITO', full: 'Indium Tin Oxide', chinese: '氧化铟锡', category: '材料' },
+    { abbr: 'FTO', full: 'Fluorine-doped Tin Oxide', chinese: '氟掺杂氧化锡', category: '材料' },
+    
+    // 缓冲液
+    { abbr: 'PBS', full: 'Phosphate Buffered Saline', chinese: '磷酸盐缓冲液', category: '缓冲液' },
+    { abbr: 'Tris', full: 'Tris(hydroxymethyl)aminomethane', chinese: '三羟甲基氨基甲烷', category: '缓冲液' },
+    { abbr: 'HEPES', full: '4-(2-Hydroxyethyl)piperazine-1-ethanesulfonic acid', chinese: '4-(2-羟乙基)哌嗪-1-乙磺酸', category: '缓冲液' },
+    { abbr: 'MES', full: '2-(N-Morpholino)ethanesulfonic acid', chinese: '2-(N-吗啉代)乙磺酸', category: '缓冲液' }
+  ];
+}
 
 /**
  * 构建搜索索引（懒加载）
@@ -99,28 +186,28 @@ function globalSearch(query, options = {}) {
     });
   }
   
-  // 搜索化学缩写
+  // 搜索化学缩写（轻量级数据）
   if (includeAbbreviations) {
     try {
-      // const abbreviations = require('../utils/abbreviation-search-data');
-      // if (abbreviations && abbreviations.abbreviationSearchData) {
-      //   abbreviations.abbreviationSearchData.forEach(item => {
-      //     const score = calculateRelevanceForAbbreviation(normalizedQuery, item);
-      //     if (score > 0) {
-      //       results.push({
-      //         type: '缩写',
-      //         name: item.abbr,
-      //         fullName: item.full,
-      //         chineseName: item.chinese,
-      //         category: item.category,
-      //         page: '/pages/materials/abbreviation/abbreviation',
-      //         relevance: score
-      //       });
-      //     }
-      //   });
-      // }
+      // 使用轻量级常用化学缩写数据（避免分包引用问题）
+      const commonAbbreviations = getCommonAbbreviations();
+      
+      commonAbbreviations.forEach(item => {
+        const score = calculateRelevanceForAbbreviation(normalizedQuery, item);
+        if (score > 0) {
+          results.push({
+            type: '缩写',
+            name: item.abbr,
+            fullName: item.full,
+            chineseName: item.chinese,
+            category: item.category || '常用化学品',
+            page: '/pages/materials/abbreviation/abbreviation',
+            relevance: score
+          });
+        }
+      });
     } catch (e) {
-      // 静默失败，不影响用户体验
+      console.error('搜索化学缩写失败:', e);
     }
   }
   
@@ -132,11 +219,24 @@ function globalSearch(query, options = {}) {
         semiconductors.semiconductorMaterials.forEach(item => {
           const score = calculateRelevanceForSemiconductor(normalizedQuery, item);
           if (score > 0) {
+            // 兼容不同的bandGap数据格式
+            let bandgapValue = null;
+            if (item.bandGap) {
+              if (typeof item.bandGap === 'object' && item.bandGap.value !== undefined) {
+                bandgapValue = item.bandGap.value;
+              } else if (typeof item.bandGap === 'number') {
+                bandgapValue = item.bandGap;
+              } else if (typeof item.bandGap === 'string') {
+                const match = item.bandGap.match(/[\d.]+/);
+                bandgapValue = match ? match[0] : item.bandGap;
+              }
+            }
+            
             results.push({
               type: '半导体',
-              name: item.name,
+              name: item.name || item.nameEn || item.formula,
               formula: item.formula,
-              bandgap: item.bandGap ? item.bandGap.value : null,
+              bandgap: bandgapValue,
               category: item.category,
               page: '/pages/materials/semiconductor/semiconductor',
               relevance: score
@@ -145,7 +245,7 @@ function globalSearch(query, options = {}) {
         });
       }
     } catch (e) {
-      // 静默失败
+      console.error('搜索半导体材料失败:', e);
     }
   }
   
@@ -401,17 +501,29 @@ function calculateRelevanceForSemiconductor(query, item) {
   let score = 0;
   const queryLower = query.toLowerCase();
   
-  // 化学式完全匹配（最高权重）
-  if (item.formula && item.formula.toLowerCase() === queryLower) {
-    score += 100;
-  }
-  // 化学式包含查询
-  else if (item.formula && item.formula.toLowerCase().includes(queryLower)) {
-    score += 80;
+  // 化学式完全匹配（最高权重）- 忽略大小写
+  if (item.formula) {
+    const formulaLower = item.formula.toLowerCase();
+    if (formulaLower === queryLower) {
+      score += 100;
+    }
+    // 化学式包含查询
+    else if (formulaLower.includes(queryLower)) {
+      score += 80;
+    }
+    // 查询包含在化学式中（如tio2匹配TiO2）
+    else if (queryLower.includes(formulaLower)) {
+      score += 70;
+    }
   }
   
   // 名称匹配
   if (item.name && item.name.toLowerCase().includes(queryLower)) {
+    score += 70;
+  }
+  
+  // 英文名匹配
+  if (item.nameEn && item.nameEn.toLowerCase().includes(queryLower)) {
     score += 70;
   }
   

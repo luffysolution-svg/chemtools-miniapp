@@ -108,15 +108,18 @@ Page({
       this.loadHotSearches();
     }, 0);
 
-    // 支持URL参数传入搜索关键词（用于快捷搜索）
+    // 支持URL参数传入搜索关键词（用于快捷搜索和快速标签）
     if (options && options.keyword) {
       const keyword = decodeURIComponent(options.keyword);
-      this.setData({ searchKeyword: keyword });
+      this.setData({ 
+        searchKeyword: keyword,
+        showHistory: false  // 有关键词时隐藏历史
+      });
       // 延迟执行搜索，确保页面已加载
       setTimeout(() => {
         this.performSearch(keyword);
         this.saveSearchHistory(keyword);
-      }, 500);
+      }, 300);
     }
   },
 
@@ -137,21 +140,35 @@ Page({
     if (this.suggestionTimer) clearTimeout(this.suggestionTimer);
     if (this.searchTimer) clearTimeout(this.searchTimer);
 
-    // 显示搜索建议（防抖 200ms）
-    if (keyword.trim().length > 0) {
-      this.suggestionTimer = setTimeout(() => {
-        const suggestions = this.getSuggestions(keyword.trim());
-        this.setData({ 
-          searchSuggestions: suggestions,
-          showSuggestions: suggestions.length > 0
-        });
-      }, 200);
-    } else {
-      this.setData({ 
+    // 如果输入为空，清空搜索结果
+    if (keyword.trim() === '') {
+      this.setData({
+        searchResults: [],
+        resultsByType: {},
+        allResultsByType: {},
+        noResults: false,
         showSuggestions: false,
         searchSuggestions: []
       });
+      return;
     }
+
+    // 显示搜索建议（防抖 200ms）
+    this.suggestionTimer = setTimeout(() => {
+      const suggestions = this.getSuggestions(keyword.trim());
+      this.setData({ 
+        searchSuggestions: suggestions,
+        showSuggestions: suggestions.length > 0
+      });
+    }, 200);
+
+    // 实时搜索（防抖 500ms）
+    this.searchTimer = setTimeout(() => {
+      if (keyword.trim().length > 0) {
+        this.performSearch(keyword.trim());
+        this.saveSearchHistory(keyword.trim());
+      }
+    }, 500);
   },
 
   /**
@@ -180,7 +197,6 @@ Page({
     // 先检查缓存
     const cached = searchCache.get(keyword, this.data.searchOptions);
     if (cached) {
-      console.log('✅ 使用缓存结果');
       this.displaySearchResults(cached, true);
       // 仍然记录搜索统计
       searchStatsService.recordSearch(keyword);
@@ -388,9 +404,20 @@ Page({
    * 切换搜索选项
    */
   toggleSearchOptions() {
+    const newShowOptions = !this.data.showOptions;
     this.setData({
-      showOptions: !this.data.showOptions
+      showOptions: newShowOptions,
+      showFilters: false  // 关闭过滤器面板，避免同时显示
     });
+    
+    // 给用户反馈
+    if (newShowOptions) {
+      wx.showToast({
+        title: '搜索选项已展开',
+        icon: 'none',
+        duration: 1000
+      });
+    }
   },
 
   /**
@@ -434,10 +461,20 @@ Page({
    * 保存搜索历史（异步优化）
    */
   saveSearchHistory(keyword) {
+    // 确保keyword是字符串
+    if (typeof keyword !== 'string' || !keyword.trim()) {
+      return;
+    }
+    
+    keyword = keyword.trim();
+    
     wx.getStorage({
       key: 'search_history',
       success: (res) => {
         let history = res.data || [];
+        
+        // 数据清洗：确保所有项都是字符串
+        history = history.filter(item => typeof item === 'string' && item.trim());
         
         // 去重
         history = history.filter(item => item !== keyword);
@@ -470,8 +507,17 @@ Page({
     wx.getStorage({
       key: 'search_history',
       success: (res) => {
-        const history = res.data || [];
+        let history = res.data || [];
+        // 数据清洗：确保所有项都是字符串
+        history = history.filter(item => typeof item === 'string' && item.trim());
         this.setData({ searchHistory: history });
+        // 清洗后重新保存
+        if (history.length > 0) {
+          wx.setStorage({
+            key: 'search_history',
+            data: history
+          });
+        }
       },
       fail: () => {
         // 无历史记录，不做处理
@@ -686,7 +732,20 @@ Page({
    * 切换过滤器显示
    */
   toggleFilters() {
-    this.setData({ showFilters: !this.data.showFilters });
+    const newShowFilters = !this.data.showFilters;
+    this.setData({ 
+      showFilters: newShowFilters,
+      showOptions: false  // 关闭搜索选项面板，避免同时显示
+    });
+    
+    // 给用户反馈
+    if (newShowFilters) {
+      wx.showToast({
+        title: '过滤器已展开',
+        icon: 'none',
+        duration: 1000
+      });
+    }
   },
 
   /**

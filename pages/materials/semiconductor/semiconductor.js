@@ -98,8 +98,8 @@ Page({
       category: '钙钛矿',
       isNew: true,
       bandGap: this.normalizeBandGap(m.bandgap),
-      conductionBand: m.cb || m.conductionBand,
-      valenceBand: m.vb || m.valenceBand,
+      conductionBand: m.cb !== undefined ? m.cb : m.conductionBand,
+      valenceBand: m.vb !== undefined ? m.vb : m.valenceBand,
       absorptionEdge: m.absorptionEdge || (m.bandgap ? Math.round(1240 / parseFloat(m.bandgap)) : null)
     }));
     
@@ -108,8 +108,8 @@ Page({
       category: '2D材料',
       isNew: true,
       bandGap: this.normalizeBandGap(m.bandgap),
-      conductionBand: m.cb || m.conductionBand,
-      valenceBand: m.vb || m.valenceBand,
+      conductionBand: m.cb !== undefined ? m.cb : m.conductionBand,
+      valenceBand: m.vb !== undefined ? m.vb : m.valenceBand,
       absorptionEdge: m.absorptionEdge || (m.bandgap ? Math.round(1240 / parseFloat(m.bandgap)) : null)
     }));
     
@@ -118,8 +118,8 @@ Page({
       category: '量子点',
       isNew: true,
       bandGap: this.normalizeBandGap(m.bandgap),
-      conductionBand: m.cb || m.conductionBand,
-      valenceBand: m.vb || m.valenceBand,
+      conductionBand: m.cb !== undefined ? m.cb : m.conductionBand,
+      valenceBand: m.vb !== undefined ? m.vb : m.valenceBand,
       absorptionEdge: m.emissionRange ? parseInt(m.emissionRange.split('-')[0]) : null
     }));
     
@@ -454,8 +454,8 @@ Page({
       bandGapTemp ? `  测试温度：${bandGapTemp}` : '',
       '',
       `能带位置 (vs NHE, pH=0)：`,
-      `  导带底 (CB)：${m.conductionBand || m.cb || 'N/A'} eV`,
-      `  价带顶 (VB)：${m.valenceBand || m.vb || 'N/A'} eV`,
+      `  导带底 (CBM)：${m.conductionBand !== undefined ? m.conductionBand : (m.cb !== undefined ? m.cb : 'N/A')} V`,
+      `  价带顶 (VBM)：${m.valenceBand !== undefined ? m.valenceBand : (m.vb !== undefined ? m.vb : 'N/A')} V`,
       '',
       `物理性质：`,
       m.crystalStructure ? `  晶体结构：${m.crystalStructure}` : '',

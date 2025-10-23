@@ -2,7 +2,6 @@
 // v8.0.0 按照材料化学的科研分类重新组织了工具分类
 
 const { storageService } = require('../../services/storage');
-const { debounce } = require('../../utils/performance-utils');
 
 // 快捷搜索标签
 const QUICK_SEARCH_TAGS = [
@@ -264,10 +263,7 @@ const ALL_TOOLS = [
 
 Page({
   data: {
-    searchQuery: '',
     recentTools: [],
-    filteredTools: [],
-    isSearching: false,
     showContent: false,
     showTools: false,
     quickSearchTags: QUICK_SEARCH_TAGS,
@@ -305,11 +301,6 @@ Page({
       this.setData({ showTools: true });
       this.loadRecentTools();
     }, 100);
-    
-    this._allTools = ALL_TOOLS;
-    
-    // 使用防抖优化搜索
-    this.debouncedSearch = debounce(this.performSearch.bind(this), 300);
   },
 
   onShow() {
@@ -368,49 +359,11 @@ Page({
     }
   },
 
-  // 处理搜索输入
-  onSearchInput(e) {
-    const query = e.detail.value;
-    this.setData({ searchQuery: query });
-    
-    if (!query.trim()) {
-      this.setData({ 
-        isSearching: false,
-        filteredTools: [] 
-      });
-      return;
-    }
-    
-    this.setData({ isSearching: true });
-    this.debouncedSearch(query);
-  },
-
-  // 执行搜索（匹配工具名称、描述和关键词）
-  performSearch(query) {
-    const q = query.toLowerCase().trim();
-    const results = ALL_TOOLS.filter(tool => {
-      return tool.name.toLowerCase().includes(q) ||
-             tool.description.toLowerCase().includes(q) ||
-             tool.keywords.some(kw => kw.toLowerCase().includes(q));
-    });
-    
-    this.setData({ filteredTools: results });
-  },
-
-  // 点击快速搜索标签
+  // 点击快速搜索标签 - 跳转到全局搜索
   onQuickSearchTag(e) {
     const tag = e.currentTarget.dataset.tag;
-    this.setData({ searchQuery: tag });
-    this.performSearch(tag);
-    this.setData({ isSearching: true });
-  },
-
-  // 清除搜索内容
-  clearSearch() {
-    this.setData({
-      searchQuery: '',
-      isSearching: false,
-      filteredTools: []
+    wx.navigateTo({
+      url: `/pages/search/search?keyword=${encodeURIComponent(tag)}`
     });
   },
 
@@ -471,15 +424,6 @@ Page({
   navigateToSearch() {
     wx.navigateTo({
       url: '/pages/search/search'
-    });
-  },
-
-  // 展开/收起分类
-  toggleCategory(e) {
-    const categoryId = e.currentTarget.dataset.category;
-    const key = `showCategory_${categoryId}`;
-    this.setData({
-      [key]: !this.data[key]
     });
   }
 });

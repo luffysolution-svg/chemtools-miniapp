@@ -23,6 +23,9 @@ const PEROVSKITE_MATERIALS = [
     absorptionEdge: 800,
     crystal: '四方/立方（温度依赖）',
     applications: ['太阳能电池', '光电探测', 'LED'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.05,  // eV
+    conductionBand: -0.50,  // eV
     // 新增属性 v8.0.0
     mobility: { electron: 20, hole: 15 }, // cm²/(V·s)
     excitonBindingEnergy: 15, // meV
@@ -42,6 +45,9 @@ const PEROVSKITE_MATERIALS = [
     absorptionEdge: 556,
     crystal: '立方',
     applications: ['绿光LED', '光电探测', '激光'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.43,  // eV
+    conductionBand: -0.80,  // eV
     mobility: { electron: 25, hole: 20 },
     excitonBindingEnergy: 40,
     dielectricConstant: 58,
@@ -60,6 +66,9 @@ const PEROVSKITE_MATERIALS = [
     absorptionEdge: 430,
     crystal: '立方',
     applications: ['蓝光LED', '光电探测'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.68,  // eV
+    conductionBand: -1.20,  // eV
     mobility: { electron: 18, hole: 12 },
     excitonBindingEnergy: 55,
     dielectricConstant: 45,
@@ -78,6 +87,9 @@ const PEROVSKITE_MATERIALS = [
     absorptionEdge: 716,
     crystal: '立方（α相）',
     applications: ['太阳能电池', '光电探测'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.13,  // eV
+    conductionBand: -0.60,  // eV
     mobility: { electron: 22, hole: 17 },
     excitonBindingEnergy: 20,
     dielectricConstant: 65,
@@ -96,6 +108,9 @@ const PEROVSKITE_MATERIALS = [
     absorptionEdge: 525,
     crystal: '正交/立方（温度依赖）',
     applications: ['绿光LED', '量子点', 'X射线探测'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.48,  // eV
+    conductionBand: -0.88,  // eV
     mobility: { electron: 35, hole: 28 },
     excitonBindingEnergy: 38,
     dielectricConstant: 54,
@@ -114,6 +129,9 @@ const PEROVSKITE_MATERIALS = [
     absorptionEdge: 838,
     crystal: '立方/六方（温度依赖）',
     applications: ['太阳能电池', '光电探测'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 0.98,  // eV
+    conductionBand: -0.50,  // eV
     mobility: { electron: 30, hole: 22 },
     excitonBindingEnergy: 12,
     dielectricConstant: 75,
@@ -132,6 +150,9 @@ const PEROVSKITE_MATERIALS = [
     absorptionEdge: 821,
     crystal: '立方',
     applications: ['高效太阳能电池'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.01,  // eV
+    conductionBand: -0.50,  // eV
     mobility: { electron: 28, hole: 20 },
     excitonBindingEnergy: 13,
     dielectricConstant: 72,
@@ -148,6 +169,9 @@ const PEROVSKITE_MATERIALS = [
     bandgap: 2.19,
     bandgapType: '间接带隙',
     absorptionEdge: 566,
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.39,  // eV
+    conductionBand: -0.80,  // eV
     crystal: '立方（双钙钛矿结构）',
     applications: ['无铅太阳能电池', '光电探测'],
     mobility: { electron: 12, hole: 8 },
@@ -168,6 +192,9 @@ const PEROVSKITE_MATERIALS = [
     absorptionEdge: 954,
     crystal: '正交/立方',
     applications: ['无铅太阳能电池', '红外探测'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 0.85,  // eV
+    conductionBand: -0.45,  // eV
     mobility: { electron: 585, hole: 322 },
     excitonBindingEnergy: 18,
     dielectricConstant: 55,
@@ -186,6 +213,9 @@ const PEROVSKITE_MATERIALS = [
     absorptionEdge: 670,
     crystal: '层状结构',
     applications: ['稳定太阳能电池', '发光二极管'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.18,  // eV
+    conductionBand: -0.67,  // eV
     mobility: { electron: 5, hole: 3 },
     excitonBindingEnergy: 220,
     dielectricConstant: 35,
@@ -208,6 +238,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '直接带隙（单层）/间接带隙（多层）',
     crystal: '六方层状',
     applications: ['晶体管', '光电探测', '催化剂'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.8,  // eV
+    conductionBand: 0.0,  // eV
     mobility: { electron: 200, hole: 10 }, // 单层
     excitonBindingEnergy: 300,
     dielectricConstant: 15,
@@ -224,6 +257,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '直接带隙（单层）',
     crystal: '六方层状',
     applications: ['光电器件', '催化剂'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.6,  // eV
+    conductionBand: -0.4,  // eV
     mobility: { electron: 234, hole: 15 },
     excitonBindingEnergy: 320,
     dielectricConstant: 13,
@@ -240,6 +276,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '直接带隙（单层）',
     crystal: '六方层状',
     applications: ['光电器件', '传感器'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.4,  // eV
+    conductionBand: -0.1,  // eV
     mobility: { electron: 100, hole: 8 },
     excitonBindingEnergy: 250,
     dielectricConstant: 16,
@@ -256,6 +295,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '直接带隙（单层）',
     crystal: '六方层状',
     applications: ['p型晶体管', '光电器件'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.5,  // eV
+    conductionBand: -0.15,  // eV
     mobility: { electron: 140, hole: 250 },
     excitonBindingEnergy: 280,
     dielectricConstant: 14,
@@ -273,6 +315,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '正交层状',
     applications: ['红外探测', '晶体管', '电池'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 0.3,  // V (多层值)
+    conductionBand: -0.05,  // V
     mobility: { electron: 1000, hole: 600 },
     excitonBindingEnergy: 100,
     dielectricConstant: 8,
@@ -289,6 +334,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '间接带隙',
     crystal: '六方层状',
     applications: ['光电探测', '电池负极'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.8,  // V
+    conductionBand: -0.4,  // V
     mobility: { electron: 50, hole: 5 },
     excitonBindingEnergy: 200,
     dielectricConstant: 18,
@@ -305,6 +353,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '三斜层状',
     applications: ['光电器件', '催化剂'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.4,  // V
+    conductionBand: -0.1,  // V
     mobility: { electron: 30, hole: 10 },
     excitonBindingEnergy: 180,
     dielectricConstant: 12,
@@ -322,6 +373,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '六方层状',
     applications: ['铁电器件', '光电探测', '相变存储'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.0,  // V
+    conductionBand: -0.4,  // V
     mobility: { electron: 180, hole: 25 },
     excitonBindingEnergy: 150,
     dielectricConstant: 20,
@@ -338,6 +392,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '六方层状',
     applications: ['非线性光学', '光电探测'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.4,  // V
+    conductionBand: -0.6,  // V
     mobility: { electron: 280, hole: 50 },
     excitonBindingEnergy: 200,
     dielectricConstant: 10,
@@ -354,6 +411,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '间接带隙',
     crystal: '六方层状',
     applications: ['光电探测', '催化剂'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.7,  // V
+    conductionBand: -0.8,  // V
     mobility: { electron: 150, hole: 30 },
     excitonBindingEnergy: 250,
     dielectricConstant: 9,
@@ -370,6 +430,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '间接带隙（体）',
     crystal: '六方层状',
     applications: ['拓扑电子学', '热电材料', '自旋电子学'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 0.25,  // V
+    conductionBand: -0.05,  // V
     mobility: { electron: 600, hole: 100 },
     excitonBindingEnergy: null,
     dielectricConstant: 100,
@@ -386,6 +449,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '间接带隙',
     crystal: '六方层状',
     applications: ['热电器件', '拓扑电子学'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 0.15,  // V
+    conductionBand: -0.05,  // V
     mobility: { electron: 1200, hole: 680 },
     excitonBindingEnergy: null,
     dielectricConstant: 120,
@@ -402,6 +468,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '间接带隙',
     crystal: '六方层状',
     applications: ['光电器件', '催化剂'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.5,  // V
+    conductionBand: -0.5,  // V
     mobility: { electron: 1800, hole: 250 },
     excitonBindingEnergy: 180,
     dielectricConstant: 11,
@@ -418,6 +487,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '间接带隙',
     crystal: '六方层状',
     applications: ['光电器件', '催化剂'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.2,  // V
+    conductionBand: -0.5,  // V
     mobility: { electron: 1100, hole: 180 },
     excitonBindingEnergy: 160,
     dielectricConstant: 12,
@@ -434,6 +506,9 @@ const TWO_D_MATERIALS = [
     bandgapType: '间接带隙',
     crystal: '正交层状',
     applications: ['光电探测', '太阳能电池'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.1,  // V
+    conductionBand: -0.55,  // V
     mobility: { electron: 300, hole: 800 },
     excitonBindingEnergy: 180,
     dielectricConstant: 17,
@@ -456,6 +531,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '闪锌矿/纤锌矿',
     applications: ['显示器', '生物标记', 'LED'],
+    // 能带位置（体材料，vs NHE, pH=0）
+    valenceBand: 1.2,  // eV (尺寸依赖±0.3 eV)
+    conductionBand: -0.5,  // eV
     mobility: { electron: 350, hole: 50 }, // 体材料值
     excitonBindingEnergy: 15,
     dielectricConstant: 10.2,
@@ -474,6 +552,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '闪锌矿/纤锌矿',
     applications: ['UV探测', '太阳能电池', '催化剂'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 2.0,  // V (尺寸依赖±0.3 V)
+    conductionBand: -0.4,  // V
     mobility: { electron: 340, hole: 50 },
     excitonBindingEnergy: 28,
     dielectricConstant: 8.9,
@@ -492,6 +573,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '闪锌矿',
     applications: ['近红外探测', '生物成像', '太阳能电池'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.0,  // V (尺寸依赖±0.3 V)
+    conductionBand: -0.5,  // V
     mobility: { electron: 1050, hole: 100 },
     excitonBindingEnergy: 10,
     dielectricConstant: 10.9,
@@ -510,6 +594,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '闪锌矿',
     applications: ['无镉显示器', 'LED', '生物成像'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 0.7,  // eV (尺寸依赖±0.3 eV)
+    conductionBand: -0.6,  // eV
     mobility: { electron: 5400, hole: 200 },
     excitonBindingEnergy: 20,
     dielectricConstant: 12.4,
@@ -528,6 +615,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '岩盐',
     applications: ['近红外探测', '太阳能电池', '光通讯'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 0.9,  // eV (尺寸依赖±0.4 eV)
+    conductionBand: 0.5,  // eV
     mobility: { electron: 600, hole: 600 },
     excitonBindingEnergy: 25,
     dielectricConstant: 170,
@@ -546,6 +636,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '岩盐',
     applications: ['中红外探测', '热光伏'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 0.7,  // V (尺寸依赖±0.4 V)
+    conductionBand: 0.43,  // V
     mobility: { electron: 1000, hole: 1000 },
     excitonBindingEnergy: 20,
     dielectricConstant: 210,
@@ -565,6 +658,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '立方钙钛矿',
     applications: ['绿光LED', '显示器', '激光'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.5,  // eV (尺寸依赖±0.2 eV)
+    conductionBand: -0.9,  // eV
     mobility: { electron: 40, hole: 30 }, // QD值
     excitonBindingEnergy: 40,
     dielectricConstant: 50,
@@ -584,6 +680,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '立方钙钛矿',
     applications: ['红光LED', '太阳能电池'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.15,  // eV (尺寸依赖±0.2 eV)
+    conductionBand: -0.60,  // eV
     mobility: { electron: 35, hole: 25 },
     excitonBindingEnergy: 20,
     dielectricConstant: 60,
@@ -602,6 +701,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '闪锌矿',
     applications: ['蓝光LED', 'UV探测'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.7,  // V (尺寸依赖±0.3 V)
+    conductionBand: -1.0,  // V
     mobility: { electron: 530, hole: 28 },
     excitonBindingEnergy: 20,
     dielectricConstant: 9.1,
@@ -621,6 +723,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '直接带隙',
     crystal: '黄铜矿',
     applications: ['无镉LED', '太阳能电池', '生物成像'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.0,  // eV (尺寸依赖±0.3 eV)
+    conductionBand: -0.5,  // eV
     mobility: { electron: 150, hole: 50 },
     excitonBindingEnergy: 100,
     dielectricConstant: 10,
@@ -640,6 +745,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '间接带隙（体）/准直接（QD）',
     crystal: '金刚石',
     applications: ['生物成像', 'LED', '太阳能电池'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 1.8,  // V (尺寸依赖±0.5 V)
+    conductionBand: -0.2,  // V
     mobility: { electron: 1400, hole: 450 },
     excitonBindingEnergy: 80,
     dielectricConstant: 11.7,
@@ -659,6 +767,9 @@ const QUANTUM_DOT_MATERIALS = [
     bandgapType: '可调',
     crystal: '石墨/无定形',
     applications: ['生物成像', '传感器', 'LED'],
+    // 能带位置（vs NHE, pH=0）
+    valenceBand: 2.5,  // V (尺寸和表面态依赖)
+    conductionBand: -0.3,  // V
     mobility: { electron: null, hole: null },
     excitonBindingEnergy: null,
     dielectricConstant: null,

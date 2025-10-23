@@ -122,16 +122,16 @@
         </view>
 
         <!-- 能带位置 -->
-        <view class="detail-section">
+        <view class="detail-section" wx:if="{{selectedMaterial.conductionBand !== undefined || selectedMaterial.valenceBand !== undefined}}">
           <view class="detail-title">能带位置 (vs NHE, pH=0)</view>
           <view class="band-diagram">
-            <view class="band-item">
-              <text class="band-label">导带底 (CB)</text>
-              <text class="band-value">{{selectedMaterial.conductionBand}} eV</text>
+            <view class="band-item" wx:if="{{selectedMaterial.conductionBand !== undefined}}">
+              <text class="band-label">导带底 (CBM)</text>
+              <text class="band-value">{{selectedMaterial.conductionBand}} V</text>
             </view>
-            <view class="band-item">
-              <text class="band-label">价带顶 (VB)</text>
-              <text class="band-value">{{selectedMaterial.valenceBand}} eV</text>
+            <view class="band-item" wx:if="{{selectedMaterial.valenceBand !== undefined}}">
+              <text class="band-label">价带顶 (VBM)</text>
+              <text class="band-value">{{selectedMaterial.valenceBand}} V</text>
             </view>
           </view>
         </view>
@@ -140,27 +140,51 @@
         <view class="detail-section">
           <view class="detail-title">物理与化学性质</view>
           <view class="property-list">
-            <view class="property-item">
+            <view class="property-item" wx:if="{{selectedMaterial.crystal || selectedMaterial.crystalStructure}}">
               <text class="prop-label">晶体结构</text>
-              <text class="prop-value">{{selectedMaterial.crystalStructure || '—'}}</text>
+              <text class="prop-value">{{selectedMaterial.crystal || selectedMaterial.crystalStructure}}</text>
             </view>
-            <view class="property-item">
+            <view class="property-item" wx:if="{{selectedMaterial.mobility && selectedMaterial.mobility.electron}}">
               <text class="prop-label">电子迁移率</text>
-              <text class="prop-value">{{selectedMaterial.electronMobility || '—'}}</text>
+              <text class="prop-value">{{selectedMaterial.mobility.electron}} cm²/(V·s)</text>
             </view>
-            <view class="property-item">
+            <view class="property-item" wx:if="{{selectedMaterial.mobility && selectedMaterial.mobility.hole}}">
               <text class="prop-label">空穴迁移率</text>
-              <text class="prop-value">{{selectedMaterial.holeMobility || '—'}}</text>
+              <text class="prop-value">{{selectedMaterial.mobility.hole}} cm²/(V·s)</text>
             </view>
-            <view class="property-item" wx:if="{{selectedMaterial.casNumber}}">
+            <view class="property-item" wx:if="{{selectedMaterial.excitonBindingEnergy}}">
+              <text class="prop-label">激子结合能</text>
+              <text class="prop-value">{{selectedMaterial.excitonBindingEnergy}} meV</text>
+            </view>
+            <view class="property-item" wx:if="{{selectedMaterial.dielectricConstant}}">
+              <text class="prop-label">介电常数</text>
+              <text class="prop-value">{{selectedMaterial.dielectricConstant}}</text>
+            </view>
+            <view class="property-item" wx:if="{{selectedMaterial.carrier}}">
+              <text class="prop-label">载流子类型</text>
+              <text class="prop-value">{{selectedMaterial.carrier.type}}</text>
+            </view>
+            <view class="property-item" wx:if="{{selectedMaterial.cas || selectedMaterial.casNumber}}">
               <text class="prop-label">CAS号</text>
-              <text class="prop-value">{{selectedMaterial.casNumber}}</text>
+              <text class="prop-value">{{selectedMaterial.cas || selectedMaterial.casNumber}}</text>
             </view>
-            <view class="property-item" wx:if="{{selectedMaterial.molecularWeight}}">
-              <text class="prop-label">分子量</text>
-              <text class="prop-value">{{selectedMaterial.molecularWeight}} g/mol</text>
+            <view class="property-item" wx:if="{{selectedMaterial.absorptionEdge}}">
+              <text class="prop-label">吸收边</text>
+              <text class="prop-value">{{selectedMaterial.absorptionEdge}} nm</text>
             </view>
           </view>
+        </view>
+        
+        <!-- 稳定性信息 -->
+        <view class="detail-section" wx:if="{{selectedMaterial.stability}}">
+          <view class="detail-title">稳定性</view>
+          <view class="stability-info">{{selectedMaterial.stability}}</view>
+        </view>
+        
+        <!-- 备注信息 -->
+        <view class="detail-section" wx:if="{{selectedMaterial.notes}}">
+          <view class="detail-title">备注</view>
+          <view class="notes-info">{{selectedMaterial.notes}}</view>
         </view>
 
         <!-- 应用 -->
@@ -183,4 +207,5 @@
     </view>
   </view>
 </view>
+
 

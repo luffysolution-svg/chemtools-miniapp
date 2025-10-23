@@ -500,28 +500,41 @@
 .property-list {
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
+  gap: 16rpx;
 }
 
 .property-item {
   display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-  padding: 16rpx;
-  background: #f7f9fc;
-  border-radius: 10rpx;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-radius: 16rpx;
+  border: 2rpx solid #bbf7d0;
+  transition: all 0.3s ease;
+}
+
+.property-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 12rpx rgba(5, 150, 105, 0.15);
 }
 
 .prop-label {
-  font-size: 24rpx;
-  color: #6c757d;
-  font-weight: 500;
+  font-size: 26rpx;
+  color: #059669;
+  font-weight: 700;
+  flex-shrink: 0;
   line-height: 1.4;
 }
 
 .prop-value {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #2d3142;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  text-align: right;
+  flex: 1;
   word-wrap: break-word;
   line-height: 1.6;
 }
@@ -532,10 +545,35 @@
   font-size: 26rpx;
   color: #2d3142;
   line-height: 1.8;
-  padding: 16rpx;
-  background: #f7f9fc;
-  border-radius: 10rpx;
+  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-radius: 16rpx;
+  border: 2rpx solid #bfdbfe;
   word-wrap: break-word;
+}
+
+/* 稳定性信息 */
+.stability-info {
+  padding: 24rpx;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-radius: 16rpx;
+  border: 2rpx solid #fecaca;
+  font-size: 26rpx;
+  color: #991b1b;
+  line-height: 1.8;
+  font-weight: 500;
+}
+
+/* 备注信息 */
+.notes-info {
+  padding: 24rpx;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-radius: 16rpx;
+  border: 2rpx solid #fde68a;
+  font-size: 26rpx;
+  color: #92400e;
+  line-height: 1.8;
+  font-weight: 500;
 }
 
 .modal-footer {

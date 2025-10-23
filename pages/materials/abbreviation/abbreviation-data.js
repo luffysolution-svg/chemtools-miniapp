@@ -5328,6 +5328,8 @@ function getDataStatistics() {
 }
 
 module.exports = {
+  abbreviationsBasicData,  // 导出原始数据
+  abbreviationsDetailedData,  // 导出详细数据
   getBasicData,
   getDetailedData,
   searchAbbreviation,

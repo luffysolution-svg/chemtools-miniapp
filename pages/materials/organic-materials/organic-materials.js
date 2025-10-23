@@ -51,6 +51,22 @@ Page({
     }
   },
 
+  // 学术组件分类筛选
+  onCategoryFilterChange(e) {
+    const category = e.detail.value;
+    this.setData({ 
+      selectedCategory: category,
+      searchKeyword: ''
+    });
+    
+    if (category === '全部') {
+      this.setData({ displayMaterials: this.data.materials });
+    } else {
+      const filtered = getMaterialsByCategory(category);
+      this.setData({ displayMaterials: filtered });
+    }
+  },
+
   // 搜索
   onSearchInput(e) {
     const keyword = e.detail.value;
@@ -66,6 +82,31 @@ Page({
     } else {
       const results = searchOrganicMaterial(keyword);
       this.setData({ displayMaterials: results });
+    }
+  },
+
+  // 执行搜索
+  onSearch(e) {
+    const keyword = e.detail.value;
+    if (keyword) {
+      const results = searchOrganicMaterial(keyword);
+      this.setData({ 
+        displayMaterials: results,
+        searchKeyword: keyword
+      });
+    }
+  },
+
+  // 清除搜索
+  clearSearch() {
+    this.setData({ 
+      searchKeyword: '' 
+    });
+    if (this.data.selectedCategory === '全部') {
+      this.setData({ displayMaterials: this.data.materials });
+    } else {
+      const filtered = getMaterialsByCategory(this.data.selectedCategory);
+      this.setData({ displayMaterials: filtered });
     }
   },
 

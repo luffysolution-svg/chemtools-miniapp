@@ -14,18 +14,13 @@
       bindclear="clearSearch"
     />
     
-    <!-- 语音搜索按钮 -->
-    <view class="voice-search-btn" bindtap="startVoiceSearch">
-      <text class="voice-icon">{{isVoiceSearching ? '⏸️' : '🎤'}}</text>
-    </view>
-    
-    <!-- 搜索选项和过滤按钮 -->
+    <!-- 搜索功能按钮组 -->
     <view class="header-actions">
-      <view class="search-options-btn" bindtap="toggleSearchOptions">
-        <icon type="info" size="18" color="#666"></icon>
+      <view class="action-btn" bindtap="toggleSearchOptions" hover-class="action-btn-hover">
+        <text class="action-icon">⚙️</text>
       </view>
-      <view class="filter-btn" bindtap="toggleFilters">
-        <text class="filter-icon">{{showFilters ? '▲' : '▼'}}</text>
+      <view class="action-btn" bindtap="toggleFilters" hover-class="action-btn-hover">
+        <text class="action-icon">{{showFilters ? '🔼' : '🔽'}}</text>
       </view>
     </view>
   </view>
@@ -115,9 +110,9 @@
   </view>
 
   <!-- 搜索过滤器 -->
-  <view wx:if="{{showFilters && !showHistory}}" class="search-filters">
+  <view wx:if="{{showFilters}}" class="search-filters">
     <view class="filter-group">
-      <text class="filter-label">排序：</text>
+      <text class="filter-label">排序方式</text>
       <view class="filter-options">
         <view 
           class="filter-option {{sortBy === 'relevance' ? 'active' : ''}}"

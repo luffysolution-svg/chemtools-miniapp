@@ -60,28 +60,38 @@ Page({
   },
 
   onLoad() {
-    // 模拟数据加载
     wx.showLoading({ title: '加载中...', mask: true });
     
     setTimeout(() => {
-      const xpsData = this.getXpsData();
-      const vibrationData = this.getVibrationalData();
-      const nmrSolvents = SOLVENT_NMR_SHIFTS;
-      const nmrFunctionalGroups = FUNCTIONAL_GROUP_SHIFTS;
-      
-      this.setData({
-        xpsData,
-        xpsFiltered: xpsData,
-        vibrationData,
-        vibrationFiltered: vibrationData,
-        nmrSolvents,
-        nmrSolventsFiltered: nmrSolvents,
-        nmrFunctionalGroups,
-        nmrFunctionalGroupsFiltered: nmrFunctionalGroups,
-        loading: false
-      });
-      wx.hideLoading();
-    }, 500);
+      try {
+        const xpsData = this.getXpsData();
+        const vibrationData = this.getVibrationalData();
+        const nmrSolvents = SOLVENT_NMR_SHIFTS;
+        const nmrFunctionalGroups = FUNCTIONAL_GROUP_SHIFTS;
+        
+        this.setData({
+          xpsData,
+          xpsFiltered: xpsData,
+          vibrationData,
+          vibrationFiltered: vibrationData,
+          nmrSolvents,
+          nmrSolventsFiltered: nmrSolvents,
+          nmrFunctionalGroups,
+          nmrFunctionalGroupsFiltered: nmrFunctionalGroups,
+          loading: false
+        });
+        
+        wx.hideLoading();
+      } catch (error) {
+        console.error('数据加载失败:', error);
+        wx.hideLoading();
+        wx.showToast({
+          title: '数据加载失败',
+          icon: 'none',
+          duration: 2000
+        });
+      }
+    }, 300);
   },
 
   /**
@@ -105,29 +115,32 @@ Page({
   getVibrationalData() {
     // FTIR数据
     const ftirData = FTIR_DATA.map(entry => ({
-      group: entry.functionalGroup,
-      name: entry.name,
-      wavenumber: entry.wavenumber,
-      range: entry.range,
-      type: 'FTIR',
+      mode: entry.name || entry.functionalGroup,  // 峰模式/官能团名称
+      region: 'IR',  // 区域标识
+      pos: entry.wavenumber,  // 峰位
+      unit: 'cm⁻¹',  // 单位
+      note: entry.notes || `${entry.range ? entry.range[0] + '-' + entry.range[1] + ' cm⁻¹' : ''}`,
       intensity: entry.intensity,
-      note: entry.notes
+      functionalGroup: entry.functionalGroup
     }));
 
     // Raman数据（展平为单个峰）
     const ramanData = [];
     RAMAN_DATA.forEach(material => {
-      material.peaks.forEach(peak => {
-        ramanData.push({
-          group: material.material,
-          name: material.name,
-          wavenumber: peak.wavenumber,
-          type: 'Raman',
-          intensity: peak.intensity,
-          assignment: peak.assignment,
-          note: peak.notes
+      if (material.peaks && material.peaks.length > 0) {
+        material.peaks.forEach(peak => {
+          ramanData.push({
+            mode: `${material.name} - ${peak.assignment || peak.wavenumber}`,  // 峰模式
+            region: 'Raman',  // 区域标识
+            pos: peak.wavenumber,  // 峰位
+            unit: 'cm⁻¹',  // 单位
+            note: peak.notes || peak.assignment || material.name,
+            intensity: peak.intensity,
+            material: material.material,
+            assignment: peak.assignment
+          });
         });
-      });
+      }
     });
 
     return [...ftirData, ...ramanData];
@@ -145,9 +158,14 @@ Page({
    * NMR搜索
    */
   handleNmrSearch(e) {
-    const keyword = e.detail.value;
+    const keyword = e.detail.value || '';
     this.setData({ nmrSearchKeyword: keyword });
-    this.filterNmr();
+    if (this.nmrSearchTimer) {
+      clearTimeout(this.nmrSearchTimer);
+    }
+    this.nmrSearchTimer = setTimeout(() => {
+      this.filterNmr();
+    }, 300);
   },
   
   /**
@@ -164,24 +182,24 @@ Page({
   filterNmr() {
     const { nmrSolvents, nmrFunctionalGroups, nmrSearchKeyword } = this.data;
     
-    if (!nmrSearchKeyword) {
+    if (!nmrSearchKeyword || nmrSearchKeyword.trim() === '') {
       this.setData({ 
-        nmrSolventsFiltered: nmrSolvents,
-        nmrFunctionalGroupsFiltered: nmrFunctionalGroups
+        nmrSolventsFiltered: nmrSolvents || [],
+        nmrFunctionalGroupsFiltered: nmrFunctionalGroups || []
       });
       return;
     }
 
-    const keyword = nmrSearchKeyword.toLowerCase();
+    const keyword = nmrSearchKeyword.toLowerCase().trim();
     
-    const filteredSolvents = nmrSolvents.filter(item => 
-      item.name.toLowerCase().includes(keyword) ||
-      item.solvent.toLowerCase().includes(keyword) ||
-      item.formula.toLowerCase().includes(keyword)
+    const filteredSolvents = (nmrSolvents || []).filter(item => 
+      (item.name && item.name.toLowerCase().includes(keyword)) ||
+      (item.solvent && item.solvent.toLowerCase().includes(keyword)) ||
+      (item.formula && item.formula.toLowerCase().includes(keyword))
     );
     
-    const filteredGroups = nmrFunctionalGroups.filter(item =>
-      item.group.toLowerCase().includes(keyword) ||
+    const filteredGroups = (nmrFunctionalGroups || []).filter(item =>
+      (item.group && item.group.toLowerCase().includes(keyword)) ||
       (item.examples && item.examples.toLowerCase().includes(keyword))
     );
 
@@ -318,22 +336,21 @@ Page({
    */
   filterVibration() {
     const { vibrationData, vibrationSearchKeyword, vibrationRegion } = this.data;
-    
-    let filtered = vibrationData;
+    let filtered = vibrationData || [];
 
-    // 按区域筛选
-    if (vibrationRegion !== 'all') {
+    if (vibrationRegion && vibrationRegion !== 'all') {
       filtered = filtered.filter(item => item.region === vibrationRegion);
     }
 
-    // 按关键词搜索
-    if (vibrationSearchKeyword) {
-      const keyword = vibrationSearchKeyword.toLowerCase();
+    if (vibrationSearchKeyword && vibrationSearchKeyword.trim()) {
+      const keyword = vibrationSearchKeyword.toLowerCase().trim();
       filtered = filtered.filter(item => {
         return (
-          item.mode.toLowerCase().includes(keyword) ||
-          String(item.pos).includes(keyword) ||
-          item.note.toLowerCase().includes(keyword)
+          (item.mode && item.mode.toLowerCase().includes(keyword)) ||
+          (item.pos && String(item.pos).includes(keyword)) ||
+          (item.note && item.note.toLowerCase().includes(keyword)) ||
+          (item.functionalGroup && item.functionalGroup.toLowerCase().includes(keyword)) ||
+          (item.material && item.material.toLowerCase().includes(keyword))
         );
       });
     }

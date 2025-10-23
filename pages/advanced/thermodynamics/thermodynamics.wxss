@@ -66,11 +66,14 @@
 .input {
   width: 100%;
   height: 80rpx;
+  line-height: 80rpx;
   background: #f5f7fa;
   border-radius: 12rpx;
   padding: 0 20rpx;
   font-size: 28rpx;
   box-sizing: border-box; /* 包含内边距，避免超宽 */
+  text-align: left;
+  vertical-align: middle;
 }
 
 .calc-btn {
@@ -161,11 +164,16 @@
 
 .small-input {
   flex: 1;
-  height: 70rpx;
+  min-width: 0;
+  height: 72rpx;
+  line-height: 72rpx;
   background: #f5f7fa;
   border-radius: 12rpx;
-  padding: 0 15rpx;
-  font-size: 26rpx;
+  padding: 0 12rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  text-align: left;
+  vertical-align: middle;
 }
 
 .remove-btn {

@@ -114,7 +114,19 @@ Page({
 
     // 按类别筛选
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(el => el.category === selectedCategory);
+      // 处理复合类别筛选
+      if (selectedCategory === 'metal') {
+        // 金属包括：碱金属、碱土金属、过渡金属、后过渡金属、镧系、锕系
+        filtered = filtered.filter(el => 
+          ['alkali', 'alkaline', 'transition', 'post-transition', 'lanthanoid', 'actinoid'].includes(el.category)
+        );
+      } else if (selectedCategory === 'rare-earth') {
+        // 稀土元素包括镧系
+        filtered = filtered.filter(el => el.category === 'lanthanoid');
+      } else {
+        // 直接匹配category
+        filtered = filtered.filter(el => el.category === selectedCategory);
+      }
     }
 
     // 按关键词搜索

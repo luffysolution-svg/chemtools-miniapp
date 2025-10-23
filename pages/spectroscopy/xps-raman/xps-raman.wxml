@@ -74,6 +74,13 @@
           </view>
           <text class="solvent-notes">{{item.notes}}</text>
         </view>
+        
+        <!-- 无结果提示 -->
+        <view wx:if="{{nmrSolventsFiltered.length === 0}}" class="empty-hint">
+          <text class="empty-icon">🔍</text>
+          <text class="empty-text">未找到匹配的溶剂数据</text>
+          <text class="empty-subtitle">试试其他关键词，如 DMF、THF、DMSO</text>
+        </view>
       </view>
     </view>
 
@@ -97,6 +104,13 @@
             <text class="fg-range">{{item.carbonRange || '—'}}</text>
           </view>
           <text class="fg-example">{{item.examples}}</text>
+        </view>
+        
+        <!-- 无结果提示 -->
+        <view wx:if="{{nmrFunctionalGroupsFiltered.length === 0}}" class="empty-hint" style="grid-column: 1/-1;">
+          <text class="empty-icon">🔍</text>
+          <text class="empty-text">未找到匹配的官能团数据</text>
+          <text class="empty-subtitle">试试其他关键词，如 羰基、芳香、烷基</text>
         </view>
       </view>
     </view>
@@ -250,8 +264,11 @@
           </view>
         </view>
 
+        <!-- 空结果提示 -->
         <view wx:if="{{vibrationFiltered.length === 0}}" class="empty-hint">
-          未找到匹配的峰位数据
+          <text class="empty-icon">🔍</text>
+          <text class="empty-text">未找到匹配的峰位数据</text>
+          <text class="empty-subtitle">试试其他关键词，如 C=O、石墨烯、TiO2</text>
         </view>
       </view>
 

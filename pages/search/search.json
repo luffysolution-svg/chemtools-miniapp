@@ -3,6 +3,10 @@
   "navigationBarBackgroundColor": "#1AAD19",
   "navigationBarTextStyle": "white",
   "enablePullDownRefresh": false,
-  "backgroundTextStyle": "dark"
+  "backgroundTextStyle": "dark",
+  "disableScroll": false,
+  "usingComponents": {
+    "search-input": "/components/search-input/search-input"
+  }
 }
 

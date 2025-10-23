@@ -138,7 +138,7 @@
 .input-section {
   background: #fff;
   border-radius: 16rpx;
-  padding: 24rpx;
+  padding: 20rpx 16rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
 }
@@ -162,24 +162,29 @@
 .input-row {
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  gap: 8rpx;
 }
 
 .variable-input {
   flex: 1;
   min-width: 0; /* 避免在小屏下溢出，确保可收缩 */
+  height: 72rpx;
+  line-height: 72rpx;
   background: #f5f7fa;
-  padding: 20rpx;
+  padding: 0 12rpx;
   border-radius: 8rpx;
   font-size: 28rpx;
-  width: 100%;
   box-sizing: border-box;
+  text-align: left;
+  vertical-align: middle;
 }
 
 .separator {
-  font-size: 32rpx;
+  font-size: 28rpx;
   color: #999;
   font-weight: bold;
+  padding: 0 4rpx;
+  flex-shrink: 0;
 }
 
 .input-item {
@@ -200,11 +205,15 @@
 
 .input {
   width: 100%;
+  height: 72rpx;
+  line-height: 72rpx;
   background: #f5f7fa;
-  padding: 20rpx;
+  padding: 0 16rpx;
   border-radius: 8rpx;
   font-size: 28rpx;
   box-sizing: border-box; /* 确保宽度包含内边距 */
+  text-align: left;
+  vertical-align: middle;
 }
 
 /* 按钮组 */

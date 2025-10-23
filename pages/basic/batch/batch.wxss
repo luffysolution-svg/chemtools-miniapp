@@ -102,13 +102,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18rpx 24rpx;
+  height: 76rpx;
+  padding: 0 24rpx;
   background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
   border-radius: 14rpx;
   margin-top: 10rpx;
   border: 2rpx solid #e8ecf4;
   transition: all 0.3s ease;
-  height: 76rpx;
   box-sizing: border-box;
 }
 
@@ -153,14 +153,16 @@
 
 .param-input {
   flex: 1;
-  padding: 14rpx 20rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  padding: 0 20rpx;
   background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
   border-radius: 12rpx;
   font-size: 26rpx;
   border: 2rpx solid #e8ecf4;
   transition: all 0.3s ease;
-  height: 64rpx;
   box-sizing: border-box;
+  vertical-align: middle;
 }
 
 .param-input:focus {
